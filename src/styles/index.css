@@ -1,0 +1,284 @@
+/*
+ * LifeOS — Design tokens e estilos globais.
+ * Documentação: docs/design-system.md
+ *
+ * Camadas:
+ *  1. Primitivas (paleta crua) — nunca usadas diretamente nos componentes.
+ *  2. Tokens semânticos (--lo-*) — redefinidos por tema em [data-theme].
+ *  3. @theme do Tailwind — expõe os tokens semânticos como utilitários (bg-surface, text-fg-muted...).
+ */
+@import 'tailwindcss';
+@import '@fontsource-variable/geist';
+
+/* Tema escuro controlado por atributo, não por media query: permite escolha manual + "sistema". */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ---------- 1. Primitivas ---------- */
+:root {
+  /* Neutros quentes ("papel") */
+  --sand-0: #fdfcfa;
+  --sand-50: #f8f6f2;
+  --sand-100: #f1eee8;
+  --sand-200: #e6e1d8;
+  --sand-300: #d4cdc0;
+  --sand-500: #8a8378;
+  --sand-600: #6b655c;
+  --sand-700: #4d4842;
+  --sand-900: #1f1d1a;
+
+  /* Neutros escuros ("grafite") */
+  --ink-950: #0f1112;
+  --ink-900: #151819;
+  --ink-850: #1b1f20;
+  --ink-800: #222728;
+  --ink-700: #2e3436;
+  --ink-600: #3d4446;
+  --ink-400: #8b9496;
+  --ink-300: #aab2b3;
+  --ink-100: #e9ecea;
+
+  /* Marca: pinho (primária) e âmbar (destaque/tempo) */
+  --pine-50: #ecf5f3;
+  --pine-100: #d3e9e4;
+  --pine-300: #7fbfb2;
+  --pine-400: #4fa494;
+  --pine-500: #2b8070;
+  --pine-600: #1f6a5d;
+  --pine-700: #1f5f57;
+  --pine-900: #0f302b;
+  --amber-400: #e8a13a;
+  --amber-500: #c98419;
+}
+
+/* ---------- 2. Tokens semânticos — tema claro ---------- */
+:root,
+[data-theme='light'] {
+  --lo-bg: var(--sand-50);
+  --lo-surface: var(--sand-0);
+  --lo-surface-muted: var(--sand-100);
+  --lo-surface-raised: #ffffff;
+  --lo-border: var(--sand-200);
+  --lo-border-strong: var(--sand-300);
+
+  --lo-fg: var(--sand-900);
+  --lo-fg-muted: #58534c; /* 7.4:1 sobre --lo-surface */
+  --lo-fg-subtle: #6f6a63; /* ≥ 4.6:1 sobre surface, bg e surface-muted */
+  --lo-fg-disabled: #a8a196;
+
+  --lo-primary: var(--pine-600);
+  --lo-primary-hover: var(--pine-700);
+  --lo-primary-fg: #ffffff;
+  --lo-primary-soft: var(--pine-50);
+  --lo-primary-soft-fg: var(--pine-700);
+
+  --lo-accent: var(--amber-500);
+  --lo-accent-soft: #fbf0dc;
+  --lo-accent-soft-fg: #7a4e0b;
+
+  --lo-success: #2a7343;
+  --lo-success-soft: #e7f3ea;
+  --lo-warning: #9a6200;
+  --lo-warning-soft: #fcf1dc;
+  --lo-danger: #b83a2e;
+  --lo-danger-soft: #fbeae7;
+  --lo-info: #2f63a8;
+  --lo-info-soft: #e8f0fa;
+
+  --lo-focus: var(--pine-500);
+  --lo-overlay: rgb(31 29 26 / 0.4);
+
+  --shadow-color: 30 25 15;
+  --elev-1: 0 1px 2px rgb(var(--shadow-color) / 0.05), 0 1px 1px rgb(var(--shadow-color) / 0.03);
+  --elev-2:
+    0 4px 12px -2px rgb(var(--shadow-color) / 0.08), 0 2px 4px rgb(var(--shadow-color) / 0.04);
+  --elev-3:
+    0 16px 40px -8px rgb(var(--shadow-color) / 0.18), 0 4px 10px rgb(var(--shadow-color) / 0.06);
+
+  --hero-glow:
+    radial-gradient(120% 140% at 0% 0%, rgb(43 128 112 / 0.1), transparent 55%),
+    radial-gradient(90% 120% at 100% 0%, rgb(232 161 58 / 0.1), transparent 60%);
+}
+
+/* ---------- 2b. Tokens semânticos — tema escuro (projetado, não invertido) ---------- */
+[data-theme='dark'] {
+  --lo-bg: var(--ink-950);
+  --lo-surface: var(--ink-900);
+  --lo-surface-muted: var(--ink-850);
+  --lo-surface-raised: var(--ink-800);
+  --lo-border: #262c2d;
+  --lo-border-strong: var(--ink-600);
+
+  --lo-fg: var(--ink-100);
+  --lo-fg-muted: var(--ink-300);
+  --lo-fg-subtle: var(--ink-400); /* 5.6:1 sobre --lo-surface */
+  --lo-fg-disabled: #5d6567;
+
+  --lo-primary: var(--pine-400);
+  --lo-primary-hover: var(--pine-300);
+  --lo-primary-fg: var(--ink-950);
+  --lo-primary-soft: rgb(79 164 148 / 0.14);
+  --lo-primary-soft-fg: var(--pine-300);
+
+  --lo-accent: var(--amber-400);
+  --lo-accent-soft: rgb(232 161 58 / 0.14);
+  --lo-accent-soft-fg: #f0bf72;
+
+  --lo-success: #5cbf7e;
+  --lo-success-soft: rgb(92 191 126 / 0.13);
+  --lo-warning: #e5b04f;
+  --lo-warning-soft: rgb(229 176 79 / 0.13);
+  --lo-danger: #f07a6c;
+  --lo-danger-soft: rgb(240 122 108 / 0.13);
+  --lo-info: #7aa9e8;
+  --lo-info-soft: rgb(122 169 232 / 0.13);
+
+  --lo-focus: var(--pine-300);
+  --lo-overlay: rgb(0 0 0 / 0.6);
+
+  /* No escuro, elevação vem mais de bordas/superfícies do que de sombra. */
+  --shadow-color: 0 0 0;
+  --elev-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --elev-2: 0 6px 16px -4px rgb(0 0 0 / 0.5);
+  --elev-3: 0 20px 48px -8px rgb(0 0 0 / 0.65);
+
+  --hero-glow:
+    radial-gradient(120% 140% at 0% 0%, rgb(79 164 148 / 0.14), transparent 55%),
+    radial-gradient(90% 120% at 100% 0%, rgb(232 161 58 / 0.08), transparent 60%);
+}
+
+/* ---------- 3. Exposição ao Tailwind ---------- */
+@theme inline {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  --color-bg: var(--lo-bg);
+  --color-surface: var(--lo-surface);
+  --color-surface-muted: var(--lo-surface-muted);
+  --color-surface-raised: var(--lo-surface-raised);
+  --color-border: var(--lo-border);
+  --color-border-strong: var(--lo-border-strong);
+  --color-fg: var(--lo-fg);
+  --color-fg-muted: var(--lo-fg-muted);
+  --color-fg-subtle: var(--lo-fg-subtle);
+  --color-fg-disabled: var(--lo-fg-disabled);
+  --color-primary: var(--lo-primary);
+  --color-primary-hover: var(--lo-primary-hover);
+  --color-primary-fg: var(--lo-primary-fg);
+  --color-primary-soft: var(--lo-primary-soft);
+  --color-primary-soft-fg: var(--lo-primary-soft-fg);
+  --color-accent: var(--lo-accent);
+  --color-accent-soft: var(--lo-accent-soft);
+  --color-accent-soft-fg: var(--lo-accent-soft-fg);
+  --color-success: var(--lo-success);
+  --color-success-soft: var(--lo-success-soft);
+  --color-warning: var(--lo-warning);
+  --color-warning-soft: var(--lo-warning-soft);
+  --color-danger: var(--lo-danger);
+  --color-danger-soft: var(--lo-danger-soft);
+  --color-info: var(--lo-info);
+  --color-info-soft: var(--lo-info-soft);
+  --color-focus: var(--lo-focus);
+  --color-overlay: var(--lo-overlay);
+
+  --shadow-elev-1: var(--elev-1);
+  --shadow-elev-2: var(--elev-2);
+  --shadow-elev-3: var(--elev-3);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Escala tipográfica (1.2 — "minor third"), com altura de linha embutida */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.25rem;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5rem;
+  --text-title-sm: 1.0625rem;
+  --text-title-sm--line-height: 1.5rem;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.875rem;
+  --text-display: 1.875rem;
+  --text-display--line-height: 2.25rem;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans text-body antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+    min-height: 100dvh;
+  }
+
+  /* Foco sempre visível para teclado; nunca removido sem substituto. */
+  :focus-visible {
+    outline: 2px solid var(--lo-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--lo-primary-soft);
+    color: var(--lo-fg);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Redução de movimento: respeita a preferência do sistema operacional. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 240ms var(--ease-out-soft) both;
+}
+
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--lo-surface-muted) 25%,
+    var(--lo-border) 37%,
+    var(--lo-surface-muted) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease infinite;
+}
