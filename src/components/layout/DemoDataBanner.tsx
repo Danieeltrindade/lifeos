@@ -6,7 +6,7 @@ import { useDataSource } from '@/services/data-source/data-source-context';
 /** Aviso global sempre que a interface não estiver mostrando o estado real (modo padrão). */
 export function DemoDataBanner() {
   const { mode } = useDataSource();
-  if (mode === 'none') return null;
+  if (mode === 'supabase') return null;
   return (
     <div
       role="status"

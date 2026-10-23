@@ -1,0 +1,183 @@
+{
+  "goals": [
+    {
+      "id": "d0000000-0000-4000-8000-000000000050",
+      "unit": "livros",
+      "dueOn": "2026-12-31",
+      "title": "Ler 6 livros",
+      "period": "once",
+      "target": 6.0,
+      "current": 4.0,
+      "cycleEnd": "2027-01-01",
+      "cycleStart": "2026-10-01",
+      "progressMode": "manual"
+    },
+    {
+      "id": "8105c88a-52f1-4c13-bc50-bd087d8af8a3",
+      "unit": "h",
+      "dueOn": null,
+      "title": "Cálculo 60 h",
+      "period": "once",
+      "target": 60.0,
+      "current": 4.0,
+      "cycleEnd": "2026-10-21",
+      "cycleStart": "2026-10-01",
+      "progressMode": "activity_time"
+    }
+  ],
+  "setup": {
+    "goals": 2,
+    "tasks": 11,
+    "events": 5,
+    "habits": 0,
+    "subjects": 2,
+    "activities": 5
+  },
+  "origin": "user",
+  "reviews": [
+    {
+      "id": "90a7b55c-70d5-4a93-b25c-9b95ed128141",
+      "dueOn": "2026-10-22",
+      "priority": "medium",
+      "topicName": "Integrais por partes",
+      "subjectName": "Cálculo II"
+    }
+  ],
+  "studies": {
+    "sessionsToday": 3,
+    "actualMinutesToday": 140,
+    "topSubjectsLast7Days": [
+      {
+        "subjectId": "d0000000-0000-4000-8000-000000000001",
+        "subjectName": "Cálculo II",
+        "actualMinutes": 180
+      },
+      {
+        "subjectId": "d0000000-0000-4000-8000-000000000002",
+        "subjectName": "Banco de Dados",
+        "actualMinutes": 50
+      }
+    ],
+    "actualMinutesLast7Days": 230
+  },
+  "timezone": "America/Sao_Paulo",
+  "localDate": "2026-10-20",
+  "reviewCounts": {
+    "overdue": 0,
+    "dueToday": 0
+  },
+  "priorityTasks": [
+    {
+      "id": "9c36d476-a58c-461b-a3b6-3ecb51f5f81d",
+      "dueOn": "2026-10-18",
+      "title": "Atrasada baixa",
+      "status": "todo",
+      "priority": "low",
+      "projectName": null
+    },
+    {
+      "id": "a6e27f52-ecc1-4e77-92ca-f4bdb56c58fa",
+      "dueOn": "2026-10-21",
+      "title": "Alta para amanhã",
+      "status": "in_progress",
+      "priority": "high",
+      "projectName": null
+    },
+    {
+      "id": "c5ec63eb-828e-4b9b-957f-53d5ca00e7e4",
+      "dueOn": "2026-10-25",
+      "title": "Alta para depois",
+      "status": "todo",
+      "priority": "high",
+      "projectName": null
+    },
+    {
+      "id": "f2124777-5161-4c67-ba28-df0cb24563a2",
+      "dueOn": "2026-10-22",
+      "title": "Média",
+      "status": "todo",
+      "priority": "medium",
+      "projectName": null
+    },
+    {
+      "id": "f8925272-4e1c-4e64-8815-8d658b14a628",
+      "dueOn": null,
+      "title": "Cap. 2",
+      "status": "todo",
+      "priority": "medium",
+      "projectName": "TCC"
+    },
+    {
+      "id": "fe127b81-f388-42c0-9cb4-c64d784f6a9b",
+      "dueOn": null,
+      "title": "Média sem prazo",
+      "status": "todo",
+      "priority": "medium",
+      "projectName": null
+    }
+  ],
+  "activeProjects": [
+    {
+      "id": "d0000000-0000-4000-8000-000000000040",
+      "name": "TCC",
+      "dueOn": null,
+      "priority": "medium",
+      "tasksDone": 1,
+      "tasksTotal": 2
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "e5b0c54c-024c-40b2-8705-4e73c903e3e9",
+      "title": "Pendente",
+      "rationale": "Motivo"
+    }
+  ],
+  "recentActivities": [
+    {
+      "id": "bd8ee93a-6a29-4709-8847-f3e2cf1636db",
+      "kind": "study",
+      "title": "Revisão",
+      "source": "manual",
+      "category": null,
+      "startedAt": "2026-10-20T08:00:00-03:00",
+      "durationMinutes": 60
+    },
+    {
+      "id": "b5537261-90bf-4ce0-8c80-49f2a0df3a65",
+      "kind": "exercise",
+      "title": "Caminhada",
+      "source": "manual",
+      "category": "Saúde",
+      "startedAt": "2026-10-20T07:00:00-03:00",
+      "durationMinutes": 30
+    },
+    {
+      "id": "05f75a1d-76ec-4ba8-b312-b81ff1b36451",
+      "kind": "study",
+      "title": "Lista de integrais",
+      "source": "manual",
+      "category": null,
+      "startedAt": "2026-10-19T23:00:00-03:00",
+      "durationMinutes": 120
+    },
+    {
+      "id": "1f27d5b3-6293-472e-850f-b09c0133c973",
+      "kind": "study",
+      "title": "Sessão de foco — Banco de Dados",
+      "source": "timer",
+      "category": null,
+      "startedAt": "2026-10-19T23:30:00-03:00",
+      "durationMinutes": 50
+    },
+    {
+      "id": "371189a3-ab94-422c-a9d4-7bc3b4b6ad67",
+      "kind": "study",
+      "title": "Antiga",
+      "source": "manual",
+      "category": null,
+      "startedAt": "2026-10-12T10:00:00-03:00",
+      "durationMinutes": 60
+    }
+  ]
+}

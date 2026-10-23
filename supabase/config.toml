@@ -1,0 +1,60 @@
+# Configuração do Supabase CLI para o LifeOS.
+# Vale para o ambiente LOCAL (`npx supabase start`, `db reset`, `test db`).
+# No projeto na nuvem, as mesmas opções de Auth são definidas no painel
+# (ver docs/supabase-setup.md) — este arquivo não altera o projeto remoto.
+
+project_id = "lifeos"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 17
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = false
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = [
+  "http://localhost:5173/entrar",
+  "http://localhost:5173/redefinir-senha",
+  "http://localhost:4173/entrar",
+  "http://localhost:4173/redefinir-senha",
+]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+enable_signup = true
+enable_anonymous_sign_ins = false
+minimum_password_length = 8
+
+# Só para o ambiente LOCAL (npx supabase start): os testes ponta a ponta criam várias contas
+# pelo cadastro. Não use `supabase config push` com estes valores em produção.
+[auth.rate_limit]
+email_sent = 100
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
+secure_password_change = true
+max_frequency = "1m0s"
+
+# Caixa de e-mail de teste local (Mailpit): http://localhost:54324
+[inbucket]
+enabled = true
+port = 54324

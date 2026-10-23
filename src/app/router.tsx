@@ -1,31 +1,52 @@
-import type { ComponentType } from 'react';
 import type { RouteObject } from 'react-router';
 import { AppShell } from '@/components/layout/AppShell';
-import { DashboardPage } from '@/modules/dashboard/DashboardPage';
-import { SettingsPage } from '@/modules/settings/SettingsPage';
+import { ForgotPasswordPage } from '@/modules/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/modules/auth/ResetPasswordPage';
+import { SignInPage } from '@/modules/auth/SignInPage';
+import { SignUpPage } from '@/modules/auth/SignUpPage';
 import { ModuleIntroPage } from '@/modules/shared/ModuleIntroPage';
 import { NotFoundPage } from '@/modules/shared/NotFoundPage';
-import { MODULES, type ModuleId } from './modules';
+import { MODULE_ROUTES } from './module-routes';
+import { MODULES } from './modules';
+import { PublicOnly, RequireAuth } from './route-guards';
+import { RouteError } from './RouteError';
 
-/**
- * Páginas com implementação própria. Os demais módulos usam a página introdutória.
- * Na medida em que os módulos forem implementados, entram neste mapa (com lazy loading).
- */
-const IMPLEMENTED_PAGES: Partial<Record<ModuleId, ComponentType>> = {
-  dashboard: DashboardPage,
-  settings: SettingsPage,
-};
-
-export const routes: RouteObject[] = [
+const appRoutes: RouteObject[] = [
   {
-    element: <AppShell />,
+    element: <PublicOnly />,
     children: [
-      ...MODULES.map((mod): RouteObject => {
-        const Page = IMPLEMENTED_PAGES[mod.id];
-        const element = Page ? <Page /> : <ModuleIntroPage moduleId={mod.id} />;
-        return mod.path === '/' ? { index: true, element } : { path: mod.path, element };
-      }),
-      { path: '*', element: <NotFoundPage /> },
+      { path: '/entrar', element: <SignInPage /> },
+      { path: '/cadastro', element: <SignUpPage /> },
+      { path: '/recuperar-senha', element: <ForgotPasswordPage /> },
+    ],
+  },
+  // Acessível com sessão de recuperação (vinda do link do e-mail).
+  { path: '/redefinir-senha', element: <ResetPasswordPage /> },
+  {
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <AppShell />,
+        children: [
+          {
+            // Erro numa tela aparece DENTRO do app (a navegação continua disponível).
+            errorElement: <RouteError />,
+            children: [
+              // Módulos ainda não implementados mostram a página introdutória (sem simular nada).
+              ...MODULES.map((mod): RouteObject => ({
+                path: mod.path,
+                children: MODULE_ROUTES[mod.id] ?? [
+                  { index: true, element: <ModuleIntroPage moduleId={mod.id} /> },
+                ],
+              })),
+              { path: '*', element: <NotFoundPage /> },
+            ],
+          },
+        ],
+      },
     ],
   },
 ];
+
+/** Raiz: qualquer erro não tratado mostra a página de erro do LifeOS, nunca a padrão. */
+export const routes: RouteObject[] = [{ errorElement: <RouteError />, children: appRoutes }];

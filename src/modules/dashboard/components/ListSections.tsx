@@ -5,11 +5,12 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { EmptyState } from '@/components/ui/States';
 import { cn } from '@/lib/cn';
 import {
-  calendarDaysBetween,
+  daysBetween,
+  formatDateOnly,
   formatDuration,
-  formatShortDate,
   formatTime,
   relativeDayLabel,
+  type ISODate,
 } from '@/lib/date';
 import type {
   ActivityEntry,
@@ -21,17 +22,40 @@ import type {
 } from '@/types/domain';
 import { SectionLink } from './SectionLink';
 
+const KIND_LABELS: Record<string, string> = {
+  study: 'Estudo',
+  reading: 'Leitura',
+  exercise: 'Exercício',
+  project: 'Projeto',
+  work: 'Trabalho',
+  leisure: 'Lazer',
+  other: 'Outra',
+};
+
 const PRIORITY: Record<Priority, { label: string; dot: string }> = {
   high: { label: 'Alta', dot: 'bg-danger' },
   medium: { label: 'Média', dot: 'bg-warning' },
   low: { label: 'Baixa', dot: 'bg-fg-subtle' },
 };
 
+const PERIOD_LABEL: Record<GoalProgress['period'], string> = {
+  once: 'Até o prazo',
+  daily: 'Hoje',
+  weekly: 'Nesta semana',
+  monthly: 'Neste mês',
+};
+
 const rowClass = 'flex items-start gap-3 py-3 first:pt-0 last:pb-0';
 
-export function TasksSection({ tasks, now }: { tasks: TaskSummary[]; now: Date }) {
+const amountFormat = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+function formatAmount(value: number): string {
+  return amountFormat.format(value);
+}
+
+/** today = data local do perfil (vinda do servidor); prazos são datas de calendário. */
+export function TasksSection({ tasks, today }: { tasks: TaskSummary[]; today: ISODate }) {
   return (
-    <Card aria-labelledby="dash-tasks" className="lg:col-span-7">
+    <Card aria-labelledby="dash-tasks">
       <CardHeader
         title="Tarefas prioritárias"
         titleId="dash-tasks"
@@ -49,7 +73,7 @@ export function TasksSection({ tasks, now }: { tasks: TaskSummary[]; now: Date }
           <ul className="divide-y divide-border">
             {tasks.map((task) => {
               const p = PRIORITY[task.priority];
-              const overdue = task.dueAt !== null && new Date(task.dueAt) < now;
+              const overdue = task.dueOn !== null && daysBetween(task.dueOn, today) < 0;
               return (
                 <li key={task.id} className={rowClass}>
                   <span
@@ -64,9 +88,9 @@ export function TasksSection({ tasks, now }: { tasks: TaskSummary[]; now: Date }
                       {task.status === 'in_progress' && ' · em andamento'}
                     </p>
                   </div>
-                  {task.dueAt && (
+                  {task.dueOn && (
                     <Badge tone={overdue ? 'danger' : 'neutral'}>
-                      <time dateTime={task.dueAt}>{relativeDayLabel(task.dueAt, now)}</time>
+                      <time dateTime={task.dueOn}>{relativeDayLabel(task.dueOn, today)}</time>
                     </Badge>
                   )}
                 </li>
@@ -79,14 +103,29 @@ export function TasksSection({ tasks, now }: { tasks: TaskSummary[]; now: Date }
   );
 }
 
-export function ReviewsSection({ reviews, now }: { reviews: ReviewItem[]; now: Date }) {
+export function ReviewsSection({
+  reviews,
+  today,
+  counts,
+}: {
+  reviews: ReviewItem[];
+  today: ISODate;
+  counts: { overdue: number; dueToday: number };
+}) {
+  const summary = [
+    counts.overdue > 0 && `${String(counts.overdue)} atrasada${counts.overdue === 1 ? '' : 's'}`,
+    counts.dueToday > 0 && `${String(counts.dueToday)} para hoje`,
+  ]
+    .filter(Boolean)
+    .join(' · ');
   return (
-    <Card aria-labelledby="dash-reviews" className="lg:col-span-5">
+    <Card aria-labelledby="dash-reviews">
       <CardHeader
-        title="Próximas revisões"
+        title="Revisões"
         titleId="dash-reviews"
         icon={<RotateCcw className="size-4" />}
-        action={<SectionLink to="/estudos" label="Abrir estudos" />}
+        {...(summary ? { description: summary } : {})}
+        action={<SectionLink to="/estudos/revisoes" label="Abrir revisões" />}
       />
       <CardBody>
         {reviews.length === 0 ? (
@@ -98,7 +137,7 @@ export function ReviewsSection({ reviews, now }: { reviews: ReviewItem[]; now: D
         ) : (
           <ul className="divide-y divide-border">
             {reviews.map((r) => {
-              const diff = calendarDaysBetween(new Date(r.dueAt), now);
+              const diff = daysBetween(r.dueOn, today);
               return (
                 <li key={r.id} className={rowClass}>
                   <div className="min-w-0 flex-1">
@@ -106,7 +145,7 @@ export function ReviewsSection({ reviews, now }: { reviews: ReviewItem[]; now: D
                     <p className="text-caption text-fg-subtle">{r.subjectName}</p>
                   </div>
                   <Badge tone={diff < 0 ? 'danger' : diff === 0 ? 'accent' : 'neutral'}>
-                    <time dateTime={r.dueAt}>{relativeDayLabel(r.dueAt, now)}</time>
+                    <time dateTime={r.dueOn}>{relativeDayLabel(r.dueOn, today)}</time>
                   </Badge>
                 </li>
               );
@@ -120,7 +159,7 @@ export function ReviewsSection({ reviews, now }: { reviews: ReviewItem[]; now: D
 
 export function GoalsSection({ goals }: { goals: GoalProgress[] }) {
   return (
-    <Card aria-labelledby="dash-goals" className="lg:col-span-4">
+    <Card aria-labelledby="dash-goals">
       <CardHeader
         title="Metas em andamento"
         titleId="dash-goals"
@@ -137,11 +176,16 @@ export function GoalsSection({ goals }: { goals: GoalProgress[] }) {
         ) : (
           <ul className="flex flex-col gap-4">
             {goals.map((g) => {
-              const text = `${g.current} de ${g.target} ${g.unit}`;
+              const text = `${formatAmount(g.current)} de ${formatAmount(g.target)} ${g.unit}`;
               return (
                 <li key={g.id}>
                   <div className="mb-1.5 flex items-baseline justify-between gap-3">
-                    <p className="min-w-0 text-body-sm font-medium">{g.title}</p>
+                    <p className="min-w-0 text-body-sm font-medium">
+                      {g.title}
+                      {g.progressMode === 'manual' && (
+                        <Badge className="ml-2 align-middle">manual</Badge>
+                      )}
+                    </p>
                     <p className="tabular shrink-0 text-caption text-fg-subtle">{text}</p>
                   </div>
                   <ProgressBar
@@ -151,11 +195,15 @@ export function GoalsSection({ goals }: { goals: GoalProgress[] }) {
                     valueText={text}
                     tone="accent"
                   />
-                  {g.dueAt && (
-                    <p className="mt-1 text-caption text-fg-subtle">
-                      Prazo: <time dateTime={g.dueAt}>{formatShortDate(g.dueAt)}</time>
-                    </p>
-                  )}
+                  <p className="mt-1 text-caption text-fg-subtle">
+                    {PERIOD_LABEL[g.period]}
+                    {g.dueOn && (
+                      <>
+                        {' · prazo '}
+                        <time dateTime={g.dueOn}>{formatDateOnly(g.dueOn)}</time>
+                      </>
+                    )}
+                  </p>
                 </li>
               );
             })}
@@ -166,9 +214,15 @@ export function GoalsSection({ goals }: { goals: GoalProgress[] }) {
   );
 }
 
-export function ActivitiesSection({ activities }: { activities: ActivityEntry[] }) {
+export function ActivitiesSection({
+  activities,
+  timeZone,
+}: {
+  activities: ActivityEntry[];
+  timeZone: string;
+}) {
   return (
-    <Card aria-labelledby="dash-activities" className="lg:col-span-4">
+    <Card aria-labelledby="dash-activities">
       <CardHeader
         title="Atividades recentes"
         titleId="dash-activities"
@@ -202,7 +256,8 @@ export function ActivitiesSection({ activities }: { activities: ActivityEntry[] 
                   <div className="min-w-0 flex-1">
                     <p className="text-body-sm font-medium">{a.title}</p>
                     <p className="text-caption text-fg-subtle">
-                      {a.category} · <time dateTime={a.startedAt}>{formatTime(a.startedAt)}</time>
+                      {a.category ?? KIND_LABELS[a.kind] ?? 'Atividade'} ·{' '}
+                      <time dateTime={a.startedAt}>{formatTime(a.startedAt, timeZone)}</time>
                     </p>
                   </div>
                   <span className="tabular shrink-0 text-caption text-fg-muted">
@@ -220,7 +275,7 @@ export function ActivitiesSection({ activities }: { activities: ActivityEntry[] 
 
 export function RecommendationsSection({ items }: { items: Recommendation[] }) {
   return (
-    <Card aria-labelledby="dash-recs" className="md:col-span-2 lg:col-span-4">
+    <Card aria-labelledby="dash-recs">
       <CardHeader
         title="Recomendações"
         titleId="dash-recs"

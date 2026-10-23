@@ -8,24 +8,10 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>LifeOS</title>
     <!--
-      Aplica o tema antes da primeira pintura para evitar "flash" de tema errado.
-      Mantém a mesma chave e os mesmos valores de src/lib/theme/theme.ts.
+      Aplica o tema antes da primeira pintura (evita "flash" de tema errado). É um arquivo à parte,
+      e não um script embutido, para que a Content-Security-Policy permita só scripts do próprio site.
     -->
-    <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem('lifeos:theme');
-          var pref = stored === 'light' || stored === 'dark' ? stored : 'system';
-          var dark =
-            pref === 'dark' ||
-            (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-          document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
-        } catch (e) {
-          document.documentElement.dataset.theme = 'light';
-        }
-      })();
-    </script>
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>

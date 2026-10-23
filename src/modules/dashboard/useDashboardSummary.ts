@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { errorMessage } from '@/lib/query/query-client';
 import { useDataSource } from '@/services/data-source/data-source-context';
+import { useSupabase } from '@/services/supabase/supabase-context';
 import type { DashboardSummary } from '@/types/domain';
 import { getDashboardRepository, isDashboardEmpty } from './data/dashboard-repository';
 
@@ -9,51 +11,25 @@ export type DashboardState =
   | { status: 'empty'; data: DashboardSummary }
   | { status: 'ready'; data: DashboardSummary };
 
-type Settled =
-  | { key: string; ok: true; data: DashboardSummary }
-  | { key: string; ok: false; message: string };
-
 /**
- * Carrega o resumo do dashboard a partir do repositório da fonte de dados ativa.
- * Estados explícitos: loading → (ready | empty | error). "retry" refaz a requisição.
- * Requisições obsoletas são canceladas (AbortController) e ignoradas.
+ * Resumo do dashboard (public.dashboard_summary). Está no cache compartilhado sob o domínio
+ * "dashboard": qualquer escrita em outro módulo o invalida, então o painel nunca mostra
+ * estatísticas velhas depois de uma edição ou exclusão.
  */
 export function useDashboardSummary(): DashboardState & { retry: () => void } {
   const { mode } = useDataSource();
-  const [attempt, setAttempt] = useState(0);
-  const [settled, setSettled] = useState<Settled | null>(null);
-  const key = `${mode}#${attempt}`;
-
-  useEffect(() => {
-    const controller = new AbortController();
-    getDashboardRepository(mode)
-      .getSummary(new Date(), controller.signal)
-      .then(
-        (data) => {
-          if (!controller.signal.aborted) setSettled({ key, ok: true, data });
-        },
-        (error: unknown) => {
-          if (controller.signal.aborted) return;
-          const message = error instanceof Error ? error.message : 'Erro desconhecido.';
-          setSettled({ key, ok: false, message });
-        },
-      );
-    return () => {
-      controller.abort();
-    };
-  }, [mode, key]);
-
-  const retry = useCallback(() => {
-    setAttempt((n) => n + 1);
-  }, []);
-
-  return useMemo(() => {
-    if (settled?.key !== key) return { status: 'loading', retry };
-    if (!settled.ok) return { status: 'error', message: settled.message, retry };
-    return {
-      status: isDashboardEmpty(settled.data) ? 'empty' : 'ready',
-      data: settled.data,
-      retry,
-    };
-  }, [settled, key, retry]);
+  const client = useSupabase();
+  const query = useQuery({
+    queryKey: ['dashboard', 'summary', mode],
+    queryFn: ({ signal }) => getDashboardRepository(mode, client).getSummary(new Date(), signal),
+    // Falhas simuladas (modo de inspeção) não devem ser repetidas.
+    ...(mode === 'supabase' ? {} : { retry: false }),
+  });
+  const retry = () => {
+    void query.refetch();
+  };
+  if (query.status === 'pending') return { status: 'loading', retry };
+  if (query.status === 'error')
+    return { status: 'error', message: errorMessage(query.error), retry };
+  return { status: isDashboardEmpty(query.data) ? 'empty' : 'ready', data: query.data, retry };
 }

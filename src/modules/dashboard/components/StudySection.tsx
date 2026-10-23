@@ -6,12 +6,22 @@ import { formatDuration } from '@/lib/date';
 import type { StudySummary } from '@/types/domain';
 import { SectionLink } from './SectionLink';
 
-export function StudySection({ studies }: { studies: StudySummary }) {
-  const hasData = studies.plannedMinutesToday > 0 || studies.actualMinutesLast7Days > 0;
+/**
+ * Estudos: realizado (do banco, pausas descontadas) ao lado do planejado (blocos de estudo
+ * de hoje no calendário). Os dois nunca se somam.
+ */
+export function StudySection({
+  studies,
+  plannedMinutesToday,
+}: {
+  studies: StudySummary;
+  plannedMinutesToday: number;
+}) {
+  const hasData = plannedMinutesToday > 0 || studies.actualMinutesLast7Days > 0;
   const maxSubject = Math.max(1, ...studies.topSubjectsLast7Days.map((s) => s.actualMinutes));
 
   return (
-    <Card aria-labelledby="dash-studies" className="lg:col-span-5">
+    <Card aria-labelledby="dash-studies">
       <CardHeader
         title="Estudos"
         titleId="dash-studies"
@@ -39,16 +49,20 @@ export function StudySection({ studies }: { studies: StudySummary }) {
                   {formatDuration(studies.actualMinutesToday)}
                 </span>
                 <span className="text-body-sm text-fg-subtle">
-                  de {formatDuration(studies.plannedMinutesToday)} planejados
+                  {plannedMinutesToday > 0
+                    ? `de ${formatDuration(plannedMinutesToday)} planejados`
+                    : 'sem blocos de estudo planejados hoje'}
                 </span>
               </p>
-              <ProgressBar
-                className="mt-3"
-                label="Estudo realizado em relação ao planejado hoje"
-                value={studies.actualMinutesToday}
-                max={studies.plannedMinutesToday}
-                valueText={`${formatDuration(studies.actualMinutesToday)} de ${formatDuration(studies.plannedMinutesToday)}`}
-              />
+              {plannedMinutesToday > 0 && (
+                <ProgressBar
+                  className="mt-3"
+                  label="Estudo realizado em relação ao planejado hoje"
+                  value={studies.actualMinutesToday}
+                  max={plannedMinutesToday}
+                  valueText={`${formatDuration(studies.actualMinutesToday)} de ${formatDuration(plannedMinutesToday)}`}
+                />
+              )}
             </div>
 
             <div>

@@ -1,3 +1,4 @@
+import { AccountPanel } from './AccountPanel';
 import { Brand } from './Brand';
 import { NavList } from './NavList';
 import { ThemeToggle } from './ThemeToggle';
@@ -11,7 +12,8 @@ export function Sidebar() {
       <nav aria-label="Principal" className="flex-1 overflow-y-auto px-3 pt-2 pb-6">
         <NavList />
       </nav>
-      <div className="border-t border-border px-5 py-4">
+      <div className="flex flex-col gap-3 border-t border-border px-4 py-4">
+        <AccountPanel />
         <ThemeToggle compact />
       </div>
     </aside>

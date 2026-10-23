@@ -12,11 +12,13 @@ import { getModule, type ModuleId } from '@/app/modules';
 interface QuickAction {
   label: string;
   module: ModuleId;
+  /** Destino dentro do módulo (padrão: página inicial do módulo). */
+  to?: string;
   icon: LucideIcon;
 }
 
 const ACTIONS: QuickAction[] = [
-  { label: 'Sessão de foco', module: 'studies', icon: BookOpen },
+  { label: 'Sessão de foco', module: 'studies', to: '/estudos/cronometro', icon: BookOpen },
   { label: 'Registrar atividade', module: 'activities', icon: Timer },
   { label: 'Nova tarefa', module: 'tasks', icon: CheckSquare },
   { label: 'Escrever no diário', module: 'diary', icon: NotebookPen },
@@ -32,7 +34,7 @@ export function QuickActions() {
       <h2 id="dash-quick" className="sr-only">
         Ações rápidas
       </h2>
-      <ul className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
         {ACTIONS.map((action) => {
           const mod = getModule(action.module);
           const available = mod.status === 'available';
@@ -40,7 +42,7 @@ export function QuickActions() {
           return (
             <li key={action.label}>
               <Link
-                to={mod.path}
+                to={action.to ?? mod.path}
                 className="group flex h-full min-h-16 items-center gap-3 rounded-lg border border-border bg-surface p-3 shadow-elev-1 transition-[border-color,box-shadow] hover:border-border-strong hover:shadow-elev-2 sm:p-4"
               >
                 <span

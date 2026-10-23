@@ -75,6 +75,7 @@ Escala do Tailwind (base 4 px). Convenções:
 
 - Padding de card: 20 px (`px-5`). Gap entre cards: 16 px (`gap-4`).
 - Gutter da página: 16 px (celular), 24 px (≥ 640), 40 px (≥ 1024). Largura máxima do conteúdo: 1200 px.
+- Grade do dashboard: 1 coluna (< 768), 2 colunas (768–1279) e 12 colunas só a partir de 1280 px (`xl`). Entre 1024 e 1279 a sidebar ocupa ~256 px e três cards lado a lado truncariam os títulos — verificado com capturas em 1024 px.
 
 ### Raios
 
@@ -97,15 +98,20 @@ Escala do Tailwind (base 4 px). Convenções:
 
 ## 3. Componentes
 
-| Componente                             | Arquivo                   | Notas                                                                                                              |
-| -------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `Button`, `buttonClasses`              | `ui/Button.tsx`           | Variantes `primary`, `secondary`, `ghost`, `danger`; `buttonClasses` estiliza `<Link>` sem aninhar botões em links |
-| `Card`, `CardHeader`, `CardBody`       | `ui/Card.tsx`             | `section` rotulada por `aria-labelledby`                                                                           |
-| `Badge`                                | `ui/Badge.tsx`            | Tons semânticos; nunca a única pista de significado                                                                |
-| `EmptyState`, `ErrorState`, `Skeleton` | `ui/States.tsx`           | Estados padronizados de dados                                                                                      |
-| `ProgressBar`                          | `ui/ProgressBar.tsx`      | `role="progressbar"` com `aria-valuetext` em unidades do domínio                                                   |
-| `SegmentedControl`                     | `ui/SegmentedControl.tsx` | Radio group acessível (setas)                                                                                      |
-| `PageHeader`                           | `layout/PageHeader.tsx`   | Título único `h1` por página                                                                                       |
+| Componente                             | Arquivo                                 | Notas                                                                                                                                        |
+| -------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`, `buttonClasses`              | `ui/Button.tsx`, `ui/button-classes.ts` | Variantes `primary`, `secondary`, `ghost`, `danger`; `buttonClasses` estiliza `<Link>` sem aninhar botões em links                           |
+| `Card`, `CardHeader`, `CardBody`       | `ui/Card.tsx`                           | `section` rotulada por `aria-labelledby`                                                                                                     |
+| `Badge`                                | `ui/Badge.tsx`                          | Tons semânticos; nunca a única pista de significado                                                                                          |
+| `EmptyState`, `ErrorState`, `Skeleton` | `ui/States.tsx`                         | Estados padronizados de dados                                                                                                                |
+| `ProgressBar`                          | `ui/ProgressBar.tsx`                    | `role="progressbar"` com `aria-valuetext` em unidades do domínio                                                                             |
+| `SegmentedControl`                     | `ui/SegmentedControl.tsx`               | Radio group acessível (setas)                                                                                                                |
+| `PageHeader`                           | `layout/PageHeader.tsx`                 | Título único `h1` por página                                                                                                                 |
+| `TextField`, `SelectField`             | `ui/Field.tsx`                          | Rótulo visível, dica e erro ligados por `aria-describedby`, `aria-invalid`, 44 px de altura; compatíveis com `register()` do React Hook Form |
+| `Notice`                               | `ui/Notice.tsx`                         | Aviso em linha (info/sucesso/alerta/erro); erro usa `role="alert"`, os demais `role="status"`                                                |
+| `AuthLayout`                           | `modules/auth/AuthLayout.tsx`           | Cartão central das telas públicas, com marca e seletor de tema; sem rolagem horizontal em 360 px                                             |
+| `AccountPanel`                         | `layout/AccountPanel.tsx`               | Identificação do usuário e "Sair" na sidebar e na gaveta                                                                                     |
+| `FullPageStatus`, `SessionLoading`     | `layout/FullPageStatus.tsx`             | Tela cheia para verificação de sessão e configuração ausente                                                                                 |
 
 ## 4. Regras de conteúdo
 
@@ -113,6 +119,9 @@ Escala do Tailwind (base 4 px). Convenções:
 - Nunca exibir números pessoais que não venham de registros. Dados fictícios levam o rótulo **"Dados fictícios"** e um aviso global.
 - Estados vazios explicam **o que aparecerá** e **de onde vem**.
 - Módulos não implementados dizem "Em desenvolvimento" e a fase prevista.
+- Bloco planejado cujo horário passou aparece esmaecido com o rótulo "Horário encerrado" — nunca riscado, porque riscar sugere "concluído" e o sistema não sabe disso (RN-02). O que aconteceu de fato vem de Atividades.
+- Erros mostram o que fazer a seguir e nunca o texto técnico do servidor; telas de conta não revelam se um e-mail está cadastrado.
+- Metas com progresso informado pelo usuário levam o rótulo **manual** (RN-10).
 - Cor nunca é a única forma de transmitir informação (prioridade tem texto para leitores de tela; badges têm rótulo).
 
 ## 5. Gráficos (Fase 6)

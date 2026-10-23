@@ -81,11 +81,22 @@
   --lo-warning-soft: #fcf1dc;
   --lo-danger: #b83a2e;
   --lo-danger-soft: #fbeae7;
+  --lo-danger-fg: #ffffff;
   --lo-info: #2f63a8;
   --lo-info-soft: #e8f0fa;
 
   --lo-focus: var(--pine-500);
   --lo-overlay: rgb(31 29 26 / 0.4);
+
+  /* Gráficos: paleta categórica em ordem fixa (validada para daltonismo, ver docs/metrics.md). */
+  --lo-chart-1: #2a78d6;
+  --lo-chart-2: #eb6834;
+  --lo-chart-3: #1baf7a;
+  --lo-chart-4: #eda100;
+  --lo-chart-5: #e87ba4;
+  --lo-chart-6: #6250d6;
+  --lo-chart-grid: var(--sand-200);
+  --lo-chart-axis: #6f6a63;
 
   --shadow-color: 30 25 15;
   --elev-1: 0 1px 2px rgb(var(--shadow-color) / 0.05), 0 1px 1px rgb(var(--shadow-color) / 0.03);
@@ -129,11 +140,22 @@
   --lo-warning-soft: rgb(229 176 79 / 0.13);
   --lo-danger: #f07a6c;
   --lo-danger-soft: rgb(240 122 108 / 0.13);
+  /* Texto sobre o vermelho claro do tema escuro: escuro (branco teria contraste 2,7:1). */
+  --lo-danger-fg: var(--ink-950);
   --lo-info: #7aa9e8;
   --lo-info-soft: rgb(122 169 232 / 0.13);
 
   --lo-focus: var(--pine-300);
   --lo-overlay: rgb(0 0 0 / 0.6);
+
+  --lo-chart-1: #3987e5;
+  --lo-chart-2: #d95926;
+  --lo-chart-3: #199e70;
+  --lo-chart-4: #c98500;
+  --lo-chart-5: #d55181;
+  --lo-chart-6: #9085e9;
+  --lo-chart-grid: #262c2d;
+  --lo-chart-axis: var(--ink-400);
 
   /* No escuro, elevação vem mais de bordas/superfícies do que de sombra. */
   --shadow-color: 0 0 0;
@@ -175,6 +197,7 @@
   --color-warning-soft: var(--lo-warning-soft);
   --color-danger: var(--lo-danger);
   --color-danger-soft: var(--lo-danger-soft);
+  --color-danger-fg: var(--lo-danger-fg);
   --color-info: var(--lo-info);
   --color-info-soft: var(--lo-info-soft);
   --color-focus: var(--lo-focus);
@@ -268,6 +291,19 @@
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility animate-fade-in {
+  animation: fade-in 160ms ease-out both;
+}
+
 @utility animate-fade-up {
   animation: fade-up 240ms var(--ease-out-soft) both;
 }
@@ -281,4 +317,125 @@
   );
   background-size: 400% 100%;
   animation: shimmer 1.6s ease infinite;
+}
+
+/* ---------- Calendário (FullCalendar) com os tokens do LifeOS ---------- */
+.lo-calendar {
+  --fc-border-color: var(--lo-border);
+  --fc-page-bg-color: var(--lo-surface);
+  --fc-neutral-bg-color: var(--lo-surface-muted);
+  --fc-today-bg-color: color-mix(in srgb, var(--lo-primary) 7%, transparent);
+  --fc-now-indicator-color: var(--lo-danger);
+  --fc-highlight-color: color-mix(in srgb, var(--lo-primary) 15%, transparent);
+  --fc-button-bg-color: var(--lo-surface-raised);
+  --fc-button-border-color: var(--lo-border-strong);
+  --fc-button-text-color: var(--lo-fg);
+  --fc-button-hover-bg-color: var(--lo-surface-muted);
+  --fc-button-hover-border-color: var(--lo-border-strong);
+  --fc-button-active-bg-color: var(--lo-primary-soft);
+  --fc-button-active-border-color: var(--lo-primary);
+  --fc-event-border-color: transparent;
+  font-size: var(--text-body-sm);
+}
+
+.lo-calendar .fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.lo-calendar .fc .fc-toolbar-title {
+  font-size: var(--text-title-sm);
+  font-weight: 600;
+}
+
+.lo-calendar .fc .fc-toolbar-title::first-letter {
+  text-transform: uppercase;
+}
+
+.lo-calendar .fc .fc-button {
+  min-height: 2.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+}
+
+.lo-calendar .fc .fc-button-primary:not(:disabled).fc-button-active {
+  color: var(--lo-primary-soft-fg);
+}
+
+.lo-calendar .fc .fc-button:focus-visible {
+  outline: 2px solid var(--lo-focus);
+  outline-offset: 2px;
+}
+
+.lo-calendar .fc-event {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0 2px;
+}
+
+/* Cada origem tem cor E forma próprias (não só cor): planejado sólido, realizado listrado,
+   prazos e revisões com borda à esquerda. */
+.lo-ev-event,
+.lo-ev-event-dot {
+  background-color: var(--lo-primary);
+  color: var(--lo-primary-fg);
+}
+.lo-ev-block,
+.lo-ev-block-dot {
+  background-color: var(--lo-accent-soft);
+  color: var(--lo-accent-soft-fg);
+}
+.lo-ev-block {
+  border: 1px dashed var(--lo-accent) !important;
+}
+.lo-ev-task,
+.lo-ev-task-dot {
+  background-color: var(--lo-danger-soft);
+  color: var(--lo-danger);
+}
+.lo-ev-task {
+  border-left: 3px solid var(--lo-danger) !important;
+}
+.lo-ev-review,
+.lo-ev-review-dot {
+  background-color: var(--lo-info-soft);
+  color: var(--lo-info);
+}
+.lo-ev-review {
+  border-left: 3px solid var(--lo-info) !important;
+}
+.lo-ev-done,
+.lo-ev-done-dot {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--lo-success-soft) 0 6px,
+    color-mix(in srgb, var(--lo-success) 18%, transparent) 6px 12px
+  );
+  color: var(--lo-success);
+}
+/* Marcadores da legenda: cor sólida de cada origem. */
+.lo-ev-event-dot {
+  background: var(--lo-primary);
+}
+.lo-ev-block-dot {
+  background: var(--lo-accent);
+}
+.lo-ev-task-dot {
+  background: var(--lo-danger);
+}
+.lo-ev-review-dot {
+  background: var(--lo-info);
+}
+.lo-ev-done-dot {
+  background: var(--lo-success);
+}
+
+.lo-calendar .fc-event .fc-event-main {
+  color: inherit;
+}
+
+/* Item do calendário em conflito: contorno tracejado vermelho + ícone no título (não só cor). */
+.lo-ev-conflict {
+  outline: 2px dashed var(--lo-danger);
+  outline-offset: 1px;
 }

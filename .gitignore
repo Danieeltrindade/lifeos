@@ -8,3 +8,11 @@ coverage
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# Testes ponta a ponta e pilha local de testes
+test-results
+playwright-report
+dist-e2e
+supabase/stack/.bin
+supabase/stack/.state
+supabase/.temp

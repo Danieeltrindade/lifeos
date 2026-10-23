@@ -2,30 +2,32 @@ import { z } from 'zod';
 import { readStored, writeStored } from '@/lib/storage';
 
 /**
- * Fonte de dados enquanto o backend (Supabase) não está integrado.
+ * Fonte de dados das telas de leitura.
  *
- *  - "none":  padrão. Não há backend; a interface mostra os estados vazios reais.
- *  - "demo":  dados fictícios para avaliar o design. Sempre sinalizados na interface.
- *  - "simulate-error" / "simulate-slow": utilitários para inspecionar estados de erro e carregamento.
+ *  - "supabase": padrão e ÚNICA opção em produção — dados reais do usuário autenticado.
+ *  - "demo": dados fictícios para avaliar o design. Sempre sinalizados na interface.
+ *  - "simulate-error" / "simulate-slow": inspecionar estados de erro e carregamento.
  *
- * Na Fase 2 o modo "none" será substituído pelo repositório Supabase, e os demais
- * continuarão disponíveis apenas em desenvolvimento.
+ * Os três últimos são ferramentas de desenvolvimento: só existem quando o app roda com
+ * `npm run dev` (import.meta.env.DEV). No build de produção, qualquer valor salvo é ignorado.
  */
 export const DATA_SOURCE_STORAGE_KEY = 'lifeos:data-source';
 
-export const dataSourceSchema = z.enum(['none', 'demo', 'simulate-error', 'simulate-slow']);
+export const dataSourceSchema = z.enum(['supabase', 'demo', 'simulate-error', 'simulate-slow']);
 export type DataSourceMode = z.infer<typeof dataSourceSchema>;
 
-export const DEFAULT_DATA_SOURCE: DataSourceMode = 'none';
+export const DEFAULT_DATA_SOURCE: DataSourceMode = 'supabase';
+
+export const DEV_TOOLS_ENABLED = import.meta.env.DEV;
 
 export const DATA_SOURCE_LABELS: Record<DataSourceMode, { label: string; description: string }> = {
-  none: {
-    label: 'Sem backend (padrão)',
-    description: 'Mostra a interface como ela é hoje: sem dados, até a integração com o Supabase.',
+  supabase: {
+    label: 'Seus dados (Supabase)',
+    description: 'Dados reais da sua conta, protegidos por RLS no banco.',
   },
   demo: {
     label: 'Dados de demonstração',
-    description: 'Preenche o dashboard com exemplos fictícios, sinalizados, para avaliar o design.',
+    description: 'Exemplos fictícios, sinalizados, para avaliar o design. Nada é gravado.',
   },
   'simulate-error': {
     label: 'Simular erro',
@@ -38,6 +40,7 @@ export const DATA_SOURCE_LABELS: Record<DataSourceMode, { label: string; descrip
 };
 
 export function readDataSource(): DataSourceMode {
+  if (!DEV_TOOLS_ENABLED) return DEFAULT_DATA_SOURCE;
   return readStored(DATA_SOURCE_STORAGE_KEY, dataSourceSchema, DEFAULT_DATA_SOURCE);
 }
 

@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router';
 import { MODULES } from '@/app/modules';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { cn } from '@/lib/cn';
+import { AccountPanel } from './AccountPanel';
 import { Brand } from './Brand';
 import { NavList } from './NavList';
 import { ThemeToggle } from './ThemeToggle';
@@ -141,9 +142,12 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
         <nav aria-label="Principal" className="flex-1 overflow-y-auto px-3 pt-2 pb-6">
           <NavList onNavigate={onClose} />
         </nav>
-        <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <span className="text-body-sm text-fg-muted">Tema</span>
-          <ThemeToggle compact />
+        <div className="flex flex-col gap-3 border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <AccountPanel />
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-body-sm text-fg-muted">Tema</span>
+            <ThemeToggle compact />
+          </div>
         </div>
       </div>
     </div>

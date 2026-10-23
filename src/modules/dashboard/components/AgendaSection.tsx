@@ -14,12 +14,26 @@ const KIND: Record<AgendaItemKind, { label: string; tone: BadgeTone; bar: string
   habit: { label: 'Hábito', tone: 'accent', bar: 'bg-accent' },
 };
 
-export function AgendaSection({ items, now }: { items: AgendaItem[]; now: Date }) {
-  const sorted = [...items].sort((a, b) => a.plannedStart.localeCompare(b.plannedStart));
+export function AgendaSection({
+  items,
+  now,
+  timeZone,
+}: {
+  items: AgendaItem[];
+  now: Date;
+  /** Fuso do perfil: horários nunca usam o fuso implícito do navegador. */
+  timeZone: string;
+}) {
+  // Dia inteiro primeiro; depois por início (instantes comparados como datas, não como texto).
+  const sorted = [...items].sort(
+    (a, b) =>
+      Number(b.allDay) - Number(a.allDay) ||
+      new Date(a.plannedStart).getTime() - new Date(b.plannedStart).getTime(),
+  );
   const t = now.getTime();
 
   return (
-    <Card aria-labelledby="dash-agenda" className="md:col-span-2 lg:col-span-7">
+    <Card aria-labelledby="dash-agenda" className="md:col-span-2">
       <CardHeader
         title="Agenda de hoje"
         titleId="dash-agenda"
@@ -32,15 +46,15 @@ export function AgendaSection({ items, now }: { items: AgendaItem[]; now: Date }
           <EmptyState
             compact
             title="Nada planejado para hoje"
-            description="Blocos de tempo criados no Calendário aparecerão aqui."
+            description="Compromissos e blocos criados no Calendário (inclusive os que se repetem) aparecem aqui."
           />
         ) : (
           <ol className="flex flex-col">
             {sorted.map((item) => {
               const start = new Date(item.plannedStart).getTime();
               const end = new Date(item.plannedEnd).getTime();
-              const isNow = t >= start && t < end;
-              const isPast = t >= end;
+              const isNow = !item.allDay && t >= start && t < end;
+              const isPast = !item.allDay && t >= end;
               const kind = KIND[item.kind];
               return (
                 <li
@@ -51,31 +65,42 @@ export function AgendaSection({ items, now }: { items: AgendaItem[]; now: Date }
                   )}
                 >
                   <div className="w-12 shrink-0 pt-0.5 text-right tabular text-body-sm">
-                    <time
-                      dateTime={item.plannedStart}
-                      className={cn(isPast ? 'text-fg-subtle' : 'text-fg')}
-                    >
-                      {formatTime(item.plannedStart)}
-                    </time>
-                    <time dateTime={item.plannedEnd} className="block text-caption text-fg-subtle">
-                      {formatTime(item.plannedEnd)}
-                    </time>
+                    {item.allDay ? (
+                      <span className="text-caption font-medium text-fg-muted">Dia todo</span>
+                    ) : (
+                      <>
+                        <time
+                          dateTime={item.plannedStart}
+                          className={cn(isPast ? 'text-fg-subtle' : 'text-fg')}
+                        >
+                          {formatTime(item.plannedStart, timeZone)}
+                        </time>
+                        <time
+                          dateTime={item.plannedEnd}
+                          className="block text-caption text-fg-subtle"
+                        >
+                          {formatTime(item.plannedEnd, timeZone)}
+                        </time>
+                      </>
+                    )}
                   </div>
                   <span
                     aria-hidden="true"
                     className={cn('w-0.5 shrink-0 rounded-full', kind.bar, isPast && 'opacity-40')}
                   />
                   <div className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                    {/* Horário passado ≠ concluído: o que aconteceu de fato vive em Atividades (RN-02). */}
                     <p
                       className={cn(
                         'min-w-0 text-body-sm font-medium',
-                        isPast && 'text-fg-subtle line-through decoration-border-strong',
+                        isPast ? 'text-fg-subtle' : 'text-fg',
                       )}
                     >
                       {item.title}
                     </p>
                     <div className="flex items-center gap-1.5">
                       {isNow && <Badge tone="success">Agora</Badge>}
+                      {isPast && <Badge>Horário encerrado</Badge>}
                       <Badge tone={kind.tone}>{kind.label}</Badge>
                     </div>
                   </div>

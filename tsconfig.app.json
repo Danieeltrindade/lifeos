@@ -21,6 +21,7 @@
     "exactOptionalPropertyTypes": true,
     "noImplicitOverride": true,
     "noUncheckedSideEffectImports": true,
+    "resolveJsonModule": true,
 
     "paths": {
       "@/*": ["./src/*"]
