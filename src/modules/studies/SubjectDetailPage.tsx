@@ -173,6 +173,7 @@ function SubjectDetail({ subject }: { subject: Subject }) {
             <span
               aria-hidden="true"
               className="size-3.5 rounded-full"
+              data-swatch=""
               style={{ backgroundColor: subject.color ?? 'var(--lo-fg-subtle)' }}
             />
             {subject.name}

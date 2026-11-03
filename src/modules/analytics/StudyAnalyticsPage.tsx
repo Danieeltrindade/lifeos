@@ -184,6 +184,7 @@ export function StudyAnalyticsPage() {
                       <li key={x.subjectId ?? 'none'} className="inline-flex items-center gap-1.5">
                         <span
                           className="size-2.5 rounded-full"
+                          data-swatch=""
                           style={{ background: subjectColor(x.subjectId) }}
                         />
                         {subjectName(x.subjectId)}

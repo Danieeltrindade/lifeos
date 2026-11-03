@@ -75,7 +75,7 @@ export function TaskList({
                 className={cn(
                   'grid size-5 place-items-center rounded-full border-2 transition-[background-color,border-color,color] duration-150',
                   done
-                    ? 'border-success bg-success text-bg'
+                    ? 'border-complete bg-complete text-bg'
                     : 'border-border-strong text-transparent group-hover/check:border-primary group-hover/check:text-primary',
                 )}
               >

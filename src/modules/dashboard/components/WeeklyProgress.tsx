@@ -113,7 +113,7 @@ function TargetRing({ done, target }: { done: number; target: number }) {
           strokeDashoffset={c * (1 - shown / 100)}
           className={cn(
             'transition-[stroke-dashoffset] duration-700 ease-out-soft',
-            reached ? 'stroke-success' : 'stroke-primary',
+            reached ? 'stroke-complete' : 'stroke-primary',
           )}
           style={{
             filter: 'drop-shadow(0 0 6px color-mix(in srgb, currentColor 40%, transparent))',

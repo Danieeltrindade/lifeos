@@ -159,6 +159,46 @@ describe.runIf(configured)('Supabase real: autenticação, persistência e isola
       .update({ week_starts_on: before?.week_starts_on ?? 1 })
       .eq('id', a.userId);
   });
+
+  it('paleta de cores: cada conta tem a sua e B não altera a de A', async () => {
+    const { data: original } = await a.client.from('profiles').select('theme_color').single();
+    const { data: originalB } = await b.client.from('profiles').select('theme_color').single();
+    const saved = await a.client
+      .from('profiles')
+      .update({ theme_color: 'nebula' })
+      .eq('id', a.userId)
+      .select('theme_color')
+      .single();
+    expect(saved.error).toBeNull();
+    expect(saved.data?.theme_color).toBe('nebula');
+
+    // Valor fora da lista é recusado pelo banco (CHECK).
+    const invalid = await a.client
+      .from('profiles')
+      .update({ theme_color: 'neon' })
+      .eq('id', a.userId);
+    expect(invalid.error?.code).toBe('23514');
+
+    // B tenta gravar na linha de A: o RLS filtra (nenhuma linha afetada).
+    const attack = await b.client
+      .from('profiles')
+      .update({ theme_color: 'gold' })
+      .eq('id', a.userId)
+      .select('id');
+    expect(attack.data ?? []).toHaveLength(0);
+
+    // Nova sessão de A (recarregar / entrar de novo) lê a paleta salva; B segue com a dele.
+    const again = await newClientAs(a);
+    const { data: reread } = await again.from('profiles').select('theme_color').single();
+    expect(reread?.theme_color).toBe('nebula');
+    const { data: bNow } = await b.client.from('profiles').select('theme_color').single();
+    expect(bNow?.theme_color).toBe(originalB?.theme_color);
+
+    await a.client
+      .from('profiles')
+      .update({ theme_color: original?.theme_color ?? 'ocean' })
+      .eq('id', a.userId);
+  });
 });
 
 /** Um segundo cliente com a mesma sessão de A (simula outra aba/recarga). */

@@ -35,7 +35,8 @@ migrations em ordem e roda `supabase/tests/database/*.test.sql`:
 | `05_phase3_rules`     | 86        | tarefas, projetos, cronômetro, revisões, metas, hábitos, diário, calendário                            |
 | `06_phase4_rules`     | 62        | estatísticas, recomendações (ciclo de vida, deduplicação, espera), planejamento, revisão semanal       |
 | `07_phase5_integrity` | 38        | monta um grafo completo de dados e exclui cada tipo de registro, conferindo o que fica e o que some    |
-| **Total**             | **524**   |                                                                                                        |
+| `08_theme_color`      | 11        | paleta de cores por conta: padrão `ocean`, lista fechada, independente do modo, isolada pelo RLS       |
+| **Total**             | **535**   |                                                                                                        |
 
 Requisitos: `psql`, PostgreSQL 15+ e a extensão pgTAP (`apt install postgresql-16-pgtap`).
 Variáveis: `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`. No fluxo com Docker:

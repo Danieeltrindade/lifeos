@@ -12,6 +12,29 @@ Fonte: `src/styles/index.css` (tokens) e `src/components/ui/` (primitivos).
 - Profundidade discreta: bordas finas + sombras suaves no claro; superfícies em camadas no escuro (sombras quase não aparecem em fundos escuros).
 - Um único gradiente sutil ("hero glow") no topo do dashboard. Nenhum outro elemento decorativo.
 
+**Temas de cores (novembro/2026).** O usuário escolhe uma de 10 paletas em Configurações →
+Aparência → Temas de cores: Ocean (turquesa, padrão), Nebula (roxo), Forest (verde), Ember
+(laranja), Midnight (azul), Rose (rosa), Crimson (vermelho), Amethyst (índigo), Gold (dourado) e
+Arctic (azul-gelo). A paleta (`data-accent` no `<html>`) é independente do modo (`data-theme`):
+são 20 combinações. As cores ficam em `src/styles/themes.css`, GERADO por
+`scripts/generate-themes.mjs` (`npm run themes`) a partir dos valores do Ocean: a estrutura de
+camadas e as luminosidades são as mesmas, os neutros recebem a matiz do tema e a primária, o
+hover, o texto sobre a primária, o fundo suave, o foco, o brilho, o fundo da página, a abertura
+do dashboard, o logo e a série única dos gráficos acompanham a paleta. NÃO mudam com a paleta:
+sucesso, atenção, erro, informação, os destaques secundários (roxo/laranja/amarelo dos
+indicadores) e a paleta categórica dos gráficos — elas carregam significado. O gerador recusa
+qualquer par abaixo de WCAG AA e `src/lib/theme/themes-css.test.ts` confere de novo o CSS gerado.
+**Mono** (11ª paleta) é definido à mão em `buildMono()`, não derivado do Ocean: preto, grafite
+e branco (escuro: fundo `#000000`, cartão `#0c0c0c`, primária `#ffffff`; claro: fundo `#f7f7f7`,
+cartão `#ffffff`, primária `#111111`). Além da primária, ele troca por cinzas o que nas outras
+paletas é cor decorativa: destaques dos indicadores, "informação", a paleta categórica dos
+gráficos (6 intensidades distintas) e `--lo-complete` (concluído). Cores de matérias e
+categorias escolhidas pelo usuário aparecem em escala de cinza (`[data-swatch]`), sem mudar o
+valor salvo. A assinatura visual é inverter: o item ativo da navegação fica branco sobre preto
+(preto sobre branco no claro). Sucesso, atenção e erro continuam coloridos para estados que
+pedem atenção. A escolha é salva em `profiles.theme_color` (migration `20261103120000_theme_color.sql`) e
+cacheada em `localStorage` (`lifeos:accent`) para ser aplicada antes da primeira pintura.
+
 **Redesign de novembro/2026 (identidade azul-petróleo).** Substitui os valores do redesign de
 outubro descrito abaixo. O escuro passa a ser azul-petróleo: barra lateral `#071013` < fundo
 `#0a1418` < cartão `#0f1c21` < superfície interna `#13252b` < elevada `#182d34`, com bordas

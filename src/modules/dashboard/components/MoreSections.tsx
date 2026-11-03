@@ -26,12 +26,12 @@ export function HabitsTodaySection({ habits }: { habits: HabitToday[] }) {
               key={h.id}
               className={
                 h.done
-                  ? 'flex min-h-10 items-center gap-2.5 rounded-md border border-success/25 bg-success-soft px-3 text-body-sm'
+                  ? 'flex min-h-10 items-center gap-2.5 rounded-md border border-complete/25 bg-complete-soft px-3 text-body-sm'
                   : 'flex min-h-10 items-center gap-2.5 rounded-md border border-border bg-surface-muted/50 px-3 text-body-sm'
               }
             >
               {h.done ? (
-                <CheckCircle2 aria-hidden="true" className="size-4 shrink-0 text-success" />
+                <CheckCircle2 aria-hidden="true" className="size-4 shrink-0 text-complete" />
               ) : (
                 <Circle aria-hidden="true" className="size-4 shrink-0 text-fg-subtle" />
               )}

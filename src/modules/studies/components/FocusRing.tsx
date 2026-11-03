@@ -47,7 +47,7 @@ export function FocusRing({
           strokeDashoffset={c * (1 - f)}
           className={cn(
             'transition-[stroke-dashoffset] duration-1000 ease-linear',
-            tone === 'success' ? 'stroke-success text-success' : 'stroke-primary text-primary',
+            tone === 'success' ? 'stroke-complete text-complete' : 'stroke-primary text-primary',
             dimmed && 'opacity-40',
           )}
           style={{

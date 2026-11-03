@@ -60,8 +60,13 @@ As migrations ficam em `supabase/migrations/` e são aplicadas **em ordem de nom
 | `20261022120000_integration_recommendations.sql` | Integração entre módulos e recomendações (Fase 4)         |
 | `20261022120100_analytics.sql`                   | Estatísticas, planejamento e exportação v3 (Fase 4)       |
 | `20261023120000_phase5_integrity.sql`            | Correção de integridade nas exclusões (Fase 5)            |
+| `20261103120000_theme_color.sql`                 | Paleta de cores por conta (`profiles.theme_color`)        |
+| `20261103130000_theme_color_mono.sql`            | 11ª paleta: Mono (preto e branco)                         |
 
-São **15 arquivos**. Aplique sempre todos, na ordem.
+São **17 arquivos**. Aplique sempre todos, na ordem.
+
+> Se o seu projeto já tinha as 15 primeiras, aplique só as novas (`npx supabase db push`). Enquanto
+> ela não for aplicada, o LifeOS continua funcionando: a paleta escolhida vale só no navegador.
 
 ### Opção A — Supabase CLI (recomendada: registra o histórico de migrations)
 
@@ -84,7 +89,7 @@ vez. Esse caminho não registra o histórico; se depois você passar a usar o CL
 migrations como aplicadas antes do primeiro `db push`:
 
 ```bash
-npx --yes supabase@2 migration repair --status applied 20261020190000 20261020190100 20261020190200 20261020190300 20261020190400 20261020190500 20261020190600 20261021120000 20261021120100 20261021120200 20261021120300 20261021120400 20261022120000 20261022120100 20261023120000
+npx --yes supabase@2 migration repair --status applied 20261020190000 20261020190100 20261020190200 20261020190300 20261020190400 20261020190500 20261020190600 20261021120000 20261021120100 20261021120200 20261021120300 20261021120400 20261022120000 20261022120100 20261023120000 20261103120000 20261103130000
 ```
 
 ### Validar antes de aplicar em produção

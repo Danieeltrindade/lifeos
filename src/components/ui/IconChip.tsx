@@ -2,7 +2,15 @@ import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 
 export type IconTone =
-  'primary' | 'violet' | 'orange' | 'yellow' | 'success' | 'info' | 'danger' | 'neutral';
+  | 'primary'
+  | 'violet'
+  | 'orange'
+  | 'yellow'
+  | 'success'
+  | 'complete'
+  | 'info'
+  | 'danger'
+  | 'neutral';
 
 const tones: Record<IconTone, string> = {
   primary: 'bg-primary-soft text-primary ring-primary/25',
@@ -10,6 +18,7 @@ const tones: Record<IconTone, string> = {
   orange: 'bg-orange-soft text-orange ring-orange/25',
   yellow: 'bg-yellow-soft text-yellow ring-yellow/25',
   success: 'bg-success-soft text-success ring-success/25',
+  complete: 'bg-complete-soft text-complete ring-complete/25',
   info: 'bg-info-soft text-info ring-info/25',
   danger: 'bg-danger-soft text-danger ring-danger/25',
   neutral: 'bg-surface-muted text-fg-muted ring-border',
