@@ -969,6 +969,7 @@ export type Database = {
           timezone: string;
           week_starts_on: number;
           theme_preference: string;
+          theme_color: string;
           email_notifications: boolean;
           created_at: string;
           updated_at: string;
@@ -979,6 +980,7 @@ export type Database = {
           timezone?: string;
           week_starts_on?: number;
           theme_preference?: string;
+          theme_color?: string;
           email_notifications?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -989,6 +991,7 @@ export type Database = {
           timezone?: string;
           week_starts_on?: number;
           theme_preference?: string;
+          theme_color?: string;
           email_notifications?: boolean;
           created_at?: string;
           updated_at?: string;

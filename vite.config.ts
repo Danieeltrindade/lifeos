@@ -62,7 +62,8 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup.ts'],
-    css: false,
+    // CSS desligado nos testes, exceto as paletas (lidas como texto por themes-css.test.ts).
+    css: { include: [/themes\.css/] },
     restoreMocks: true,
     // Coerente com asyncUtilTimeout (src/tests/setup.ts): testes de fluxo fazem várias esperas.
     testTimeout: 20_000,

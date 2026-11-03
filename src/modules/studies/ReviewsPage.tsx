@@ -95,6 +95,7 @@ export function ReviewsPage() {
                           <span
                             aria-hidden="true"
                             className="size-2.5 shrink-0 rounded-full"
+                            data-swatch=""
                             style={{ backgroundColor: subject?.color ?? 'var(--lo-fg-subtle)' }}
                           />
                           <div className="min-w-0 flex-1">

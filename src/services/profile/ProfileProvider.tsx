@@ -91,13 +91,15 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * Mantém o tema do dispositivo e o do perfil em acordo:
- *  - ao carregar o perfil, a preferência salva na conta é aplicada neste navegador;
+ * Mantém o tema do dispositivo e o do perfil em acordo — modo (claro/escuro/sistema) e paleta
+ * de cores, cada um por conta própria:
+ *  - ao carregar o perfil, as preferências salvas na conta são aplicadas neste navegador
+ *    (assim a conta B nunca herda a paleta da conta A no mesmo computador);
  *  - depois disso, uma mudança feita pelo usuário é gravada no perfil.
  * O localStorage continua como cache para aplicar o tema antes da primeira pintura.
  */
 function ThemeProfileSync({ value }: { value: ProfileContextValue }) {
-  const { preference, setPreference } = useTheme();
+  const { preference, setPreference, palette, setPalette } = useTheme();
   const appliedFor = useRef<string | null>(null);
   const profile = value.state.status === 'ready' ? value.state.profile : null;
   const { update } = value;
@@ -110,12 +112,17 @@ function ThemeProfileSync({ value }: { value: ProfileContextValue }) {
     if (appliedFor.current !== profile.id) {
       appliedFor.current = profile.id;
       if (profile.themePreference !== preference) setPreference(profile.themePreference);
+      // null = banco sem a coluna da paleta: vale a escolha deste navegador.
+      if (profile.themeColor !== null && profile.themeColor !== palette) {
+        setPalette(profile.themeColor);
+      }
       return;
     }
-    if (preference !== profile.themePreference) {
-      void update({ themePreference: preference });
-    }
-  }, [profile, preference, setPreference, update, value.state.status]);
+    const patch: ProfilePatch = {};
+    if (preference !== profile.themePreference) patch.themePreference = preference;
+    if (profile.themeColor !== null && palette !== profile.themeColor) patch.themeColor = palette;
+    if (Object.keys(patch).length > 0) void update(patch);
+  }, [profile, preference, setPreference, palette, setPalette, update, value.state.status]);
 
   return null;
 }

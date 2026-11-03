@@ -129,6 +129,7 @@ export function EventDetail({
             <span
               aria-hidden="true"
               className="size-2 rounded-full"
+              data-swatch=""
               style={{ background: category.color ?? 'var(--lo-fg-subtle)' }}
             />
             {category.name}

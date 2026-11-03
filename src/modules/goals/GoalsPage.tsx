@@ -203,7 +203,7 @@ export function GoalsPage() {
                         <span
                           className={cn(
                             'tabular font-semibold',
-                            (ratio ?? 0) >= 1 ? 'text-success' : 'text-primary',
+                            (ratio ?? 0) >= 1 ? 'text-complete' : 'text-primary',
                           )}
                         >
                           {Math.round((ratio ?? 0) * 100)}%

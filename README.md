@@ -113,7 +113,7 @@ Resumo; tudo em [`docs/testing.md`](docs/testing.md).
 | Camada          | Resultado na entrega da Fase 5                                                                             |
 | --------------- | ---------------------------------------------------------------------------------------------------------- |
 | Unidade e telas | 362 testes (Linux e Windows)                                                                               |
-| Banco (pgTAP)   | 524 asserções em banco limpo                                                                               |
+| Banco (pgTAP)   | 535 asserções em banco limpo                                                                               |
 | Integração      | 45 testes contra Auth/PostgREST/PostgreSQL reais, duas contas                                              |
 | Ponta a ponta   | 25 testes no build de produção sob a CSP real: jornada de 12 passos, axe em 25 telas, 6 larguras × 2 temas |
 | Dependências    | `npm audit`: 0 vulnerabilidades                                                                            |

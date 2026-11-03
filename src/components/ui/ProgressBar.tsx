@@ -34,7 +34,7 @@ export function ProgressBar({
           tone === 'primary'
             ? 'bg-linear-to-r from-primary/60 to-primary'
             : tone === 'success'
-              ? 'bg-linear-to-r from-success/60 to-success'
+              ? 'bg-linear-to-r from-complete/60 to-complete'
               : 'bg-accent',
         )}
         style={{ width: `${pct}%` }}

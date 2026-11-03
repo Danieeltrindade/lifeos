@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "lint": "eslint .",
+    "themes": "node scripts/generate-themes.mjs && prettier --write src/styles/themes.css",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",

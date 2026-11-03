@@ -124,6 +124,7 @@ export function SubjectsPage() {
                         <span
                           aria-hidden="true"
                           className="mt-1.5 size-3 shrink-0 rounded-full"
+                          data-swatch=""
                           style={{ backgroundColor: s.color ?? 'var(--lo-fg-subtle)' }}
                         />
                         <div className="min-w-0 flex-1">

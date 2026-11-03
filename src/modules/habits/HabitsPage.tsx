@@ -296,10 +296,10 @@ function TodayRow({
     <li
       className={cn(
         'flex flex-wrap items-center gap-3 rounded-lg border p-3 transition-colors',
-        met ? 'border-success/35 bg-success-soft/50' : 'border-border bg-surface-muted/40',
+        met ? 'border-complete/35 bg-complete-soft/50' : 'border-border bg-surface-muted/40',
       )}
     >
-      <IconChip tone={met ? 'success' : 'neutral'} size="md" className="rounded-full">
+      <IconChip tone={met ? 'complete' : 'neutral'} size="md" className="rounded-full">
         {met ? <CheckCircle2 /> : <Circle />}
       </IconChip>
       <div className="min-w-[9rem] flex-1">
@@ -375,7 +375,8 @@ function TodayRow({
 }
 
 const STATE_STYLES: Record<DayState, string> = {
-  met: 'bg-primary/75 text-primary-fg shadow-[0_0_8px_-2px_var(--lo-primary)]',
+  // Cumprido é estado semântico ("concluído"): verde em todas as paletas, branco/preto no Mono.
+  met: 'bg-complete/65 text-bg shadow-[0_0_8px_-3px_var(--lo-complete)]',
   partial: 'bg-warning-soft text-warning ring-1 ring-warning/40',
   missed: 'bg-danger-soft text-danger',
   not_eligible: 'bg-transparent text-fg-disabled ring-1 ring-border ring-inset',

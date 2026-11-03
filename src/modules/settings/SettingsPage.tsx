@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { cn } from '@/lib/cn';
+import { PALETTES } from '@/lib/theme/palettes';
 import { useTheme } from '@/lib/theme/theme-context';
 import {
   DATA_SOURCE_LABELS,
@@ -14,10 +15,11 @@ import {
 } from '@/services/data-source/data-source';
 import { useDataSource } from '@/services/data-source/data-source-context';
 import { AccountSection } from './components/AccountSection';
+import { PalettePicker } from './components/PalettePicker';
 import { ProfileSection } from './components/ProfileSection';
 
 export function SettingsPage() {
-  const { resolved, preference } = useTheme();
+  const { resolved, preference, palette } = useTheme();
 
   return (
     <div className="animate-fade-up">
@@ -38,16 +40,30 @@ export function SettingsPage() {
               titleId="settings-appearance"
               icon={<Palette className="size-4" />}
             />
-            <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-medium">Tema</p>
-                <p className="text-body-sm text-fg-subtle">
-                  {preference === 'system'
-                    ? `Seguindo o sistema operacional (atualmente ${resolved === 'dark' ? 'escuro' : 'claro'}).`
-                    : 'Salvo na sua conta e aplicado neste navegador.'}
-                </p>
+            <CardBody className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-medium">Modo</p>
+                  <p className="text-body-sm text-fg-subtle">
+                    {preference === 'system'
+                      ? `Seguindo o sistema operacional (atualmente ${resolved === 'dark' ? 'escuro' : 'claro'}).`
+                      : 'Salvo na sua conta e aplicado neste navegador.'}
+                  </p>
+                </div>
+                <ThemeToggle />
               </div>
-              <ThemeToggle />
+              <section aria-labelledby="settings-palette" className="border-t border-border pt-5">
+                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <h3 id="settings-palette" className="font-semibold">
+                    Temas de cores
+                  </h3>
+                  <p className="text-caption text-fg-subtle">
+                    {PALETTES.find((p) => p.id === palette)?.name} · funciona nos modos claro e
+                    escuro
+                  </p>
+                </div>
+                <PalettePicker />
+              </section>
             </CardBody>
           </Card>
 

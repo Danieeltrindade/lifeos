@@ -9,6 +9,8 @@
  */
 @import 'tailwindcss';
 @import '@fontsource-variable/geist';
+/* 10 paletas de cores × claro/escuro (gerado por scripts/generate-themes.mjs). */
+@import './themes.css';
 
 /* Tema escuro controlado por atributo, não por media query: permite escolha manual + "sistema". */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
@@ -90,6 +92,9 @@
 
   --lo-success: #217346;
   --lo-success-soft: #e3f4ea;
+  /* "Concluído" (meta atingida, hábito feito, tarefa marcada). É o sucesso, exceto no Mono. */
+  --lo-complete: #217346;
+  --lo-complete-soft: #e3f4ea;
   --lo-warning: #8f5c00;
   --lo-warning-soft: #fcf1dc;
   --lo-danger: #b83a2e;
@@ -120,6 +125,10 @@
   --elev-3:
     0 18px 44px -10px rgb(var(--shadow-color) / 0.22), 0 4px 10px rgb(var(--shadow-color) / 0.06);
   --lo-glow: 0 6px 18px -6px rgb(11 116 105 / 0.45);
+  --lo-brand-from: #5ee6cf;
+  --lo-brand-to: #0f8f82;
+  --lo-brand-ink: #032420;
+  --lo-brand-shadow: rgb(11 116 105 / 0.3);
 
   /* Superfícies com profundidade */
   --lo-app-bg: radial-gradient(1100px 520px at 100% -8%, rgb(15 143 130 / 0.07), transparent 65%);
@@ -170,6 +179,8 @@
 
   --lo-success: #4fd18b;
   --lo-success-soft: rgb(79 209 139 / 0.13);
+  --lo-complete: #4fd18b;
+  --lo-complete-soft: rgb(79 209 139 / 0.13);
   --lo-warning: #f2bd52;
   --lo-warning-soft: rgb(242 189 82 / 0.14);
   --lo-danger: #f78a7d;
@@ -199,6 +210,10 @@
   --elev-2: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 10px 28px -10px rgb(0 0 0 / 0.65);
   --elev-3: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 28px 64px -14px rgb(0 0 0 / 0.75);
   --lo-glow: 0 0 0 1px rgb(45 212 191 / 0.35), 0 8px 24px -8px rgb(45 212 191 / 0.55);
+  --lo-brand-from: #5ee6cf;
+  --lo-brand-to: #0f8f82;
+  --lo-brand-ink: #032420;
+  --lo-brand-shadow: rgb(45 212 191 / 0.35);
 
   --lo-app-bg:
     radial-gradient(1100px 560px at 100% -10%, rgb(45 212 191 / 0.07), transparent 62%),
@@ -240,6 +255,8 @@
   --color-accent-soft-fg: var(--lo-accent-soft-fg);
   --color-success: var(--lo-success);
   --color-success-soft: var(--lo-success-soft);
+  --color-complete: var(--lo-complete);
+  --color-complete-soft: var(--lo-complete-soft);
   --color-warning: var(--lo-warning);
   --color-warning-soft: var(--lo-warning-soft);
   --color-danger: var(--lo-danger);
@@ -361,6 +378,75 @@
   }
   ::-webkit-scrollbar-track {
     background: transparent;
+  }
+}
+
+/* Mono: a assinatura é inverter. O item ativo da navegação (barra lateral, gaveta, abas de
+   seção) vira branco sobre preto — ou preto sobre branco no claro — em vez de um fundo suave. */
+[data-accent='mono'] nav a[aria-current='page'] {
+  background-color: var(--lo-primary);
+  color: var(--lo-primary-fg);
+  --tw-ring-color: transparent;
+}
+[data-accent='mono'] nav a[aria-current='page'] svg {
+  color: inherit;
+}
+[data-accent='mono'] nav a[aria-current='page'] > span[aria-hidden='true'] {
+  box-shadow: none;
+}
+/* Barra inferior do celular: o item ativo é só texto/ícone (sem fundo), então mantém a cor. */
+[data-accent='mono'] nav[aria-label='Atalhos'] a[aria-current='page'] {
+  background-color: transparent;
+  color: var(--lo-fg);
+}
+/* Cores escolhidas pelo usuário (matérias, categorias) viram tons de cinza no Mono — o valor
+   salvo não muda; o seletor de cor do formulário continua mostrando a cor real. */
+[data-accent='mono'] [data-swatch] {
+  filter: grayscale(1);
+}
+/* Calendário no Mono: cada origem mantém a FORMA própria (sólido, tracejado, borda à
+   esquerda, listrado), só sem cor. Atrasos continuam sinalizados pelo ícone e pelo texto. */
+[data-accent='mono'] .lo-ev-task {
+  background-color: var(--lo-surface-muted);
+  color: var(--lo-fg);
+  border-left-color: var(--lo-fg) !important;
+}
+[data-accent='mono'] .lo-ev-task-dot {
+  background: var(--lo-fg);
+}
+[data-accent='mono'] .lo-ev-done,
+[data-accent='mono'] .lo-ev-done-dot {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--lo-surface-muted) 0 6px,
+    var(--lo-border-strong) 6px 12px
+  );
+  color: var(--lo-fg-muted);
+}
+
+/* Tipografia com mais presença: títulos mais compactos e métricas mais pesadas. */
+[data-accent='mono'] h1 {
+  letter-spacing: -0.035em;
+}
+[data-accent='mono'] .text-metric {
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+
+/* Troca de paleta ou de modo: transição curta de cores (classe aplicada por ~250 ms).
+   Só sem "reduzir movimento". */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition:
+      background-color 220ms ease,
+      border-color 220ms ease,
+      color 220ms ease,
+      fill 220ms ease,
+      stroke 220ms ease,
+      box-shadow 220ms ease !important;
   }
 }
 

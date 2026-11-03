@@ -49,6 +49,7 @@ export function makeProfileRow(overrides: Partial<Tables<'profiles'>> = {}): Tab
     timezone: 'America/Sao_Paulo',
     week_starts_on: 1,
     theme_preference: 'system',
+    theme_color: 'ocean',
     email_notifications: false,
     created_at: '2026-10-01T12:00:00Z',
     updated_at: '2026-10-01T12:00:00Z',
