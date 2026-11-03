@@ -25,7 +25,7 @@ import {
   subtaskSummary,
   type TaskStatus,
 } from '../logic/tasks';
-import { DueBadge, PriorityBadge } from './TaskBadges';
+import { DueMeta, PriorityFlag } from './TaskBadges';
 
 const COLUMNS: TaskStatus[] = ['todo', 'in_progress', 'done', 'cancelled'];
 
@@ -183,7 +183,7 @@ function Card({
       ref={setNodeRef}
       style={{ transform: CSS.Translate.toString(transform) }}
       className={cn(
-        'flex items-start gap-1 rounded-md border border-border bg-surface p-2 shadow-elev-1',
+        'flex items-start gap-1 rounded-md border border-border surface-card p-2 shadow-elev-1',
         isDragging && 'relative z-10 shadow-elev-3',
       )}
     >
@@ -203,21 +203,23 @@ function Card({
             onOpen(task.id);
           }}
           className={cn(
-            'block w-full py-1.5 text-left text-body-sm font-medium hover:underline',
+            'block w-full py-1.5 text-left text-body-sm font-medium hover:text-primary',
             task.status === 'cancelled' && 'text-fg-subtle line-through',
           )}
         >
           {task.title}
         </button>
-        <div className="flex flex-wrap gap-1">
-          <PriorityBadge priority={task.priority} />
-          <DueBadge dueOn={task.due_on} status={task.status} today={today} />
-          {projectName && <Badge tone="primary">{projectName}</Badge>}
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 pb-0.5">
+          <PriorityFlag priority={task.priority} />
+          <DueMeta dueOn={task.due_on} status={task.status} today={today} />
+          {projectName && (
+            <span className="max-w-full truncate text-caption text-fg-subtle">{projectName}</span>
+          )}
           {subtasks.total > 0 && (
-            <Badge>
+            <span className="inline-flex items-center gap-1 text-caption text-fg-subtle tabular">
               <ListTree aria-hidden="true" className="size-3" />
               {subtasks.done}/{subtasks.total - subtasks.cancelled}
-            </Badge>
+            </span>
           )}
           {blocked && (
             <Badge tone="warning">

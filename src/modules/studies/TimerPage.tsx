@@ -21,6 +21,7 @@ import {
   type Subject,
   type Topic,
 } from '@/services/data/queries';
+import { FocusRing } from './components/FocusRing';
 import { ReflectionDialog, SessionFormDialog } from './components/SessionDialogs';
 import { topicOptions } from './logic/topic-options';
 import {
@@ -171,7 +172,15 @@ function StartSession({
         titleId="timer-start"
         description="O tempo é registrado pelo relógio do servidor"
       />
-      <CardBody>
+      <CardBody className="grid gap-6 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-center">
+        <FocusRing fraction={0} className="max-w-[11rem] sm:max-w-[13rem] md:max-w-none">
+          <p className="text-[2.5rem] leading-none font-semibold tracking-[-0.03em] text-fg-muted tabular">
+            {planned !== null ? formatClock(planned) : '00:00'}
+          </p>
+          <p className="mt-2 text-caption text-fg-subtle">
+            {planned !== null ? 'Meta da sessão' : 'Sem meta de duração'}
+          </p>
+        </FocusRing>
         <form
           className="flex flex-col gap-4"
           onSubmit={(e) => {
@@ -311,26 +320,49 @@ function ActiveTimer({
     control.discard.isPending;
 
   return (
-    <Card aria-labelledby="timer-active">
+    <Card
+      aria-labelledby="timer-active"
+      className={paused ? undefined : 'border-primary/40 ring-1 ring-primary/15'}
+    >
       <CardHeader
         title={paused ? 'Sessão pausada' : 'Sessão em andamento'}
         titleId="timer-active"
         description={`Início às ${formatTime(session.started_at, timezone)}`}
       />
       <CardBody className="flex flex-col gap-4">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-caption font-semibold ${paused ? 'bg-warning-soft text-warning' : 'bg-success-soft text-success'}`}
+          >
+            <span
+              aria-hidden="true"
+              className={`size-1.5 rounded-full ${paused ? 'bg-warning' : 'animate-pulse bg-success'}`}
+            />
+            {paused ? 'Pausada' : 'Contando'}
+          </span>
           {subject && <Badge tone="primary">{subject.name}</Badge>}
           {topic && <Badge>{topic.name}</Badge>}
           <Badge>{TECHNIQUE_LABELS[session.technique as Technique]}</Badge>
         </div>
-        <p
-          className={`text-center font-mono text-[3.5rem] leading-none font-semibold tracking-tight tabular sm:text-[4.5rem] ${paused ? 'text-fg-subtle' : ''}`}
-          role="timer"
-          aria-live="off"
-          aria-label={`Tempo líquido: ${formatDuration(elapsed / 60)}`}
+        <FocusRing
+          className="my-1"
+          fraction={planned !== null ? elapsed / planned : (elapsed % 60) / 60}
+          tone={planned !== null && elapsed >= planned ? 'success' : 'primary'}
+          dimmed={paused}
         >
-          {formatClock(elapsed)}
-        </p>
+          <p
+            className={`text-[2.75rem] leading-none font-semibold tracking-[-0.03em] tabular sm:text-[3.25rem] ${paused ? 'text-fg-subtle' : 'text-fg'}`}
+            role="timer"
+            aria-live="off"
+            aria-label={`Tempo líquido: ${formatDuration(elapsed / 60)}`}
+          >
+            {formatClock(elapsed)}
+          </p>
+          <p className="mt-2 text-caption text-fg-subtle">
+            {subject ? subject.name : 'Foco'}
+            {planned !== null && ` · meta ${formatDuration(planned / 60)}`}
+          </p>
+        </FocusRing>
         {planned !== null && (
           <div className="flex flex-col gap-1.5">
             <ProgressBar
@@ -338,7 +370,7 @@ function ActiveTimer({
               max={planned}
               label="Meta da sessão"
               valueText={`${formatDuration(elapsed / 60)} de ${formatDuration(planned / 60)}`}
-              tone="accent"
+              tone={elapsed >= planned ? 'success' : 'primary'}
             />
             <p className="text-center text-body-sm text-fg-muted" aria-live="polite">
               {elapsed >= planned
@@ -522,7 +554,7 @@ function RecentSessions({
             return (
               <li
                 key={session.id}
-                className="rounded-lg border border-border bg-surface p-3 shadow-elev-1"
+                className="rounded-lg border border-border surface-card px-4 py-3 shadow-elev-1"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -556,7 +588,7 @@ function RecentSessions({
                 <div className="mt-2 flex flex-wrap gap-1">
                   <Button
                     size="sm"
-                    variant={reflection ? 'ghost' : 'secondary'}
+                    variant="ghost"
                     icon={<NotebookPen className="size-4" />}
                     onClick={() => {
                       onReflect(session.id);

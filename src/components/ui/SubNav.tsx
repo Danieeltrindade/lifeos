@@ -11,7 +11,7 @@ export function SubNav({
 }) {
   return (
     <nav aria-label={label} className="-mx-1 mb-6 overflow-x-auto px-1">
-      <ul className="flex min-w-max gap-1 border-b border-border">
+      <ul className="flex min-w-max gap-1 rounded-lg border border-border bg-surface/70 p-1 sm:inline-flex">
         {items.map((item) => (
           <li key={item.to}>
             <NavLink
@@ -19,10 +19,10 @@ export function SubNav({
               end={item.end ?? false}
               className={({ isActive }) =>
                 cn(
-                  '-mb-px inline-flex h-11 items-center border-b-2 px-3 text-body-sm font-medium transition-colors',
+                  'inline-flex h-10 items-center rounded-md px-3.5 text-body-sm font-medium transition-colors duration-150 sm:h-9',
                   isActive
-                    ? 'border-primary text-fg'
-                    : 'border-transparent text-fg-subtle hover:text-fg',
+                    ? 'bg-primary-soft text-primary-soft-fg ring-1 ring-primary/35 ring-inset'
+                    : 'text-fg-subtle hover:bg-surface-muted hover:text-fg',
                 )
               }
             >

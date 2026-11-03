@@ -1,16 +1,20 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 
-/** Link discreto no cabeçalho de um card, levando ao módulo de origem dos dados. */
+/** Link "Ver tudo" no cabeçalho de um card, levando ao módulo de origem dos dados. */
 export function SectionLink({ to, label }: { to: string; label: string }) {
   return (
     <Link
       to={to}
-      aria-label={label}
       title={label}
-      className="-mt-1 -mr-2 grid size-9 shrink-0 place-items-center rounded-md text-fg-subtle transition-colors hover:bg-surface-muted hover:text-fg"
+      className="group -mt-0.5 -mr-1.5 inline-flex h-9 shrink-0 items-center gap-1 rounded-md px-2 text-body-sm font-medium text-primary transition-colors hover:bg-primary-soft"
     >
-      <ArrowUpRight aria-hidden="true" className="size-4" />
+      Ver tudo
+      <span className="sr-only">: {label}</span>
+      <ArrowRight
+        aria-hidden="true"
+        className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5"
+      />
     </Link>
   );
 }

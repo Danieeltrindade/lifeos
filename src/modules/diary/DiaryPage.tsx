@@ -76,12 +76,8 @@ export function DiaryPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <NotebookPen aria-hidden="true" className="size-4" />
-            Registrar
-          </span>
-        }
+        module="diary"
+        eyebrow={<span className="inline-flex items-center gap-2">Registrar</span>}
         title="Diário"
         description="Reflexões datadas, só suas."
         actions={
@@ -126,7 +122,7 @@ export function DiaryPage() {
                     onClick={() => {
                       setOpen({ mode: 'edit', id: e.id });
                     }}
-                    className="flex w-full flex-col gap-1.5 rounded-lg border border-border bg-surface p-4 text-left shadow-elev-1 hover:border-border-strong"
+                    className="flex w-full flex-col gap-1.5 rounded-lg border border-border surface-card p-4 text-left shadow-elev-1 hover:border-primary/40"
                   >
                     <span className="text-caption text-fg-subtle">
                       {formatEntryDate(e.local_date)}

@@ -126,6 +126,7 @@ function ProjectDetail({ project }: { project: Project }) {
         Projetos
       </Link>
       <PageHeader
+        module="projects"
         title={project.name}
         description={project.description || undefined}
         eyebrow={
@@ -193,7 +194,7 @@ function ProjectDetail({ project }: { project: Project }) {
             <CardHeader title="Progresso" titleId="project-progress" />
             <CardBody className="flex flex-col gap-3">
               <div className="flex items-baseline justify-between gap-2">
-                <p className="text-display font-semibold tabular">
+                <p className="text-metric font-semibold tracking-[-0.02em] tabular">
                   {progress.ratio === null ? '—' : `${String(Math.round(progress.ratio * 100))}%`}
                 </p>
                 <p className="text-body-sm text-fg-muted">

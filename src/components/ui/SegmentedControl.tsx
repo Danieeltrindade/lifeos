@@ -45,7 +45,7 @@ export function SegmentedControl<T extends string>({
       aria-label={label}
       onKeyDown={onKeyDown}
       className={cn(
-        'inline-flex rounded-md border border-border bg-surface-muted p-0.5',
+        'inline-flex gap-0.5 rounded-lg border border-border bg-surface-muted/70 p-1',
         className,
       )}
     >
@@ -65,8 +65,10 @@ export function SegmentedControl<T extends string>({
               onChange(option.value);
             }}
             className={cn(
-              'inline-flex min-h-9 min-w-9 items-center justify-center gap-1.5 rounded-[7px] px-2.5 text-body-sm font-medium transition-colors',
-              checked ? 'bg-surface-raised text-fg shadow-elev-1' : 'text-fg-subtle hover:text-fg',
+              'inline-flex min-h-9 min-w-9 items-center justify-center gap-1.5 rounded-md px-3 text-body-sm font-medium transition-colors duration-150',
+              checked
+                ? 'bg-primary-soft text-primary-soft-fg ring-1 ring-primary/35 ring-inset'
+                : 'text-fg-subtle hover:bg-surface-raised/60 hover:text-fg',
             )}
           >
             {option.icon}

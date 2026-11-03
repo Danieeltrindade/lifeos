@@ -1,7 +1,20 @@
-import { Check, Flame, Pause, Pencil, Play, Plus, Repeat, Trash2, Undo2 } from 'lucide-react';
+import {
+  Check,
+  CheckCircle2,
+  Circle,
+  Flame,
+  Pause,
+  Pencil,
+  Play,
+  Plus,
+  Repeat,
+  Trash2,
+  Undo2,
+} from 'lucide-react';
 import { useState } from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge } from '@/components/ui/Badge';
+import { IconChip } from '@/components/ui/IconChip';
 import { Button } from '@/components/ui/Button';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -66,12 +79,8 @@ export function HabitsPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <Repeat aria-hidden="true" className="size-4" />
-            Executar
-          </span>
-        }
+        module="habits"
+        eyebrow={<span className="inline-flex items-center gap-2">Executar</span>}
         title="Hábitos"
         description="Marque o que fez hoje. Sequências contam só os dias em que o hábito é esperado; a consistência mostra o quadro geral."
         actions={
@@ -120,7 +129,7 @@ export function HabitsPage() {
               {dueToday.length === 0 ? (
                 <p className="text-body-sm text-fg-subtle">Nenhum hábito esperado hoje.</p>
               ) : (
-                <ul className="flex flex-col divide-y divide-border">
+                <ul className="grid gap-3 md:grid-cols-2">
                   {dueToday.map((h) => (
                     <TodayRow
                       key={h.id}
@@ -170,10 +179,13 @@ export function HabitsPage() {
                         onClick={() => {
                           setOpenId(h.id);
                         }}
-                        className="flex w-full flex-col gap-3 rounded-lg border border-border bg-surface p-4 text-left shadow-elev-1 hover:border-border-strong"
+                        className="surface-card flex w-full flex-col gap-3 rounded-lg border border-border p-4 text-left shadow-elev-1 transition-[border-color,box-shadow] duration-150 hover:border-primary/40 hover:shadow-elev-2"
                       >
                         <div className="flex w-full items-start justify-between gap-2">
-                          <div className="min-w-0">
+                          <IconChip tone="orange" size="md">
+                            <Repeat />
+                          </IconChip>
+                          <div className="min-w-0 flex-1">
                             <h3 className="font-semibold">{h.name}</h3>
                             <p className="text-caption text-fg-subtle">
                               {describeSchedule(rule)}
@@ -281,9 +293,20 @@ function TodayRow({
   const parsed = Number(value.replace(',', '.'));
 
   return (
-    <li className="flex flex-wrap items-center gap-3 py-2.5">
-      <div className="min-w-0 flex-1">
-        <p className="font-medium">{habit.name}</p>
+    <li
+      className={cn(
+        'flex flex-wrap items-center gap-3 rounded-lg border p-3 transition-colors',
+        met ? 'border-success/35 bg-success-soft/50' : 'border-border bg-surface-muted/40',
+      )}
+    >
+      <IconChip tone={met ? 'success' : 'neutral'} size="md" className="rounded-full">
+        {met ? <CheckCircle2 /> : <Circle />}
+      </IconChip>
+      <div className="min-w-[9rem] flex-1">
+        <p className="font-medium">
+          {habit.name}
+          {met && <span className="sr-only"> (feito hoje)</span>}
+        </p>
         <p className="text-caption text-fg-subtle">
           {habit.schedule_kind === 'times_per_week'
             ? `${String(week.done)} de ${String(week.target)} nesta semana`
@@ -329,8 +352,8 @@ function TodayRow({
       ) : null}
       <Button
         size="sm"
-        variant={met ? 'secondary' : 'primary'}
-        icon={<Check className="size-4" />}
+        variant={met ? 'ghost' : 'secondary'}
+        icon={<Check className={met ? 'size-4' : 'size-4 text-primary'} />}
         disabled={
           busy ||
           (existing !== undefined && !numeric) ||
@@ -352,7 +375,7 @@ function TodayRow({
 }
 
 const STATE_STYLES: Record<DayState, string> = {
-  met: 'bg-success text-white',
+  met: 'bg-primary/75 text-primary-fg shadow-[0_0_8px_-2px_var(--lo-primary)]',
   partial: 'bg-warning-soft text-warning ring-1 ring-warning/40',
   missed: 'bg-danger-soft text-danger',
   not_eligible: 'bg-transparent text-fg-disabled ring-1 ring-border ring-inset',

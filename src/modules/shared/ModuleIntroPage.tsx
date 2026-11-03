@@ -11,19 +11,14 @@ import { Card, CardBody, CardHeader } from '@/components/ui/Card';
  */
 export function ModuleIntroPage({ moduleId }: { moduleId: ModuleId }) {
   const mod = getModule(moduleId);
-  const Icon = mod.icon;
   const capabilitiesId = `${mod.id}-capabilities`;
   const connectionsId = `${mod.id}-connections`;
 
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <Icon aria-hidden="true" className="size-4" />
-            Módulo
-          </span>
-        }
+        module={mod.id}
+        eyebrow={<span className="inline-flex items-center gap-2">Módulo</span>}
         title={mod.label}
         description={mod.summary}
         actions={<Badge tone="accent">{STATUS_LABELS[mod.status]}</Badge>}

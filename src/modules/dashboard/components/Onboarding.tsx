@@ -46,10 +46,15 @@ export function Onboarding({ setup, compact }: { setup: SetupCounts; compact: bo
   return (
     <section
       aria-labelledby="dash-onboarding"
-      className="mb-4 rounded-lg border border-primary/25 bg-primary-soft p-5"
+      className="mb-5 rounded-lg border border-primary/25 bg-primary-soft p-5 sm:p-6"
     >
       <div className="flex items-start gap-3">
-        <Sprout aria-hidden="true" className="size-5 shrink-0 text-primary" />
+        <span
+          aria-hidden="true"
+          className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/15 text-primary"
+        >
+          <Sprout className="size-5" />
+        </span>
         <div className="min-w-0 flex-1">
           <h2 id="dash-onboarding" className="font-semibold text-fg">
             {compact ? 'Próximos passos' : 'Seu LifeOS ainda está vazio — e isso é o estado real.'}
@@ -77,7 +82,7 @@ export function Onboarding({ setup, compact }: { setup: SetupCounts; compact: bo
               <li key={s.key}>
                 <Link
                   to={s.to}
-                  className="group flex h-full items-center gap-3 rounded-md border border-border bg-surface p-3 hover:border-border-strong"
+                  className="group flex h-full items-center gap-3 rounded-md border border-border surface-card p-3.5 shadow-elev-1 transition-colors hover:border-primary/40"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block text-body-sm font-medium">{s.label}</span>

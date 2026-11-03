@@ -1,20 +1,27 @@
 import {
   Archive,
   ArchiveRestore,
+  BookOpen,
+  BookText,
   CheckCircle2,
+  CheckSquare,
+  HelpCircle,
   Flag,
   Pencil,
   Plus,
+  Repeat,
   Target,
+  Timer,
   Trash2,
   XCircle,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Dialog } from '@/components/ui/Dialog';
+import { IconChip, type IconTone } from '@/components/ui/IconChip';
 import { TextField } from '@/components/ui/Field';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { ListSkeleton } from '@/components/ui/QueryState';
@@ -22,6 +29,7 @@ import { FilterSelect } from '@/components/ui/SearchField';
 import { EmptyState, ErrorState } from '@/components/ui/States';
 import { useUserCalendar } from '@/hooks/useUserCalendar';
 import { addDays, formatDateOnly, localDateIn, type ISODate } from '@/lib/date';
+import { cn } from '@/lib/cn';
 import { errorMessage } from '@/lib/query/query-client';
 import {
   useCategoriesQuery,
@@ -63,6 +71,17 @@ function cycleLabel(period: GoalPeriod, start: ISODate, end: ISODate): string {
   return `${formatDateOnly(start)} – ${formatDateOnly(addDays(end, -1))}`;
 }
 
+/** Ícone e cor por forma de medição — identifica a "categoria" da meta além do texto. */
+const MODE_ICONS: Record<GoalMode, { icon: ReactNode; tone: IconTone }> = {
+  manual: { icon: <Target />, tone: 'yellow' },
+  activity_time: { icon: <Timer />, tone: 'primary' },
+  study_sessions: { icon: <BookOpen />, tone: 'info' },
+  questions: { icon: <HelpCircle />, tone: 'violet' },
+  pages: { icon: <BookText />, tone: 'orange' },
+  tasks_completed: { icon: <CheckSquare />, tone: 'primary' },
+  habit_checkins: { icon: <Repeat />, tone: 'orange' },
+};
+
 export function GoalsPage() {
   const { today, timezone } = useUserCalendar();
   const goalsQuery = useGoalsQuery();
@@ -87,12 +106,8 @@ export function GoalsPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <Target aria-hidden="true" className="size-4" />
-            Planejar
-          </span>
-        }
+        module="goals"
+        eyebrow={<span className="inline-flex items-center gap-2">Planejar</span>}
         title="Metas"
         description="Alvos mensuráveis por dia, semana, mês ou até um prazo — com progresso calculado dos seus registros."
         actions={
@@ -161,10 +176,13 @@ export function GoalsPage() {
                   onClick={() => {
                     setDialog({ mode: 'view', id: g.id });
                   }}
-                  className="flex h-full w-full flex-col gap-3 rounded-lg border border-border bg-surface p-4 text-left shadow-elev-1 hover:border-border-strong"
+                  className="surface-card flex h-full w-full flex-col gap-3 rounded-lg border border-border p-4 text-left shadow-elev-1 transition-[border-color,box-shadow] duration-150 hover:border-primary/40 hover:shadow-elev-2"
                 >
-                  <div className="flex w-full items-start justify-between gap-2">
-                    <h2 className="min-w-0 font-semibold">{g.title}</h2>
+                  <div className="flex w-full items-start justify-between gap-3">
+                    <IconChip tone={MODE_ICONS[mode].tone} size="md">
+                      {MODE_ICONS[mode].icon}
+                    </IconChip>
+                    <h2 className="min-w-0 flex-1 self-center font-semibold">{g.title}</h2>
                     {mode === 'manual' ? (
                       <Badge tone="warning">Manual</Badge>
                     ) : (
@@ -182,7 +200,12 @@ export function GoalsPage() {
                           {formatGoalValue(p.current_value, g.unit)} de{' '}
                           {formatGoalValue(p.target_value, g.unit)}
                         </span>
-                        <span className="tabular text-fg-subtle">
+                        <span
+                          className={cn(
+                            'tabular font-semibold',
+                            (ratio ?? 0) >= 1 ? 'text-success' : 'text-primary',
+                          )}
+                        >
                           {Math.round((ratio ?? 0) * 100)}%
                         </span>
                       </div>
@@ -190,6 +213,7 @@ export function GoalsPage() {
                         value={p.current_value}
                         max={p.target_value}
                         label={`Progresso de ${g.title}`}
+                        tone={(ratio ?? 0) >= 1 ? 'success' : 'primary'}
                         valueText={`${formatGoalValue(p.current_value, g.unit)} de ${formatGoalValue(p.target_value, g.unit)}`}
                       />
                       <p className="text-caption text-fg-subtle">

@@ -1,4 +1,4 @@
-import { BookOpen, Timer } from 'lucide-react';
+import { Timer } from 'lucide-react';
 import { Link, Outlet, useLocation } from 'react-router';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SubNav } from '@/components/ui/SubNav';
@@ -13,12 +13,8 @@ export function StudiesLayout() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <BookOpen aria-hidden="true" className="size-4" />
-            Executar
-          </span>
-        }
+        module="studies"
+        eyebrow={<span className="inline-flex items-center gap-2">Executar</span>}
         title="Estudos"
         description="Matérias e tópicos, sessões de foco com cronômetro confiável e revisões espaçadas."
       />

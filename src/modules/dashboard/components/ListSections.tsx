@@ -15,11 +15,11 @@ import {
 import type {
   ActivityEntry,
   GoalProgress,
-  Priority,
   Recommendation,
   ReviewItem,
   TaskSummary,
 } from '@/types/domain';
+import { PriorityFlag } from '@/modules/tasks/components/TaskBadges';
 import { SectionLink } from './SectionLink';
 
 const KIND_LABELS: Record<string, string> = {
@@ -30,12 +30,6 @@ const KIND_LABELS: Record<string, string> = {
   work: 'Trabalho',
   leisure: 'Lazer',
   other: 'Outra',
-};
-
-const PRIORITY: Record<Priority, { label: string; dot: string }> = {
-  high: { label: 'Alta', dot: 'bg-danger' },
-  medium: { label: 'Média', dot: 'bg-warning' },
-  low: { label: 'Baixa', dot: 'bg-fg-subtle' },
 };
 
 const PERIOD_LABEL: Record<GoalProgress['period'], string> = {
@@ -72,22 +66,28 @@ export function TasksSection({ tasks, today }: { tasks: TaskSummary[]; today: IS
         ) : (
           <ul className="divide-y divide-border">
             {tasks.map((task) => {
-              const p = PRIORITY[task.priority];
               const overdue = task.dueOn !== null && daysBetween(task.dueOn, today) < 0;
               return (
-                <li key={task.id} className={rowClass}>
+                <li key={task.id} className={cn(rowClass, 'items-center')}>
                   <span
                     aria-hidden="true"
-                    className={cn('mt-1.5 size-2 shrink-0 rounded-full', p.dot)}
+                    className={cn(
+                      'h-8 w-[3px] shrink-0 rounded-full',
+                      task.priority === 'high'
+                        ? 'bg-danger'
+                        : task.priority === 'medium'
+                          ? 'bg-warning'
+                          : 'bg-border-strong',
+                    )}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-body-sm font-medium">{task.title}</p>
-                    <p className="text-caption text-fg-subtle">
-                      <span className="sr-only">Prioridade {p.label}. </span>
+                    <p className="truncate text-body-sm font-medium">{task.title}</p>
+                    <p className="truncate text-caption text-fg-subtle">
                       {task.projectName ?? 'Sem projeto'}
                       {task.status === 'in_progress' && ' · em andamento'}
                     </p>
                   </div>
+                  <PriorityFlag priority={task.priority} />
                   {task.dueOn && (
                     <Badge tone={overdue ? 'danger' : 'neutral'}>
                       <time dateTime={task.dueOn}>{relativeDayLabel(task.dueOn, today)}</time>
@@ -193,7 +193,7 @@ export function GoalsSection({ goals }: { goals: GoalProgress[] }) {
                     value={g.current}
                     max={g.target}
                     valueText={text}
-                    tone="accent"
+                    tone={g.current >= g.target ? 'success' : 'primary'}
                   />
                   <p className="mt-1 text-caption text-fg-subtle">
                     {PERIOD_LABEL[g.period]}
@@ -243,7 +243,7 @@ export function ActivitiesSection({
               return (
                 <li key={a.id} className={rowClass}>
                   <span
-                    className="grid size-7 shrink-0 place-items-center rounded-md bg-surface-muted text-fg-muted"
+                    className="grid size-7 shrink-0 place-items-center rounded-md border border-border bg-surface-muted text-fg-muted"
                     title={
                       a.source === 'timer' ? 'Registrado pelo cronômetro' : 'Lançamento manual'
                     }
@@ -292,7 +292,10 @@ export function RecommendationsSection({ items }: { items: Recommendation[] }) {
         ) : (
           <ul className="flex flex-col gap-3">
             {items.map((r) => (
-              <li key={r.id} className="rounded-md border border-border bg-surface-muted p-3.5">
+              <li
+                key={r.id}
+                className="rounded-md border border-border border-l-2 border-l-primary/60 bg-surface-muted/60 px-3.5 py-3"
+              >
                 <p className="text-body-sm font-medium">{r.title}</p>
                 <p className="mt-1 text-caption text-fg-muted">
                   <span className="font-medium">Por quê: </span>

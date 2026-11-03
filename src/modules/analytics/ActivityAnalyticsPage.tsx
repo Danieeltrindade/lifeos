@@ -4,7 +4,7 @@ import { addDays } from '@/lib/date';
 import { useCategoriesQuery } from '@/services/data/queries';
 import { KIND_LABELS } from '@/modules/activities/logic/activities';
 import { BarSeriesChart, ChartCard, DataTable, StatTile } from './components/charts';
-import { colorAt } from './components/chart-colors';
+import { colorAt, SERIES_PRIMARY } from './components/chart-colors';
 import { ChartsGrid, HowCalculated, StatsGrid, StatsLoading } from './components/common';
 import { compareText, axisMinutes } from './components/format';
 import { usePeriod } from './components/use-period';
@@ -127,7 +127,7 @@ export function ActivityAnalyticsPage() {
                       label: bucketLabel(x, granularity),
                       minutos: Math.round(x.values.seconds / 60),
                     }))}
-                    series={[{ key: 'minutos', label: 'Tempo', color: colorAt(0) }]}
+                    series={[{ key: 'minutos', label: 'Tempo', color: SERIES_PRIMARY }]}
                     format={fmtMinutes}
                     axisFormat={axisMinutes}
                   />

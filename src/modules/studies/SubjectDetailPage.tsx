@@ -264,7 +264,7 @@ function SubjectDetail({ subject }: { subject: Subject }) {
               description="Divida a matéria em tópicos e subtópicos para acompanhar domínio e revisões."
             />
           ) : (
-            <ul className="flex flex-col divide-y divide-border rounded-lg border border-border bg-surface shadow-elev-1">
+            <ul className="flex flex-col divide-y divide-border rounded-lg border border-border surface-card shadow-elev-1">
               {tree.flatMap(({ topic, children }) => [
                 row(topic, false),
                 ...children.map((c) => row(c, true)),
@@ -276,7 +276,9 @@ function SubjectDetail({ subject }: { subject: Subject }) {
         <Card aria-labelledby="subject-week">
           <CardHeader title="Esta semana" titleId="subject-week" />
           <CardBody className="flex flex-col gap-3">
-            <p className="text-display font-semibold tabular">{formatDuration(seconds / 60)}</p>
+            <p className="text-metric font-semibold tracking-[-0.02em] tabular">
+              {formatDuration(seconds / 60)}
+            </p>
             {subject.target_minutes_per_week !== null ? (
               <>
                 <ProgressBar
@@ -284,7 +286,7 @@ function SubjectDetail({ subject }: { subject: Subject }) {
                   max={subject.target_minutes_per_week}
                   label="Carga semanal"
                   valueText={`${formatDuration(seconds / 60)} de ${formatDuration(subject.target_minutes_per_week)}`}
-                  tone="accent"
+                  tone={seconds / 60 >= subject.target_minutes_per_week ? 'success' : 'primary'}
                 />
                 <p className="text-caption text-fg-subtle">
                   Carga pretendida: {formatDuration(subject.target_minutes_per_week)} por semana.

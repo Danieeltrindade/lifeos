@@ -20,7 +20,7 @@ export function MobileTopBar({
   menuOpen: boolean;
 }) {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-surface/90 px-4 backdrop-blur-md lg:hidden">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-sidebar/90 px-4 backdrop-blur-md lg:hidden">
       <Brand />
       <button
         type="button"
@@ -40,11 +40,11 @@ export function MobileTopBar({
 export function BottomNav({ onOpenMenu, menuOpen }: { onOpenMenu: () => void; menuOpen: boolean }) {
   const primary = MODULES.filter((m) => m.mobilePrimary);
   const itemClass =
-    'flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium leading-none transition-colors';
+    'relative flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium leading-none transition-colors';
   return (
     <nav
       aria-label="Atalhos"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-sidebar/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
     >
       <ul className="mx-auto flex max-w-lg">
         {primary.map((item) => {
@@ -58,8 +58,18 @@ export function BottomNav({ onOpenMenu, menuOpen }: { onOpenMenu: () => void; me
                   cn(itemClass, isActive ? 'text-primary' : 'text-fg-subtle hover:text-fg')
                 }
               >
-                <Icon aria-hidden="true" className="size-5" />
-                {item.label}
+                {({ isActive }) => (
+                  <>
+                    {isActive && (
+                      <span
+                        aria-hidden="true"
+                        className="absolute top-0 h-0.5 w-8 rounded-b-full bg-primary shadow-[0_0_10px_var(--lo-primary)]"
+                      />
+                    )}
+                    <Icon aria-hidden="true" className="size-5" />
+                    <span className={isActive ? 'font-semibold' : undefined}>{item.label}</span>
+                  </>
+                )}
               </NavLink>
             </li>
           );
@@ -116,7 +126,7 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
     <div className="fixed inset-0 z-50 lg:hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-overlay animate-fade-up"
+        className="absolute inset-0 bg-overlay animate-fade-in"
         onClick={onClose}
       />
       <div
@@ -126,7 +136,7 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
         aria-modal="true"
         aria-label="Menu de navegação"
         tabIndex={-1}
-        className="absolute inset-y-0 left-0 flex w-[min(20rem,86vw)] flex-col border-r border-border bg-surface shadow-elev-3 animate-fade-up"
+        className="absolute inset-y-0 left-0 flex w-[min(20rem,86vw)] flex-col border-r border-border bg-sidebar shadow-elev-3 animate-fade-in"
       >
         <div className="flex h-14 items-center justify-between px-4">
           <Brand />
@@ -143,7 +153,9 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
           <NavList onNavigate={onClose} />
         </nav>
         <div className="flex flex-col gap-3 border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <AccountPanel />
+          <div className="surface-card rounded-lg border border-border p-2">
+            <AccountPanel />
+          </div>
           <div className="flex items-center justify-between gap-3">
             <span className="text-body-sm text-fg-muted">Tema</span>
             <ThemeToggle compact />

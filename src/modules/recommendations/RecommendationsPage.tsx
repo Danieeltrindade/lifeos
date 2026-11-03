@@ -68,12 +68,8 @@ export function RecommendationsPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <Sparkles aria-hidden="true" className="size-4" />
-            Avaliar
-          </span>
-        }
+        module="recommendations"
+        eyebrow={<span className="inline-flex items-center gap-2">Avaliar</span>}
         title="Recomendações"
         description="Sugestões geradas por regras explícitas sobre seus registros — cada uma mostra o motivo e os dados em que se baseia. Aceitar nunca muda nada sozinho."
       />
@@ -190,7 +186,7 @@ function RecommendationCard({ row }: { row: RecommendationRow }) {
 
   return (
     <article
-      className="rounded-lg border border-border bg-surface p-4 shadow-elev-1"
+      className="rounded-lg border border-border surface-card p-4 shadow-elev-1"
       aria-labelledby={`rec-${row.id}`}
     >
       <div className="flex flex-wrap items-center gap-1.5">
@@ -262,7 +258,7 @@ function RecommendationCard({ row }: { row: RecommendationRow }) {
                 <Clock aria-hidden="true" className="size-4 text-fg-subtle" />
                 <span className="sr-only">Adiar recomendação</span>
                 <select
-                  className="h-8 rounded-md border border-border-strong bg-surface px-2 text-body-sm"
+                  className="h-8 rounded-md border border-border-strong surface-card px-2 text-body-sm"
                   value=""
                   disabled={decide.isPending}
                   onChange={(e) => {

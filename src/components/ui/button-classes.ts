@@ -4,21 +4,25 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md';
 
 const base =
-  'inline-flex select-none items-center justify-center gap-2 rounded-md font-medium transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out-soft active:translate-y-px disabled:pointer-events-none disabled:text-fg-disabled';
+  'inline-flex select-none items-center justify-center gap-2 rounded-md font-medium whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out-soft active:translate-y-px disabled:pointer-events-none disabled:text-fg-disabled [&_svg]:shrink-0';
 
 const variants: Record<ButtonVariant, string> = {
+  // Primária: cor de destaque sólida — reservada à ação principal de cada tela.
   primary:
-    'bg-primary text-primary-fg shadow-elev-1 hover:bg-primary-hover disabled:bg-surface-muted',
+    'bg-primary text-primary-fg font-semibold shadow-glow hover:bg-primary-hover disabled:bg-surface-muted disabled:shadow-none',
+  // Secundária: superfície com borda — ações comuns.
   secondary:
-    'border border-border-strong bg-surface-raised text-fg shadow-elev-1 hover:bg-surface-muted',
+    'border border-border-strong bg-surface-muted/80 text-fg hover:border-primary/40 hover:bg-surface-raised disabled:bg-surface-muted/50',
+  // Fantasma: ações discretas dentro de listas e cartões.
   ghost: 'text-fg-muted hover:bg-surface-muted hover:text-fg',
-  danger: 'bg-danger text-danger-fg hover:opacity-90',
+  // Destrutiva: sempre acompanhada de confirmação no fluxo.
+  danger: 'bg-danger text-danger-fg hover:bg-danger/90',
 };
 
-// Alvos de toque com pelo menos 40px (sm) / 44px (md).
+// Alvos de toque: 40/44 px no celular; um pouco mais compactos a partir de 640 px.
 const sizes: Record<ButtonSize, string> = {
-  sm: 'h-10 px-3 text-body-sm',
-  md: 'h-11 px-4 text-body',
+  sm: 'h-10 px-3 text-body-sm sm:h-9',
+  md: 'h-11 px-4 text-body-sm sm:h-10',
 };
 
 /**

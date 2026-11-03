@@ -33,12 +33,12 @@ export function AgendaSection({
   const t = now.getTime();
 
   return (
-    <Card aria-labelledby="dash-agenda" className="md:col-span-2">
+    <Card aria-labelledby="dash-agenda">
       <CardHeader
         title="Agenda de hoje"
         titleId="dash-agenda"
         icon={<CalendarDays className="size-4" />}
-        description="Planejado — o que realmente aconteceu fica em Atividades"
+        description="Planejado no calendário; o realizado fica em Atividades"
         action={<SectionLink to="/calendario" label="Abrir calendário" />}
       />
       <CardBody>
@@ -61,7 +61,7 @@ export function AgendaSection({
                   key={item.id}
                   className={cn(
                     'flex items-stretch gap-3 rounded-md py-2.5',
-                    isNow && '-mx-2 bg-primary-soft px-2',
+                    isNow && '-mx-2 bg-primary-soft px-2 ring-1 ring-primary/25',
                   )}
                 >
                   <div className="w-12 shrink-0 pt-0.5 text-right tabular text-body-sm">
@@ -100,8 +100,10 @@ export function AgendaSection({
                     </p>
                     <div className="flex items-center gap-1.5">
                       {isNow && <Badge tone="success">Agora</Badge>}
-                      {isPast && <Badge>Horário encerrado</Badge>}
-                      <Badge tone={kind.tone}>{kind.label}</Badge>
+                      {isPast && (
+                        <span className="text-caption text-fg-subtle">Horário encerrado ·</span>
+                      )}
+                      <Badge tone={isPast ? 'neutral' : kind.tone}>{kind.label}</Badge>
                     </div>
                   </div>
                 </li>

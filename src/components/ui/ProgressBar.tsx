@@ -13,7 +13,7 @@ export function ProgressBar({
   max: number;
   label: string;
   valueText?: string;
-  tone?: 'primary' | 'accent';
+  tone?: 'primary' | 'accent' | 'success';
   className?: string;
 }) {
   const safeMax = max > 0 ? max : 1;
@@ -26,12 +26,16 @@ export function ProgressBar({
       aria-valuemax={safeMax}
       aria-valuenow={Math.min(value, safeMax)}
       aria-valuetext={valueText}
-      className={cn('h-1.5 w-full overflow-hidden rounded-full bg-surface-muted', className)}
+      className={cn('h-2 w-full overflow-hidden rounded-full bg-progress-track', className)}
     >
       <div
         className={cn(
           'h-full rounded-full transition-[width] duration-500 ease-out-soft',
-          tone === 'primary' ? 'bg-primary' : 'bg-accent',
+          tone === 'primary'
+            ? 'bg-linear-to-r from-primary/60 to-primary'
+            : tone === 'success'
+              ? 'bg-linear-to-r from-success/60 to-success'
+              : 'bg-accent',
         )}
         style={{ width: `${pct}%` }}
       />

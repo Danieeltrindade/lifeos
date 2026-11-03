@@ -7,7 +7,7 @@ import { cn } from '@/lib/cn';
  * Compatíveis com register() do React Hook Form (ref repassada como prop no React 19).
  */
 const controlClass =
-  'h-11 w-full rounded-md border bg-surface-raised px-3 text-body text-fg shadow-elev-1 transition-colors placeholder:text-fg-subtle disabled:cursor-not-allowed disabled:text-fg-disabled';
+  'h-11 w-full rounded-md border bg-surface-muted px-3 text-body text-fg transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-fg-subtle hover:border-fg-subtle/60 focus:border-primary focus:bg-surface-raised focus:ring-3 focus:ring-primary/20 focus:outline-none disabled:cursor-not-allowed disabled:text-fg-disabled disabled:hover:border-border-strong sm:h-10 sm:text-body-sm';
 
 interface FieldFrameProps {
   label: string;
@@ -22,7 +22,7 @@ interface FieldFrameProps {
 function FieldFrame({ label, error, hint, inputId, hintId, errorId, children }: FieldFrameProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={inputId} className="text-body-sm font-medium text-fg">
+      <label htmlFor={inputId} className="text-body-sm font-medium text-fg-muted">
         {label}
       </label>
       {children}
@@ -137,7 +137,7 @@ export function TextareaField({
         aria-describedby={describedBy(error, hint, hintId, errorId)}
         className={cn(
           controlClass,
-          'h-auto min-h-11 resize-y py-2.5 leading-relaxed',
+          'h-auto min-h-11 resize-y py-2.5 leading-relaxed sm:h-auto',
           error ? 'border-danger' : 'border-border-strong',
           className,
         )}
@@ -166,7 +166,7 @@ export function CheckboxField({ label, hint, id, className, ...props }: Checkbox
         id={inputId}
         type="checkbox"
         aria-describedby={hint ? hintId : undefined}
-        className="mt-0.5 size-5 shrink-0 accent-[var(--lo-primary)]"
+        className="mt-0.5 size-[18px] shrink-0 rounded accent-[var(--lo-primary)]"
         {...props}
       />
       <div className="min-w-0">

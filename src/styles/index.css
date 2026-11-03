@@ -26,25 +26,28 @@
   --sand-700: #4d4842;
   --sand-900: #1f1d1a;
 
-  /* Neutros escuros ("grafite") */
-  --ink-950: #0f1112;
-  --ink-900: #151819;
-  --ink-850: #1b1f20;
-  --ink-800: #222728;
-  --ink-700: #2e3436;
-  --ink-600: #3d4446;
-  --ink-400: #8b9496;
-  --ink-300: #aab2b3;
-  --ink-100: #e9ecea;
+  /* Neutros escuros: grafite azul-petróleo. Cada degrau é uma camada de profundidade
+     distinta (barra lateral < fundo < cartão < superfície interna < elevada). */
+  --ink-975: #071013; /* barra lateral */
+  --ink-950: #0a1418; /* fundo da aplicação */
+  --ink-900: #0f1c21; /* cartões */
+  --ink-850: #13252b; /* superfície interna, hover */
+  --ink-800: #182d34; /* elevada: menus, diálogos, campos */
+  --ink-700: #1f363d; /* borda */
+  --ink-600: #2c4951; /* borda forte */
+  --ink-400: #87a1a7;
+  --ink-300: #b2c5c9;
+  --ink-100: #e7f0f1;
 
   /* Marca: pinho (primária) e âmbar (destaque/tempo) */
   --pine-50: #ecf5f3;
   --pine-100: #d3e9e4;
-  --pine-300: #7fbfb2;
-  --pine-400: #4fa494;
-  --pine-500: #2b8070;
-  --pine-600: #1f6a5d;
-  --pine-700: #1f5f57;
+  --pine-200: #99f0e1;
+  --pine-300: #5ee6cf;
+  --pine-400: #2dd4bf; /* turquesa da marca no tema escuro */
+  --pine-500: #0f8f82;
+  --pine-600: #0b7469;
+  --pine-700: #0a5f57;
   --pine-900: #0f302b;
   --amber-400: #e8a13a;
   --amber-500: #c98419;
@@ -53,31 +56,41 @@
 /* ---------- 2. Tokens semânticos — tema claro ---------- */
 :root,
 [data-theme='light'] {
-  --lo-bg: var(--sand-50);
-  --lo-surface: var(--sand-0);
-  --lo-surface-muted: var(--sand-100);
+  --lo-bg: #f3f6f6;
+  --lo-sidebar: #ebf0f0;
+  --lo-surface: #ffffff;
+  --lo-surface-muted: #eef3f3;
   --lo-surface-raised: #ffffff;
-  --lo-border: var(--sand-200);
-  --lo-border-strong: var(--sand-300);
+  --lo-border: #dce5e5;
+  --lo-border-strong: #c3d1d1;
 
-  --lo-fg: var(--sand-900);
-  --lo-fg-muted: #58534c; /* 7.4:1 sobre --lo-surface */
-  --lo-fg-subtle: #6f6a63; /* ≥ 4.6:1 sobre surface, bg e surface-muted */
-  --lo-fg-disabled: #a8a196;
+  --lo-fg: #0f1f23;
+  --lo-fg-muted: #44585c; /* 7,6:1 sobre --lo-surface */
+  --lo-fg-subtle: #55696d; /* ≥ 5:1 sobre surface, bg, barra lateral e surface-muted */
+  --lo-fg-disabled: #9aabad;
 
-  --lo-primary: var(--pine-600);
-  --lo-primary-hover: var(--pine-700);
+  --lo-primary: #0b7469; /* 5,6:1 sobre branco */
+  --lo-primary-hover: #0a5f57;
   --lo-primary-fg: #ffffff;
-  --lo-primary-soft: var(--pine-50);
-  --lo-primary-soft-fg: var(--pine-700);
+  --lo-primary-soft: #e0f3f0;
+  --lo-primary-soft-fg: #08564e;
+  --lo-progress-track: #e3eaea;
 
   --lo-accent: var(--amber-500);
   --lo-accent-soft: #fbf0dc;
   --lo-accent-soft-fg: #7a4e0b;
 
-  --lo-success: #2a7343;
-  --lo-success-soft: #e7f3ea;
-  --lo-warning: #9a6200;
+  /* Destaques secundários (ícones de indicadores) — usados com moderação. */
+  --lo-violet: #6a4fd0;
+  --lo-violet-soft: #efebfc;
+  --lo-orange: #b4501a;
+  --lo-orange-soft: #fcede4;
+  --lo-yellow: #8a6200;
+  --lo-yellow-soft: #fbf3d9;
+
+  --lo-success: #217346;
+  --lo-success-soft: #e3f4ea;
+  --lo-warning: #8f5c00;
   --lo-warning-soft: #fcf1dc;
   --lo-danger: #b83a2e;
   --lo-danger-soft: #fbeae7;
@@ -86,7 +99,8 @@
   --lo-info-soft: #e8f0fa;
 
   --lo-focus: var(--pine-500);
-  --lo-overlay: rgb(31 29 26 / 0.4);
+  --lo-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2355696d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  --lo-overlay: rgb(10 25 28 / 0.42);
 
   /* Gráficos: paleta categórica em ordem fixa (validada para daltonismo, ver docs/metrics.md). */
   --lo-chart-1: #2a78d6;
@@ -95,58 +109,79 @@
   --lo-chart-4: #eda100;
   --lo-chart-5: #e87ba4;
   --lo-chart-6: #6250d6;
-  --lo-chart-grid: var(--sand-200);
-  --lo-chart-axis: #6f6a63;
+  --lo-chart-primary: #0f8f82; /* série única sem identidade de entidade (ex.: tempo por dia) */
+  --lo-chart-grid: #e3eaea;
+  --lo-chart-axis: #55696d;
 
-  --shadow-color: 30 25 15;
-  --elev-1: 0 1px 2px rgb(var(--shadow-color) / 0.05), 0 1px 1px rgb(var(--shadow-color) / 0.03);
+  --shadow-color: 15 40 45;
+  --elev-1: 0 1px 2px rgb(var(--shadow-color) / 0.06), 0 1px 1px rgb(var(--shadow-color) / 0.03);
   --elev-2:
-    0 4px 12px -2px rgb(var(--shadow-color) / 0.08), 0 2px 4px rgb(var(--shadow-color) / 0.04);
+    0 6px 16px -4px rgb(var(--shadow-color) / 0.1), 0 2px 4px rgb(var(--shadow-color) / 0.04);
   --elev-3:
-    0 16px 40px -8px rgb(var(--shadow-color) / 0.18), 0 4px 10px rgb(var(--shadow-color) / 0.06);
+    0 18px 44px -10px rgb(var(--shadow-color) / 0.22), 0 4px 10px rgb(var(--shadow-color) / 0.06);
+  --lo-glow: 0 6px 18px -6px rgb(11 116 105 / 0.45);
 
-  --hero-glow:
-    radial-gradient(120% 140% at 0% 0%, rgb(43 128 112 / 0.1), transparent 55%),
-    radial-gradient(90% 120% at 100% 0%, rgb(232 161 58 / 0.1), transparent 60%);
+  /* Superfícies com profundidade */
+  --lo-app-bg: radial-gradient(1100px 520px at 100% -8%, rgb(15 143 130 / 0.07), transparent 65%);
+  --lo-card-sheen: none;
+  --lo-hero:
+    radial-gradient(120% 140% at 100% 0%, rgb(15 143 130 / 0.14), transparent 55%),
+    linear-gradient(135deg, #ffffff 0%, #f0f8f7 100%);
+  --lo-hero-ridge-1: rgb(15 143 130 / 0.1);
+  --lo-hero-ridge-2: rgb(15 143 130 / 0.16);
+  --lo-hero-ridge-3: rgb(15 143 130 / 0.24);
+  --hero-glow: radial-gradient(80% 120% at 0% 0%, rgb(15 143 130 / 0.06), transparent 60%);
 }
 
 /* ---------- 2b. Tokens semânticos — tema escuro (projetado, não invertido) ---------- */
 [data-theme='dark'] {
+  /* Camadas de azul-petróleo: barra lateral < fundo < cartão < superfície interna < elevada,
+     com bordas finas levemente esverdeadas (1,3:1 e 1,8:1 sobre o cartão). */
   --lo-bg: var(--ink-950);
+  --lo-sidebar: var(--ink-975);
   --lo-surface: var(--ink-900);
   --lo-surface-muted: var(--ink-850);
   --lo-surface-raised: var(--ink-800);
-  --lo-border: #262c2d;
+  --lo-border: var(--ink-700);
   --lo-border-strong: var(--ink-600);
 
-  --lo-fg: var(--ink-100);
-  --lo-fg-muted: var(--ink-300);
-  --lo-fg-subtle: var(--ink-400); /* 5.6:1 sobre --lo-surface */
-  --lo-fg-disabled: #5d6567;
+  --lo-fg: var(--ink-100); /* 15:1 sobre o cartão */
+  --lo-fg-muted: var(--ink-300); /* 9,6:1 */
+  --lo-fg-subtle: var(--ink-400); /* 6,3:1 sobre o cartão; 5,4:1 sobre a superfície elevada */
+  --lo-fg-disabled: #4f676d;
 
-  --lo-primary: var(--pine-400);
+  --lo-primary: var(--pine-400); /* turquesa: 9,4:1 sobre o cartão */
   --lo-primary-hover: var(--pine-300);
-  --lo-primary-fg: var(--ink-950);
-  --lo-primary-soft: rgb(79 164 148 / 0.14);
-  --lo-primary-soft-fg: var(--pine-300);
+  --lo-primary-fg: #032420; /* 9:1 sobre a primária */
+  --lo-primary-soft: rgb(45 212 191 / 0.12);
+  --lo-primary-soft-fg: var(--pine-200);
+  --lo-progress-track: rgb(135 161 167 / 0.16);
 
-  --lo-accent: var(--amber-400);
-  --lo-accent-soft: rgb(232 161 58 / 0.14);
-  --lo-accent-soft-fg: #f0bf72;
+  --lo-accent: #f5b544;
+  --lo-accent-soft: rgb(245 181 68 / 0.13);
+  --lo-accent-soft-fg: #f8ca78;
 
-  --lo-success: #5cbf7e;
-  --lo-success-soft: rgb(92 191 126 / 0.13);
-  --lo-warning: #e5b04f;
-  --lo-warning-soft: rgb(229 176 79 / 0.13);
-  --lo-danger: #f07a6c;
-  --lo-danger-soft: rgb(240 122 108 / 0.13);
-  /* Texto sobre o vermelho claro do tema escuro: escuro (branco teria contraste 2,7:1). */
+  --lo-violet: #b39dfb;
+  --lo-violet-soft: rgb(167 139 250 / 0.14);
+  --lo-orange: #fb9b5b;
+  --lo-orange-soft: rgb(251 146 60 / 0.14);
+  --lo-yellow: #f7c948;
+  --lo-yellow-soft: rgb(250 204 21 / 0.13);
+
+  --lo-success: #4fd18b;
+  --lo-success-soft: rgb(79 209 139 / 0.13);
+  --lo-warning: #f2bd52;
+  --lo-warning-soft: rgb(242 189 82 / 0.14);
+  --lo-danger: #f78a7d;
+  --lo-danger-soft: rgb(247 138 125 / 0.14);
+  /* Texto sobre o vermelho claro do tema escuro: escuro (branco teria contraste 2,6:1). */
   --lo-danger-fg: var(--ink-950);
-  --lo-info: #7aa9e8;
-  --lo-info-soft: rgb(122 169 232 / 0.13);
+  --lo-info: #7fb8f5;
+  --lo-info-soft: rgb(127 184 245 / 0.13);
 
   --lo-focus: var(--pine-300);
-  --lo-overlay: rgb(0 0 0 / 0.6);
+  --lo-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2387a1a7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  --lo-overlay: rgb(2 8 10 / 0.7);
 
   --lo-chart-1: #3987e5;
   --lo-chart-2: #d95926;
@@ -154,18 +189,28 @@
   --lo-chart-4: #c98500;
   --lo-chart-5: #d55181;
   --lo-chart-6: #9085e9;
-  --lo-chart-grid: #262c2d;
+  --lo-chart-primary: var(--pine-400);
+  --lo-chart-grid: var(--ink-700);
   --lo-chart-axis: var(--ink-400);
 
-  /* No escuro, elevação vem mais de bordas/superfícies do que de sombra. */
+  /* No escuro, a elevação vem do brilho de borda superior + sombra profunda. */
   --shadow-color: 0 0 0;
-  --elev-1: 0 1px 2px rgb(0 0 0 / 0.4);
-  --elev-2: 0 6px 16px -4px rgb(0 0 0 / 0.5);
-  --elev-3: 0 20px 48px -8px rgb(0 0 0 / 0.65);
+  --elev-1: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 1px 2px rgb(0 0 0 / 0.4);
+  --elev-2: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 10px 28px -10px rgb(0 0 0 / 0.65);
+  --elev-3: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 28px 64px -14px rgb(0 0 0 / 0.75);
+  --lo-glow: 0 0 0 1px rgb(45 212 191 / 0.35), 0 8px 24px -8px rgb(45 212 191 / 0.55);
 
-  --hero-glow:
-    radial-gradient(120% 140% at 0% 0%, rgb(79 164 148 / 0.14), transparent 55%),
-    radial-gradient(90% 120% at 100% 0%, rgb(232 161 58 / 0.08), transparent 60%);
+  --lo-app-bg:
+    radial-gradient(1100px 560px at 100% -10%, rgb(45 212 191 / 0.07), transparent 62%),
+    radial-gradient(900px 520px at -10% 110%, rgb(34 140 160 / 0.06), transparent 60%);
+  --lo-card-sheen: linear-gradient(180deg, rgb(255 255 255 / 0.028), rgb(255 255 255 / 0) 55%);
+  --lo-hero:
+    radial-gradient(90% 130% at 100% 0%, rgb(45 212 191 / 0.2), transparent 55%),
+    linear-gradient(135deg, #10262c 0%, #0c1c21 48%, #0e2a2f 100%);
+  --lo-hero-ridge-1: rgb(45 212 191 / 0.07);
+  --lo-hero-ridge-2: rgb(45 212 191 / 0.11);
+  --lo-hero-ridge-3: rgb(7 16 19 / 0.75);
+  --hero-glow: radial-gradient(80% 120% at 0% 0%, rgb(45 212 191 / 0.07), transparent 60%);
 }
 
 /* ---------- 3. Exposição ao Tailwind ---------- */
@@ -174,6 +219,8 @@
   --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
 
   --color-bg: var(--lo-bg);
+  --color-sidebar: var(--lo-sidebar);
+  --color-progress-track: var(--lo-progress-track);
   --color-surface: var(--lo-surface);
   --color-surface-muted: var(--lo-surface-muted);
   --color-surface-raised: var(--lo-surface-raised);
@@ -200,17 +247,25 @@
   --color-danger-fg: var(--lo-danger-fg);
   --color-info: var(--lo-info);
   --color-info-soft: var(--lo-info-soft);
+  --color-violet: var(--lo-violet);
+  --color-violet-soft: var(--lo-violet-soft);
+  --color-orange: var(--lo-orange);
+  --color-orange-soft: var(--lo-orange-soft);
+  --color-yellow: var(--lo-yellow);
+  --color-yellow-soft: var(--lo-yellow-soft);
   --color-focus: var(--lo-focus);
   --color-overlay: var(--lo-overlay);
 
   --shadow-elev-1: var(--elev-1);
   --shadow-elev-2: var(--elev-2);
   --shadow-elev-3: var(--elev-3);
+  --shadow-glow: var(--lo-glow);
 
+  /* Raios: campos e botões 8 px · cartões 12 px · diálogos 16 px. */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 
   /* Escala tipográfica (1.2 — "minor third"), com altura de linha embutida */
   --text-caption: 0.75rem;
@@ -219,12 +274,18 @@
   --text-body-sm--line-height: 1.25rem;
   --text-body: 0.9375rem;
   --text-body--line-height: 1.5rem;
-  --text-title-sm: 1.0625rem;
+  --text-title-sm: 1rem;
   --text-title-sm--line-height: 1.5rem;
   --text-title: 1.375rem;
   --text-title--line-height: 1.875rem;
-  --text-display: 1.875rem;
+  --text-display: 1.75rem;
   --text-display--line-height: 2.25rem;
+  /* Indicadores numéricos (tempo, contagens) */
+  --text-metric: 1.75rem;
+  --text-metric--line-height: 2rem;
+  /* Rótulos de grupo e metadados em caixa alta */
+  --text-overline: 0.6875rem;
+  --text-overline--line-height: 1rem;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -238,6 +299,9 @@
 
   body {
     @apply bg-bg text-fg font-sans text-body antialiased;
+    background-image: var(--lo-app-bg);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     font-feature-settings: 'ss01', 'cv11';
     min-height: 100dvh;
   }
@@ -256,6 +320,47 @@
 
   .tabular {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Selects nativos com a mesma seta em todos os temas e navegadores (o menu continua nativo,
+     acessível e adequado ao celular). */
+  select:not([multiple]):not([size]) {
+    appearance: none;
+    background-image: var(--lo-select-chevron);
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1rem;
+    padding-right: 2.25rem;
+  }
+
+  select option {
+    background-color: var(--lo-surface-raised);
+    color: var(--lo-fg);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Âncoras de seção não ficam escondidas sob a barra superior fixa. */
+  h2[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--lo-border-strong);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
@@ -306,6 +411,17 @@
 
 @utility animate-fade-up {
   animation: fade-up 240ms var(--ease-out-soft) both;
+}
+
+/* Cartão com profundidade: brilho sutil no topo (tema escuro) sobre a superfície. */
+@utility surface-card {
+  background-color: var(--lo-surface);
+  background-image: var(--lo-card-sheen);
+}
+
+@utility surface-hero {
+  background-color: var(--lo-surface);
+  background-image: var(--lo-hero);
 }
 
 @utility skeleton {
@@ -432,6 +548,54 @@
 
 .lo-calendar .fc-event .fc-event-main {
   color: inherit;
+}
+
+/* Leitura da grade: cabeçalhos discretos, hoje destacado (cor + círculo, não só cor). */
+.lo-calendar .fc .fc-col-header-cell {
+  background: var(--lo-surface-muted);
+}
+.lo-calendar .fc .fc-col-header-cell-cushion {
+  padding: 0.5rem 0.25rem;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--lo-fg-muted);
+  text-transform: capitalize;
+}
+.lo-calendar .fc .fc-day-today .fc-col-header-cell-cushion {
+  color: var(--lo-primary);
+}
+.lo-calendar .fc .fc-timegrid-slot-label-cushion,
+.lo-calendar .fc .fc-timegrid-axis-cushion {
+  font-size: var(--text-caption);
+  color: var(--lo-fg-subtle);
+}
+.lo-calendar .fc .fc-timegrid-slot-minor {
+  border-top-style: dotted;
+}
+.lo-calendar .fc .fc-daygrid-day-number {
+  margin: 0.25rem;
+  min-width: 1.5rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+  font-size: var(--text-caption);
+  font-weight: 500;
+  text-align: center;
+  color: var(--lo-fg-muted);
+}
+.lo-calendar .fc .fc-day-today .fc-daygrid-day-number {
+  background: var(--lo-primary);
+  color: var(--lo-primary-fg);
+  font-weight: 600;
+}
+.lo-calendar .fc .fc-day-other .fc-daygrid-day-number {
+  color: var(--lo-fg-disabled);
+}
+.lo-calendar .fc .fc-event-time {
+  font-weight: 600;
+}
+.lo-calendar .fc .fc-scrollgrid {
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
 /* Item do calendário em conflito: contorno tracejado vermelho + ícone no título (não só cor). */

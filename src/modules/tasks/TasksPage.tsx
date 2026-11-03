@@ -91,12 +91,8 @@ export function TasksPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <CheckSquare aria-hidden="true" className="size-4" />
-            Planejar
-          </span>
-        }
+        module="tasks"
+        eyebrow={<span className="inline-flex items-center gap-2">Planejar</span>}
         title="Tarefas"
         description="O que precisa ser feito, com prazo, prioridade, subtarefas e dependências."
         actions={
@@ -111,7 +107,7 @@ export function TasksPage() {
         }
       />
 
-      <div className="mb-4 flex flex-col gap-3">
+      <div className="surface-card mb-4 flex flex-col gap-3 rounded-lg border border-border p-3 shadow-elev-1 sm:p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <SearchField
             className="flex-1"

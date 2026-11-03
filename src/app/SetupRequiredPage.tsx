@@ -24,7 +24,7 @@ export function SetupRequiredPage({ problems }: { problems: string[] }) {
           ))}
         </ul>
       </Notice>
-      <div className="w-full rounded-md border border-border bg-surface p-4 text-left text-body-sm text-fg-muted">
+      <div className="w-full rounded-md border border-border surface-card p-4 text-left text-body-sm text-fg-muted">
         <p>
           Copie <code className="font-mono text-fg">.env.example</code> para{' '}
           <code className="font-mono text-fg">.env.local</code>, preencha a URL do projeto e a chave{' '}

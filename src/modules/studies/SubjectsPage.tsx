@@ -118,7 +118,7 @@ export function SubjectsPage() {
                   <li key={s.id}>
                     <Link
                       to={`/estudos/materias/${s.id}`}
-                      className="flex h-full flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-elev-1 transition-colors hover:border-border-strong"
+                      className="flex h-full flex-col gap-3 rounded-lg border border-border surface-card p-4 shadow-elev-1 transition-colors hover:border-primary/40"
                     >
                       <div className="flex items-start gap-2.5">
                         <span
@@ -149,7 +149,7 @@ export function SubjectsPage() {
                             max={s.target_minutes_per_week}
                             label={`Carga semanal de ${s.name}`}
                             valueText={`${formatDuration(seconds / 60)} de ${formatDuration(s.target_minutes_per_week)}`}
-                            tone="accent"
+                            tone={seconds / 60 >= s.target_minutes_per_week ? 'success' : 'primary'}
                           />
                         )}
                         <div className="flex flex-wrap gap-1.5 pt-1">

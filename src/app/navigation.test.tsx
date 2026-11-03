@@ -31,7 +31,7 @@ describe('navegação principal', () => {
     'a rota de %s (%s) renderiza a página correspondente',
     async (label, path) => {
       renderApp(path);
-      const expected = path === '/' ? /^(Bom dia|Boa tarde|Boa noite)\.$/ : label;
+      const expected = path === '/' ? /^(Bom dia|Boa tarde|Boa noite)!$/ : label;
       expect(await screen.findByRole('heading', { level: 1, name: expected })).toBeInTheDocument();
     },
   );
