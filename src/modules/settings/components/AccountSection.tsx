@@ -201,7 +201,8 @@ function DeleteAccountCard() {
       <CardHeader
         title="Excluir conta"
         titleId="settings-danger"
-        icon={<ShieldAlert className="size-4 text-danger" />}
+        icon={<ShieldAlert className="size-4" />}
+        iconTone="danger"
         description="Permanente e sem volta"
       />
       <CardBody className="flex flex-col gap-4">

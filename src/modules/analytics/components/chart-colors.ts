@@ -12,3 +12,9 @@ export const CHART_COLORS = [
 export function colorAt(index: number): string {
   return CHART_COLORS[index % CHART_COLORS.length] ?? 'var(--lo-chart-1)';
 }
+
+/**
+ * Série única que não representa uma entidade (ex.: "tempo por dia"): usa a cor da marca.
+ * Entidades (matérias, categorias, hábitos) continuam com as cores categóricas fixas acima.
+ */
+export const SERIES_PRIMARY = 'var(--lo-chart-primary)';

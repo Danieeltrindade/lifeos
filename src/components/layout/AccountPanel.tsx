@@ -16,15 +16,15 @@ export function AccountPanel() {
   const initial = (name || '?').charAt(0).toUpperCase();
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5 rounded-md px-1">
       <span
         aria-hidden="true"
-        className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-soft text-body-sm font-semibold text-primary-soft-fg"
+        className="grid size-9 shrink-0 place-items-center rounded-full bg-linear-to-br from-primary/90 to-primary/50 text-body-sm font-semibold text-primary-fg ring-2 ring-primary/25"
       >
         {initial}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-body-sm font-medium">{name}</p>
+        <p className="truncate text-body-sm font-semibold">{name}</p>
         {name !== email && <p className="truncate text-caption text-fg-subtle">{email}</p>}
       </div>
       <button

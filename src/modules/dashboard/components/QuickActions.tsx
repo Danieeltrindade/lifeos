@@ -1,11 +1,4 @@
-import {
-  ArrowRight,
-  BookOpen,
-  CheckSquare,
-  NotebookPen,
-  Timer,
-  type LucideIcon,
-} from 'lucide-react';
+import { BookOpen, CheckSquare, NotebookPen, Timer, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import { getModule, type ModuleId } from '@/app/modules';
 
@@ -30,11 +23,11 @@ const ACTIONS: QuickAction[] = [
  */
 export function QuickActions() {
   return (
-    <section aria-labelledby="dash-quick" className="mb-6">
+    <section aria-labelledby="dash-quick">
       <h2 id="dash-quick" className="sr-only">
         Ações rápidas
       </h2>
-      <ul className="grid grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
         {ACTIONS.map((action) => {
           const mod = getModule(action.module);
           const available = mod.status === 'available';
@@ -43,28 +36,13 @@ export function QuickActions() {
             <li key={action.label}>
               <Link
                 to={action.to ?? mod.path}
-                className="group flex h-full min-h-16 items-center gap-3 rounded-lg border border-border bg-surface p-3 shadow-elev-1 transition-[border-color,box-shadow] hover:border-border-strong hover:shadow-elev-2 sm:p-4"
+                className="group flex min-h-11 items-center gap-2 rounded-lg py-1.5 leading-tight border border-border-strong/70 bg-surface/70 px-3.5 text-body-sm font-medium text-fg backdrop-blur-sm transition-[border-color,background-color,box-shadow] duration-150 hover:border-primary/50 hover:bg-surface-muted hover:shadow-glow sm:h-10"
               >
-                <span
-                  aria-hidden="true"
-                  className="grid size-9 shrink-0 place-items-center rounded-md bg-primary-soft text-primary-soft-fg"
-                >
-                  <Icon className="size-[18px]" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-body-sm leading-tight font-medium">
-                    {action.label}
-                  </span>
-                  {!available && (
-                    <span className="block text-caption text-fg-subtle">
-                      Fase {mod.phase} · em breve
-                    </span>
-                  )}
-                </span>
-                <ArrowRight
-                  aria-hidden="true"
-                  className="hidden size-4 shrink-0 text-fg-subtle transition-transform group-hover:translate-x-0.5 sm:block"
-                />
+                <Icon aria-hidden="true" className="size-4 shrink-0 text-primary" />
+                <span className="min-w-0">{action.label}</span>
+                {!available && (
+                  <span className="text-caption text-fg-subtle">· fase {mod.phase}</span>
+                )}
               </Link>
             </li>
           );

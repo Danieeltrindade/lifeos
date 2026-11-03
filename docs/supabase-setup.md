@@ -43,15 +43,25 @@ VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 
 As migrations ficam em `supabase/migrations/` e são aplicadas **em ordem de nome**:
 
-| Arquivo                            | Conteúdo                                                  |
-| ---------------------------------- | --------------------------------------------------------- |
-| `20261020190000_foundation.sql`    | Convenções, schema `private`, perfis, trigger de cadastro |
-| `20261020190100_planning.sql`      | Projetos, tarefas, subtarefas, dependências               |
-| `20261020190200_studies.sql`       | Matérias, tópicos, anotações, sessões, pausas, revisões   |
-| `20261020190300_tracking.sql`      | Categorias, atividades, hábitos, metas, diário            |
-| `20261020190400_calendar.sql`      | Eventos, recorrência, exceções                            |
-| `20261020190500_engagement.sql`    | Recomendações, lembretes                                  |
-| `20261020190600_api_functions.sql` | Funções RPC (cronômetro, dashboard, exportação, exclusão) |
+| Arquivo                                          | Conteúdo                                                  |
+| ------------------------------------------------ | --------------------------------------------------------- |
+| `20261020190000_foundation.sql`                  | Convenções, schema `private`, perfis, trigger de cadastro |
+| `20261020190100_planning.sql`                    | Projetos, tarefas, subtarefas, dependências               |
+| `20261020190200_studies.sql`                     | Matérias, tópicos, anotações, sessões, pausas, revisões   |
+| `20261020190300_tracking.sql`                    | Categorias, atividades, hábitos, metas, diário            |
+| `20261020190400_calendar.sql`                    | Eventos, recorrência, exceções                            |
+| `20261020190500_engagement.sql`                  | Recomendações, lembretes                                  |
+| `20261020190600_api_functions.sql`               | Funções RPC (cronômetro, dashboard, exportação, exclusão) |
+| `20261021120000_tasks_projects.sql`              | Tarefas e projetos completos (Fase 3)                     |
+| `20261021120100_studies_activities.sql`          | Estudos e atividades (Fase 3)                             |
+| `20261021120200_reviews_reflections.sql`         | Revisões e reflexões (Fase 3)                             |
+| `20261021120300_goals_habits_diary.sql`          | Metas, hábitos e diário (Fase 3)                          |
+| `20261021120400_api_v2.sql`                      | Funções RPC da Fase 3                                     |
+| `20261022120000_integration_recommendations.sql` | Integração entre módulos e recomendações (Fase 4)         |
+| `20261022120100_analytics.sql`                   | Estatísticas, planejamento e exportação v3 (Fase 4)       |
+| `20261023120000_phase5_integrity.sql`            | Correção de integridade nas exclusões (Fase 5)            |
+
+São **15 arquivos**. Aplique sempre todos, na ordem.
 
 ### Opção A — Supabase CLI (recomendada: registra o histórico de migrations)
 
@@ -74,7 +84,7 @@ vez. Esse caminho não registra o histórico; se depois você passar a usar o CL
 migrations como aplicadas antes do primeiro `db push`:
 
 ```bash
-npx --yes supabase@2 migration repair --status applied 20261020190000 20261020190100 20261020190200 20261020190300 20261020190400 20261020190500 20261020190600
+npx --yes supabase@2 migration repair --status applied 20261020190000 20261020190100 20261020190200 20261020190300 20261020190400 20261020190500 20261020190600 20261021120000 20261021120100 20261021120200 20261021120300 20261021120400 20261022120000 20261022120100 20261023120000
 ```
 
 ### Validar antes de aplicar em produção

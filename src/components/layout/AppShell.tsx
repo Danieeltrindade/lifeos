@@ -32,7 +32,7 @@ export function AppShell() {
           id="conteudo"
           ref={mainRef}
           tabIndex={-1}
-          className="mx-auto w-full max-w-[1200px] flex-1 px-4 pt-6 pb-28 outline-none sm:px-6 lg:px-10 lg:pt-10 lg:pb-16"
+          className="mx-auto w-full max-w-[1320px] flex-1 px-4 pt-5 pb-28 outline-none sm:px-6 lg:px-8 lg:pt-8 lg:pb-16 xl:px-10"
         >
           <Outlet />
         </main>

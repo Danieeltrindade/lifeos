@@ -1,6 +1,6 @@
 import { pluralize } from '@/lib/text';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, CalendarPlus, Info, Plus, Wand2, X } from 'lucide-react';
+import { AlertTriangle, CalendarPlus, Info, Plus, X } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -473,12 +473,8 @@ export function PlannerPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <Wand2 aria-hidden="true" className="size-4" />
-            Planejar
-          </span>
-        }
+        module="calendar"
+        eyebrow={<span className="inline-flex items-center gap-2">Planejar</span>}
         title="Planejar a semana"
         description="Sugestão de blocos a partir da sua disponibilidade, compromissos, prazos, prioridades e estimativas — explicada item a item."
         actions={

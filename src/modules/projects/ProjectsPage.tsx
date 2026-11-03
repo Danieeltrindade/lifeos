@@ -48,12 +48,8 @@ export function ProjectsPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <FolderKanban aria-hidden="true" className="size-4" />
-            Planejar
-          </span>
-        }
+        module="projects"
+        eyebrow={<span className="inline-flex items-center gap-2">Planejar</span>}
         title="Projetos"
         description="Resultados maiores, divididos em tarefas e marcos. O progresso vem das tarefas concluídas."
         actions={
@@ -126,7 +122,7 @@ export function ProjectsPage() {
                   <li key={p.id}>
                     <Link
                       to={`/projetos/${p.id}`}
-                      className="flex h-full flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-elev-1 transition-colors hover:border-border-strong"
+                      className="flex h-full flex-col gap-3 rounded-lg border border-border surface-card p-4 shadow-elev-1 transition-colors hover:border-primary/40"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <h2 className="min-w-0 font-semibold">{p.name}</h2>

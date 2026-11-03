@@ -111,12 +111,8 @@ export function ActivitiesPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <Timer aria-hidden="true" className="size-4" />
-            Registrar
-          </span>
-        }
+        module="activities"
+        eyebrow={<span className="inline-flex items-center gap-2">Registrar</span>}
         title="Atividades"
         description="O que realmente aconteceu: sessões do cronômetro e registros manuais, com métricas por tipo."
         actions={
@@ -208,7 +204,7 @@ export function ActivitiesPage() {
           {visible.length === 0 ? (
             <EmptyState title="Nenhuma atividade com esses filtros" />
           ) : (
-            <ul className="flex flex-col divide-y divide-border rounded-lg border border-border bg-surface shadow-elev-1">
+            <ul className="flex flex-col divide-y divide-border rounded-lg border border-border surface-card shadow-elev-1">
               {visible.map((a) => {
                 const k = isKind(a.kind) ? a.kind : 'other';
                 const Icon = KIND_ICONS[k];
@@ -228,7 +224,7 @@ export function ActivitiesPage() {
                       <div className="flex items-start justify-between gap-2">
                         <button
                           type="button"
-                          className="min-w-0 truncate text-left font-medium hover:underline"
+                          className="min-w-0 truncate text-left text-body-sm font-medium hover:text-primary"
                           onClick={() => {
                             setDialog({ mode: 'edit', activity: a });
                           }}
@@ -246,35 +242,37 @@ export function ActivitiesPage() {
                         · {formatTime(a.started_at, timezone)}–{formatTime(a.ended_at, timezone)}
                         {endDay !== day && ' (dia seguinte)'}
                       </p>
-                      <div className="mt-1 flex flex-wrap gap-1.5">
-                        <Badge>{KIND_LABELS[k]}</Badge>
-                        <Badge tone={a.source === 'timer' ? 'info' : 'neutral'}>
+                      <ul className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-caption text-fg-subtle [&>li+li]:before:mr-1.5 [&>li+li]:before:content-['·']">
+                        <li>{KIND_LABELS[k]}</li>
+                        <li className={a.source === 'timer' ? 'text-info' : undefined}>
                           {a.source === 'timer' ? 'Cronômetro' : 'Manual'}
-                        </Badge>
+                        </li>
                         {a.subject_id && names.subject.has(a.subject_id) && (
-                          <Badge tone="primary">{names.subject.get(a.subject_id)}</Badge>
+                          <li className="font-medium text-fg-muted">
+                            {names.subject.get(a.subject_id)}
+                          </li>
                         )}
-                        {a.pages !== null && (
-                          <Badge>{pluralize(a.pages, 'página', 'páginas')}</Badge>
-                        )}
-                        {a.reading_title && <Badge>{a.reading_title}</Badge>}
+                        {a.pages !== null && <li>{pluralize(a.pages, 'página', 'páginas')}</li>}
+                        {a.reading_title && <li>{a.reading_title}</li>}
                         {a.distance_km !== null && (
-                          <Badge>{String(a.distance_km).replace('.', ',')} km</Badge>
+                          <li>{String(a.distance_km).replace('.', ',')} km</li>
                         )}
-                        {a.intensity !== null && <Badge>{INTENSITY_LABELS[a.intensity]}</Badge>}
+                        {a.intensity !== null && <li>{INTENSITY_LABELS[a.intensity]}</li>}
                         {a.category_id && names.category.has(a.category_id) && (
-                          <Badge>{names.category.get(a.category_id)}</Badge>
+                          <li>{names.category.get(a.category_id)}</li>
                         )}
-                        {task && <Badge>Tarefa: {task.title}</Badge>}
+                        {task && <li>Tarefa: {task.title}</li>}
                         {a.project_id && names.project.has(a.project_id) && (
-                          <Badge>Projeto: {names.project.get(a.project_id)}</Badge>
+                          <li>Projeto: {names.project.get(a.project_id)}</li>
                         )}
-                        {counting.length > 0 && (
+                      </ul>
+                      {counting.length > 0 && (
+                        <p className="mt-1.5">
                           <Badge tone="accent">
                             Conta para: {counting.map((g) => g.title).join(', ')}
                           </Badge>
-                        )}
-                      </div>
+                        </p>
+                      )}
                       {a.notes && (
                         <p className="mt-1 line-clamp-2 text-body-sm text-fg-muted">{a.notes}</p>
                       )}

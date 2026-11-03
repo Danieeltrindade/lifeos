@@ -6,20 +6,27 @@
  *  - tabela equivalente sempre disponível ("Ver dados em tabela") — o gráfico nunca é a
  *    única forma de ler o número, nem a cor a única forma de distinguir séries.
  */
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import {
+  Area,
   Bar,
   BarChart,
   CartesianGrid,
+  ComposedChart,
   Legend,
   Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
+import { SERIES_PRIMARY } from './chart-colors';
+
+/** Id seguro para url(#…) a partir do useId do React. */
+function useSvgId(prefix: string): string {
+  return `${prefix}-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
+}
 
 const axisProps = {
   stroke: 'var(--lo-chart-axis)',
@@ -149,6 +156,7 @@ export function BarSeriesChart({
   layout?: 'horizontal' | 'vertical';
 }) {
   const vertical = layout === 'vertical';
+  const gradientId = useSvgId('bar');
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart
@@ -166,7 +174,18 @@ export function BarSeriesChart({
         margin={{ top: 8, right: 8, bottom: 0, left: 0 }}
         barCategoryGap="20%"
       >
-        <CartesianGrid stroke="var(--lo-chart-grid)" vertical={vertical} horizontal={!vertical} />
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1={vertical ? 0 : 1} x2={vertical ? 1 : 0} y2="0">
+            <stop offset="0" stopColor={SERIES_PRIMARY} stopOpacity={0.45} />
+            <stop offset="1" stopColor={SERIES_PRIMARY} stopOpacity={1} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid
+          stroke="var(--lo-chart-grid)"
+          strokeDasharray="3 4"
+          vertical={vertical}
+          horizontal={!vertical}
+        />
         {vertical ? (
           <>
             <XAxis
@@ -206,8 +225,8 @@ export function BarSeriesChart({
             key={s.key}
             dataKey={s.key}
             name={s.label}
-            fill={s.color}
-            radius={vertical ? [0, 4, 4, 0] : [4, 4, 0, 0]}
+            fill={s.color === SERIES_PRIMARY && !rowColors ? `url(#${gradientId})` : s.color}
+            radius={vertical ? [0, 6, 6, 0] : [6, 6, 0, 0]}
             stroke="var(--lo-surface)"
             strokeWidth={stacked ? 1 : 0}
             maxBarSize={36}
@@ -230,14 +249,22 @@ export function LineSeriesChart({
   format: (v: number) => string;
   height?: number;
 }) {
+  const areaId = useSvgId('area');
+  const first = series[0];
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <LineChart
+      <ComposedChart
         accessibilityLayer={false}
         data={data}
         margin={{ top: 8, right: 12, bottom: 0, left: 0 }}
       >
-        <CartesianGrid stroke="var(--lo-chart-grid)" vertical={false} />
+        <defs>
+          <linearGradient id={areaId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor={first?.color} stopOpacity={0.28} />
+            <stop offset="1" stopColor={first?.color} stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid stroke="var(--lo-chart-grid)" strokeDasharray="3 4" vertical={false} />
         <XAxis dataKey="label" {...axisProps} minTickGap={12} />
         <YAxis {...axisProps} width={56} tickFormatter={(v: number) => format(v)} />
         <Tooltip
@@ -246,6 +273,19 @@ export function LineSeriesChart({
         />
         {series.length > 1 && (
           <Legend wrapperStyle={{ fontSize: 12, color: 'var(--lo-fg-muted)' }} />
+        )}
+        {first && (
+          // Preenchimento suave sob a primeira série (só visual: fora da legenda e do tooltip).
+          <Area
+            type="monotone"
+            dataKey={first.key}
+            fill={`url(#${areaId})`}
+            stroke="none"
+            legendType="none"
+            tooltipType="none"
+            isAnimationActive={false}
+            connectNulls={false}
+          />
         )}
         {series.map((s, i) => (
           <Line
@@ -261,7 +301,7 @@ export function LineSeriesChart({
             connectNulls={false}
           />
         ))}
-      </LineChart>
+      </ComposedChart>
     </ResponsiveContainer>
   );
 }
@@ -279,12 +319,14 @@ export function StatTile({
   comparison?: string | null;
 }) {
   return (
-    <div className="rounded-lg border border-border bg-surface p-4 shadow-elev-1">
-      <p className="text-caption font-medium text-fg-subtle">{label}</p>
-      <p className="mt-1 text-title font-semibold tabular-nums">{value}</p>
-      {detail && <p className="mt-1 text-caption text-fg-muted">{detail}</p>}
+    <div className="flex flex-col rounded-lg border border-border surface-card p-4 shadow-elev-1 sm:p-5">
+      <p className="text-overline font-semibold tracking-[0.06em] text-fg-subtle uppercase">
+        {label}
+      </p>
+      <p className="mt-2 text-metric font-semibold tracking-[-0.02em] tabular-nums">{value}</p>
+      {detail && <p className="mt-1.5 text-caption text-fg-muted">{detail}</p>}
       {comparison && (
-        <p className="mt-1 text-caption text-fg-muted">
+        <p className="mt-auto pt-2 text-caption text-fg-muted">
           <span className="sr-only">Comparação com o período anterior: </span>
           {comparison}
         </p>

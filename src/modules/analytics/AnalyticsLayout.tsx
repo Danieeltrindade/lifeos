@@ -1,4 +1,3 @@
-import { BarChart3 } from 'lucide-react';
 import { Outlet, useLocation } from 'react-router';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SubNav } from '@/components/ui/SubNav';
@@ -14,12 +13,8 @@ export function AnalyticsLayout() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <BarChart3 aria-hidden="true" className="size-4" />
-            Avaliar
-          </span>
-        }
+        module="analytics"
+        eyebrow={<span className="inline-flex items-center gap-2">Avaliar</span>}
         title="Análises"
         description="Números calculados dos seus registros reais, com a fórmula de cada um explicada. Nada é estimado ou inventado."
       />

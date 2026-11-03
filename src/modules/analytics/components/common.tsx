@@ -11,13 +11,13 @@ export function StatsGrid({ children }: { children: ReactNode }) {
 }
 
 export function ChartsGrid({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">{children}</div>;
+  return <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">{children}</div>;
 }
 
 /** Nota "Como é calculado" — remete a docs/metrics.md, com a fórmula resumida. */
 export function HowCalculated({ children }: { children: ReactNode }) {
   return (
-    <details className="mt-6 rounded-md border border-border bg-surface-muted p-3 text-body-sm text-fg-muted">
+    <details className="mt-6 rounded-lg border border-border surface-card px-4 py-3 text-body-sm text-fg-muted">
       <summary className="flex cursor-pointer items-center gap-2 font-medium text-fg">
         <Info aria-hidden="true" className="size-4" />
         Como estes números são calculados

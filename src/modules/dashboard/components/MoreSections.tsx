@@ -20,15 +20,24 @@ export function HabitsTodaySection({ habits }: { habits: HabitToday[] }) {
         action={<SectionLink to="/habitos" label="Abrir hábitos" />}
       />
       <CardBody>
-        <ul className="flex flex-col gap-2">
+        <ul className="grid gap-2 sm:grid-cols-2">
           {habits.map((h) => (
-            <li key={h.id} className="flex items-center gap-2 text-body-sm">
+            <li
+              key={h.id}
+              className={
+                h.done
+                  ? 'flex min-h-10 items-center gap-2.5 rounded-md border border-success/25 bg-success-soft px-3 text-body-sm'
+                  : 'flex min-h-10 items-center gap-2.5 rounded-md border border-border bg-surface-muted/50 px-3 text-body-sm'
+              }
+            >
               {h.done ? (
-                <CheckCircle2 aria-hidden="true" className="size-4 text-success" />
+                <CheckCircle2 aria-hidden="true" className="size-4 shrink-0 text-success" />
               ) : (
-                <Circle aria-hidden="true" className="size-4 text-fg-subtle" />
+                <Circle aria-hidden="true" className="size-4 shrink-0 text-fg-subtle" />
               )}
-              <span className={h.done ? 'text-fg-muted' : 'font-medium'}>{h.name}</span>
+              <span className={h.done ? 'truncate text-fg-muted' : 'truncate font-medium'}>
+                {h.name}
+              </span>
               <span className="sr-only">{h.done ? ': feito' : ': pendente'}</span>
             </li>
           ))}
@@ -89,7 +98,7 @@ export function ActiveSessionBanner({ label, clock }: { label: string; clock: st
   return (
     <Link
       to="/estudos/cronometro"
-      className="mb-4 flex items-center gap-3 rounded-lg border border-primary/40 bg-primary-soft p-3 text-body-sm text-primary-soft-fg"
+      className="mb-4 flex items-center gap-3 rounded-lg border border-primary/40 bg-primary-soft px-4 py-3 text-body-sm text-primary-soft-fg transition-colors hover:border-primary/70"
     >
       <Timer aria-hidden="true" className="size-5 shrink-0" />
       <span className="flex-1">

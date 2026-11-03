@@ -1,11 +1,11 @@
-import { Check, CornerDownRight, Link2, ListTree, RotateCcw } from 'lucide-react';
+import { Check, CornerDownRight, FolderKanban, Link2, ListTree } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import type { ISODate } from '@/lib/date';
 import { cn } from '@/lib/cn';
 import type { Project, Task } from '@/services/data/queries';
 import type { Tables } from '@/services/supabase/database.types';
 import { isOpen, pendingPrerequisites, subtaskSummary } from '../logic/tasks';
-import { DueBadge, PriorityBadge } from './TaskBadges';
+import { DueMeta, PriorityFlag } from './TaskBadges';
 
 /**
  * Lista de tarefas. Subtarefas aparecem recuadas logo abaixo da mãe quando ela está na
@@ -43,7 +43,7 @@ export function TaskList({
   }
 
   return (
-    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-lg border border-border bg-surface shadow-elev-1">
+    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-lg border border-border surface-card shadow-elev-1">
       {ordered.map(({ task, nested }) => {
         const blocked = isOpen(task) && pendingPrerequisites(task.id, deps, allTasks).length > 0;
         const subs = subtaskSummary(task.id, allTasks);
@@ -53,7 +53,10 @@ export function TaskList({
         return (
           <li
             key={task.id}
-            className={cn('flex items-start gap-3 px-3 py-2.5 sm:px-4', nested && 'pl-10 sm:pl-12')}
+            className={cn(
+              'group/task flex items-start gap-2 px-2 py-2 transition-colors hover:bg-surface-muted/40 sm:gap-3 sm:px-3',
+              nested && 'pl-9 sm:pl-11',
+            )}
           >
             <button
               type="button"
@@ -64,18 +67,20 @@ export function TaskList({
               aria-label={done ? `Reabrir “${task.title}”` : `Concluir “${task.title}”`}
               title={blocked ? 'Há dependências abertas' : undefined}
               className={cn(
-                'mt-0.5 grid size-9 shrink-0 place-items-center rounded-full border-2 transition-colors',
-                done
-                  ? 'border-success bg-success text-white'
-                  : 'border-border-strong text-transparent hover:border-primary hover:text-primary',
+                'group/check grid size-10 shrink-0 place-items-center rounded-md transition-colors hover:bg-surface-muted',
                 cancelled && 'opacity-40',
               )}
             >
-              {done ? (
-                <RotateCcw aria-hidden="true" className="size-3.5" />
-              ) : (
-                <Check aria-hidden="true" className="size-4" />
-              )}
+              <span
+                className={cn(
+                  'grid size-5 place-items-center rounded-full border-2 transition-[background-color,border-color,color] duration-150',
+                  done
+                    ? 'border-success bg-success text-bg'
+                    : 'border-border-strong text-transparent group-hover/check:border-primary group-hover/check:text-primary',
+                )}
+              >
+                <Check aria-hidden="true" className="size-3 stroke-[3]" />
+              </span>
             </button>
             <div className="min-w-0 flex-1">
               <button
@@ -84,27 +89,30 @@ export function TaskList({
                   onOpen(task.id);
                 }}
                 className={cn(
-                  'block w-full truncate py-1.5 text-left font-medium hover:underline',
-                  done && 'text-fg-muted',
+                  'block w-full truncate pt-2 pb-1 text-left text-body-sm font-medium hover:text-primary',
+                  done && 'text-fg-subtle',
                   cancelled && 'text-fg-subtle line-through',
                 )}
               >
                 {nested && <span className="sr-only">Subtarefa: </span>}
                 {task.title}
               </button>
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pb-1">
                 {cancelled && <Badge>Cancelada</Badge>}
                 {task.status === 'in_progress' && <Badge tone="info">Em andamento</Badge>}
-                <PriorityBadge priority={task.priority} />
-                <DueBadge dueOn={task.due_on} status={task.status} today={today} />
+                {!done && <PriorityFlag priority={task.priority} />}
+                <DueMeta dueOn={task.due_on} status={task.status} today={today} />
                 {task.project_id && projectNames.has(task.project_id) && !nested && (
-                  <Badge tone="primary">{projectNames.get(task.project_id)}</Badge>
+                  <span className="inline-flex min-w-0 items-center gap-1 text-caption text-fg-subtle">
+                    <FolderKanban aria-hidden="true" className="size-3 shrink-0" />
+                    <span className="truncate">{projectNames.get(task.project_id)}</span>
+                  </span>
                 )}
                 {subs.total > 0 && (
-                  <Badge>
+                  <span className="inline-flex items-center gap-1 text-caption text-fg-subtle tabular">
                     <ListTree aria-hidden="true" className="size-3" />
                     {subs.done}/{subs.total - subs.cancelled} subtarefas
-                  </Badge>
+                  </span>
                 )}
                 {blocked && (
                   <Badge tone="warning">

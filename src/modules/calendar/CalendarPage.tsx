@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { type EventResizeDoneArg } from '@fullcalendar/interaction';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { AlertTriangle, CalendarDays, Plus, Wand2 } from 'lucide-react';
+import { AlertTriangle, Plus, Wand2 } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { buttonClasses } from '@/components/ui/button-classes';
@@ -69,6 +69,12 @@ function initialView(): string {
   }
 }
 
+/** Altura da grade de horários: cabe na tela sem empurrar o resto da página. */
+function timeGridHeight(): number {
+  if (typeof window === 'undefined') return 720;
+  return Math.round(Math.max(520, Math.min(820, window.innerHeight - 220)));
+}
+
 export function CalendarPage() {
   const { today, timezone, weekStartsOn } = useUserCalendar();
   const toast = useToast();
@@ -79,6 +85,7 @@ export function CalendarPage() {
     const from = startOfWeek(initialDate, weekStartsOn);
     return { fromDate: from, toDate: addDays(from, 7) };
   });
+  const [viewType, setViewType] = useState(initialView);
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [subjectFilter, setSubjectFilter] = useState('all');
   const [hidden, setHidden] = useState<Set<ItemSource>>(new Set());
@@ -260,12 +267,8 @@ export function CalendarPage() {
   return (
     <div className="animate-fade-up">
       <PageHeader
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <CalendarDays aria-hidden="true" className="size-4" />
-            Planejar
-          </span>
-        }
+        module="calendar"
+        eyebrow={<span className="inline-flex items-center gap-2">Planejar</span>}
         title="Calendário"
         description="Compromissos e blocos planejados ao lado de prazos, revisões e do tempo realizado."
         actions={
@@ -364,7 +367,7 @@ export function CalendarPage() {
       )}
       <div
         ref={calendarBox}
-        className="lo-calendar rounded-lg border border-border bg-surface p-2 shadow-elev-1 sm:p-4"
+        className="lo-calendar rounded-lg border border-border surface-card p-2 shadow-elev-1 sm:p-4"
         aria-busy={calendar.isFetching}
       >
         <FullCalendar
@@ -383,7 +386,9 @@ export function CalendarPage() {
           buttonText={{ today: 'Hoje', month: 'Mês', week: 'Semana', day: 'Dia' }}
           // Dicas (e nomes acessíveis das setas) com concordância: "Próxima semana".
           buttonHints={{ prev: navHint('prev'), next: navHint('next'), today: 'Ir para hoje' }}
-          height="auto"
+          // Semana e dia: altura fixa com rolagem interna, abrindo às 07:00 (antes a grade de
+          // 24 h começava à meia-noite e o horário útil ficava abaixo da dobra). Mês: altura livre.
+          height={viewType.startsWith('timeGrid') ? timeGridHeight() : 'auto'}
           nowIndicator
           selectable
           selectMirror
@@ -394,6 +399,7 @@ export function CalendarPage() {
           scrollTime="07:00:00"
           events={fcEvents}
           datesSet={(arg) => {
+            if (arg.view.type !== viewType) setViewType(arg.view.type);
             const fromDate = wallDate(arg.start);
             const toDate = wallDate(arg.end);
             if (fromDate !== range.fromDate || toDate !== range.toDate)

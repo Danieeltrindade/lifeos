@@ -34,7 +34,7 @@ export function AuthLayout({
             aria-hidden="true"
             className="pointer-events-none absolute -inset-x-16 -top-24 -z-10 h-72 [background:var(--hero-glow)] [mask-image:radial-gradient(closest-side,black,transparent)]"
           />
-          <div className="rounded-lg border border-border bg-surface p-6 shadow-elev-2 sm:p-8">
+          <div className="rounded-lg border border-border surface-card p-6 shadow-elev-2 sm:p-8">
             <h1 className="text-title font-semibold tracking-tight">{title}</h1>
             {description && <p className="mt-1.5 text-body-sm text-fg-muted">{description}</p>}
             <div className="mt-6">{children}</div>

@@ -86,7 +86,7 @@ export function ReviewsPage() {
                       {g.cards.length}
                     </Badge>
                   </h2>
-                  <ul className="flex flex-col divide-y divide-border rounded-lg border border-border bg-surface shadow-elev-1">
+                  <ul className="flex flex-col divide-y divide-border rounded-lg border border-border surface-card shadow-elev-1">
                     {g.cards.map((c) => {
                       const topic = topicById.get(c.topic_id);
                       const subject = topic ? subjectById.get(topic.subject_id) : undefined;

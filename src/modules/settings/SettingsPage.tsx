@@ -1,4 +1,4 @@
-import { Database, Palette } from 'lucide-react';
+import { Database, KeyRound, Palette, ShieldAlert, UserRound } from 'lucide-react';
 import { useId } from 'react';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -21,35 +21,70 @@ export function SettingsPage() {
 
   return (
     <div className="animate-fade-up">
-      <PageHeader title="Configurações" description="Perfil, aparência e conta." />
+      <PageHeader
+        module="settings"
+        title="Configurações"
+        description="Perfil, aparência e conta."
+      />
 
-      <div className="grid gap-4">
-        <ProfileSection />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:items-start">
+        <SectionNav />
+        <div className="grid min-w-0 gap-4">
+          <ProfileSection />
 
-        <Card aria-labelledby="settings-appearance">
-          <CardHeader
-            title="Aparência"
-            titleId="settings-appearance"
-            icon={<Palette className="size-4" />}
-          />
-          <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-medium">Tema</p>
-              <p className="text-body-sm text-fg-subtle">
-                {preference === 'system'
-                  ? `Seguindo o sistema operacional (atualmente ${resolved === 'dark' ? 'escuro' : 'claro'}).`
-                  : 'Salvo na sua conta e aplicado neste navegador.'}
-              </p>
-            </div>
-            <ThemeToggle />
-          </CardBody>
-        </Card>
+          <Card aria-labelledby="settings-appearance">
+            <CardHeader
+              title="Aparência"
+              titleId="settings-appearance"
+              icon={<Palette className="size-4" />}
+            />
+            <CardBody className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-medium">Tema</p>
+                <p className="text-body-sm text-fg-subtle">
+                  {preference === 'system'
+                    ? `Seguindo o sistema operacional (atualmente ${resolved === 'dark' ? 'escuro' : 'claro'}).`
+                    : 'Salvo na sua conta e aplicado neste navegador.'}
+                </p>
+              </div>
+              <ThemeToggle />
+            </CardBody>
+          </Card>
 
-        <AccountSection />
+          <AccountSection />
 
-        {DEV_TOOLS_ENABLED && <DataSourceCard />}
+          {DEV_TOOLS_ENABLED && <DataSourceCard />}
+        </div>
       </div>
     </div>
+  );
+}
+
+const SECTIONS = [
+  { href: '#settings-profile', label: 'Perfil', icon: UserRound },
+  { href: '#settings-appearance', label: 'Aparência', icon: Palette },
+  { href: '#settings-account', label: 'Conta e dados', icon: KeyRound },
+  { href: '#settings-danger', label: 'Excluir conta', icon: ShieldAlert },
+];
+
+/** Atalhos para as seções desta página (âncoras reais; a página continua rolável). */
+function SectionNav() {
+  return (
+    <nav aria-label="Seções das configurações" className="min-w-0 lg:sticky lg:top-8">
+      <ul className="flex gap-1 overflow-x-auto rounded-lg border border-border bg-surface/70 p-1 lg:flex-col">
+        {SECTIONS.map(({ href, label, icon: Icon }) => (
+          <li key={href} className="shrink-0">
+            <a
+              href={href}
+              className="flex h-10 items-center gap-2.5 rounded-md px-3 text-body-sm font-medium whitespace-nowrap text-fg-muted transition-colors hover:bg-primary-soft hover:text-fg"
+            >
+              <Icon aria-hidden="true" className="size-4 text-primary" />
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 

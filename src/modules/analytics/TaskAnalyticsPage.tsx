@@ -207,7 +207,7 @@ export function TaskAnalyticsPage() {
                   Nenhum projeto planejado, ativo ou em pausa.
                 </p>
               ) : (
-                <div className="overflow-x-auto rounded-lg border border-border bg-surface p-3">
+                <div className="overflow-x-auto rounded-lg border border-border surface-card p-3">
                   <DataTable
                     caption="Projetos: progresso e atrasos"
                     columns={[

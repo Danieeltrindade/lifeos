@@ -6,7 +6,7 @@ import { EmptyState } from '@/components/ui/States';
 import { addDays } from '@/lib/date';
 import { useSubjectsQuery, useTopicsQuery } from '@/services/data/queries';
 import { BarSeriesChart, ChartCard, DataTable, StatTile } from './components/charts';
-import { colorAt } from './components/chart-colors';
+import { colorAt, SERIES_PRIMARY } from './components/chart-colors';
 import { ChartsGrid, HowCalculated, StatsGrid, StatsLoading } from './components/common';
 import { compareText, axisMinutes } from './components/format';
 import { usePeriod } from './components/use-period';
@@ -146,7 +146,7 @@ export function StudyAnalyticsPage() {
                       label: bucketLabel(x, granularity),
                       minutos: minutes(x.values.seconds),
                     }))}
-                    series={[{ key: 'minutos', label: 'Tempo', color: colorAt(0) }]}
+                    series={[{ key: 'minutos', label: 'Tempo', color: SERIES_PRIMARY }]}
                     format={fmtMinutes}
                     axisFormat={axisMinutes}
                   />
@@ -221,7 +221,7 @@ export function StudyAnalyticsPage() {
                         { label: 'Bom', revisoes: grades['3'] },
                         { label: 'Fácil', revisoes: grades['4'] },
                       ]}
-                      series={[{ key: 'revisoes', label: 'Revisões', color: colorAt(1) }]}
+                      series={[{ key: 'revisoes', label: 'Revisões', color: SERIES_PRIMARY }]}
                       format={(v) => String(Math.round(v))}
                       integer
                     />
@@ -257,7 +257,7 @@ export function StudyAnalyticsPage() {
                         label: topics.find((x) => x.id === t.topicId)?.name ?? 'Tópico excluído',
                         minutos: minutes(t.seconds),
                       }))}
-                      series={[{ key: 'minutos', label: 'Tempo', color: colorAt(2) }]}
+                      series={[{ key: 'minutos', label: 'Tempo', color: SERIES_PRIMARY }]}
                       format={fmtMinutes}
                       axisFormat={axisMinutes}
                     />

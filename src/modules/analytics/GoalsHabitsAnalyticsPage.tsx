@@ -122,7 +122,7 @@ export function GoalsHabitsAnalyticsPage() {
                   {summaries.map(({ g, s }) => (
                     <article
                       key={g.goalId}
-                      className="rounded-lg border border-border bg-surface p-4"
+                      className="rounded-lg border border-border surface-card p-4"
                     >
                       <h3 className="font-semibold">{g.title}</h3>
                       <p className="text-caption text-fg-subtle">

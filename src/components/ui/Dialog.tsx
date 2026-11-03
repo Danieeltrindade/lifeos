@@ -113,7 +113,7 @@ export function Dialog({
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
         className={cn(
-          'relative flex max-h-[92dvh] w-full animate-fade-up flex-col rounded-t-xl border border-border bg-surface shadow-elev-3 outline-none sm:rounded-xl',
+          'surface-card relative flex max-h-[92dvh] w-full animate-fade-up flex-col rounded-t-xl border border-border-strong/70 shadow-elev-3 outline-none sm:rounded-xl',
           size === 'sm' && 'sm:max-w-md',
           size === 'md' && 'sm:max-w-xl',
           size === 'lg' && 'sm:max-w-3xl',
