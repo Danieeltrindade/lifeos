@@ -26,6 +26,7 @@ psql -X -q -d postgres -c "drop database if exists $db with (force)" -c "create 
 
 echo "▶ Shim do Supabase"
 psql_db -f "$here/supabase-shim.sql" >/dev/null
+psql_db -f "$here/storage-shim.sql" >/dev/null
 
 echo "▶ Migrations"
 for f in "$root"/migrations/*.sql; do

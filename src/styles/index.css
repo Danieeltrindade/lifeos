@@ -689,3 +689,136 @@
   outline: 2px dashed var(--lo-danger);
   outline-offset: 1px;
 }
+
+/* ---------- Notas: texto do editor (TipTap) ----------
+ * Cores de texto como variáveis: a mesma nota fica legível no claro e no escuro.
+ * No tema Mono elas continuam coloridas de propósito — são conteúdo do usuário, não decoração. */
+:root,
+[data-theme='light'] {
+  --lo-text-red: #c0362c;
+  --lo-text-orange: #b45309;
+  --lo-text-green: #15803d;
+  --lo-text-blue: #1d4ed8;
+  --lo-text-purple: #7e22ce;
+  --lo-mark: #fde68a;
+  --lo-mark-fg: #1f1a05;
+}
+[data-theme='dark'] {
+  --lo-text-red: #ff8a80;
+  --lo-text-orange: #fdba74;
+  --lo-text-green: #86efac;
+  --lo-text-blue: #93c5fd;
+  --lo-text-purple: #d8b4fe;
+  --lo-mark: rgb(250 204 21 / 0.35);
+  --lo-mark-fg: inherit;
+}
+
+.lo-prose {
+  color: var(--lo-fg);
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.lo-prose > * + * {
+  margin-top: 0.6em;
+}
+.lo-prose h2 {
+  font-size: 1.375rem;
+  line-height: 1.3;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  margin-top: 1.2em;
+}
+.lo-prose h3 {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 600;
+  margin-top: 1em;
+}
+.lo-prose > :first-child {
+  margin-top: 0;
+}
+.lo-prose ul,
+.lo-prose ol {
+  padding-left: 1.5em;
+}
+.lo-prose ul {
+  list-style: disc;
+}
+.lo-prose ul ul {
+  list-style: circle;
+}
+.lo-prose ol {
+  list-style: decimal;
+}
+.lo-prose li > p {
+  margin: 0;
+}
+.lo-prose li + li {
+  margin-top: 0.2em;
+}
+.lo-prose li::marker {
+  color: var(--lo-fg-subtle);
+}
+.lo-prose ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0.1em;
+}
+.lo-prose ul[data-type='taskList'] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55em;
+}
+.lo-prose ul[data-type='taskList'] li > label {
+  flex-shrink: 0;
+  margin-top: 0.28em;
+  user-select: none;
+}
+.lo-prose ul[data-type='taskList'] li > label input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--lo-primary);
+  cursor: pointer;
+}
+.lo-prose ul[data-type='taskList'] li > div {
+  flex: 1;
+  min-width: 0;
+}
+.lo-prose ul[data-type='taskList'] li[data-checked='true'] > div {
+  color: var(--lo-fg-subtle);
+  text-decoration: line-through;
+}
+.lo-prose blockquote {
+  border-left: 3px solid var(--lo-border-strong);
+  padding-left: 1em;
+  color: var(--lo-fg-muted);
+  font-style: italic;
+}
+.lo-prose hr {
+  border: 0;
+  border-top: 1px solid var(--lo-border-strong);
+  margin: 1.4em 0;
+}
+.lo-prose hr.ProseMirror-selectednode {
+  border-top-color: var(--lo-primary);
+}
+.lo-prose a {
+  color: var(--lo-primary-soft-fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.lo-prose mark {
+  background: var(--lo-mark);
+  color: var(--lo-mark-fg);
+  border-radius: 2px;
+  padding: 0 0.1em;
+}
+.lo-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--lo-fg-subtle);
+}
+.lo-prose .ProseMirror-gapcursor::after {
+  border-top-color: var(--lo-fg);
+}

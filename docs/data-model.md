@@ -20,14 +20,14 @@
 
 ## 2. Estratégia de datas e fusos (RN-13)
 
-| Tipo de valor                               | Tipo no PostgreSQL              | Exemplos                                                                                                                | Regra                                                                                |
-| ------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Instante (aconteceu/acontecerá num momento) | `timestamptz`                   | `started_at`, `ended_at`, `starts_at`, `remind_at`, auditoria                                                           | Armazenado em UTC. Nunca `timestamp` sem fuso.                                       |
-| Data de calendário (não tem hora nem fuso)  | `date`                          | `tasks.due_on`, `diary_entries.local_date`, `habit_checkins.local_date`, `goals.start_on/due_on`, `review_cards.due_on` | É a data **no calendário do usuário**. Não é convertida ao mudar de fuso.            |
-| Evento de dia inteiro                       | `date` + `date` (fim exclusivo) | `calendar_events.start_date/end_date`                                                                                   | Feriado em 02/11 é `[2026-11-02, 2026-11-03)` em qualquer fuso.                      |
-| Fuso do usuário                             | `text` (IANA, validado)         | `profiles.timezone = 'America/Sao_Paulo'`                                                                               | Define o que é "hoje". Validado contra `pg_timezone_names`.                          |
-| Fuso de um evento                           | `text` (IANA)                   | `calendar_events.timezone`                                                                                              | Recorrências são expandidas no horário local desse fuso (horário de verão incluído). |
-| Duração                                     | `integer` (segundos)            | `activities.duration_seconds`                                                                                           | Segundos no banco; minutos na interface.                                             |
+| Tipo de valor                               | Tipo no PostgreSQL              | Exemplos                                                                                    | Regra                                                                                |
+| ------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Instante (aconteceu/acontecerá num momento) | `timestamptz`                   | `started_at`, `ended_at`, `starts_at`, `remind_at`, auditoria                               | Armazenado em UTC. Nunca `timestamp` sem fuso.                                       |
+| Data de calendário (não tem hora nem fuso)  | `date`                          | `tasks.due_on`, `habit_checkins.local_date`, `goals.start_on/due_on`, `review_cards.due_on` | É a data **no calendário do usuário**. Não é convertida ao mudar de fuso.            |
+| Evento de dia inteiro                       | `date` + `date` (fim exclusivo) | `calendar_events.start_date/end_date`                                                       | Feriado em 02/11 é `[2026-11-02, 2026-11-03)` em qualquer fuso.                      |
+| Fuso do usuário                             | `text` (IANA, validado)         | `profiles.timezone = 'America/Sao_Paulo'`                                                   | Define o que é "hoje". Validado contra `pg_timezone_names`.                          |
+| Fuso de um evento                           | `text` (IANA)                   | `calendar_events.timezone`                                                                  | Recorrências são expandidas no horário local desse fuso (horário de verão incluído). |
+| Duração                                     | `integer` (segundos)            | `activities.duration_seconds`                                                               | Segundos no banco; minutos na interface.                                             |
 
 **Conversões.** O "dia local" é calculado no servidor como
 `[ (data::timestamp) at time zone tz , ((data+1)::timestamp) at time zone tz )` — por isso um dia
@@ -79,7 +79,8 @@ erDiagram
   tasks |o--o{ calendar_events : planejada
   subjects |o--o{ calendar_events : planejada
   habits |o--o{ calendar_events : planejado
-  profiles ||--o{ diary_entries : escreve
+  profiles ||--o{ note_categories : organiza
+  note_categories ||--o{ notes : contém
   profiles ||--o{ recommendations : recebe
   tasks |o--o{ reminders : lembra
   calendar_events |o--o{ reminders : lembra
@@ -130,7 +131,8 @@ tem acesso total. Exceções estão indicadas.
 | `habit_checkins`  | Marcação de cumprimento | `habit_id`, `local_date`, `value?`, `note`                                                                                                                                                                            | Uma por hábito por dia (`unique`). Sequência é calculada (RN-11).                                                                                                                                                                                  |
 | `goals`           | Metas                   | `title`, `status`, `progress_mode` (manual/activity_time/habit_checkins), `target_value`, `unit`, `manual_current_value?`, fontes (`subject_id`/`project_id`/`activity_category_id`/`habit_id`), `start_on`, `due_on` | Coerência modo × fonte em `CHECK`. Metas por tempo medem horas (`unit = 'h'`) e têm no máximo uma fonte; por hábito exigem o hábito. Fontes usam `NO ACTION`: não se exclui a fonte de uma meta (arquiva-se), mas a exclusão da conta remove tudo. |
 | `goal_milestones` | Marcos de uma meta      | `goal_id`, `title`, `target_value?`, `due_on?`, `achieved_at?`, `sort_order`                                                                                                                                          | `→ goals ON DELETE CASCADE`.                                                                                                                                                                                                                       |
-| `diary_entries`   | Diário                  | `local_date`, `content`, `mood` (1–5), `energy` (1–5)                                                                                                                                                                 | Uma por dia local (RN-12). Conteúdo privado: nunca entra em agregações ou evidências.                                                                                                                                                              |
+| `note_categories` | Notas                   | `name`, `color` (#rrggbb), `parent_id` (subcategoria; 2 níveis), `position`                                                                                                                                           |
+| `notes`           | Notas                   | `category_id`, `title`, `content` (documento do editor, JSON), `content_text` (texto para busca), `pinned`                                                                                                            |
 
 > **Livros e leitura.** Não há tabela própria: nenhum caso de uso atual exige catálogo de livros.
 > Leitura é registrada como atividade (categoria "Leitura"), hábito ("20 páginas") ou meta manual
@@ -299,10 +301,10 @@ atualização de 01–04 (catálogo de segurança e isolamento cobrem automatica
   90 dias), mostrada junto com a sequência. Regras em `modules/habits/logic/habits.ts` (testadas).
 - Uma marcação por hábito e dia (restrição única): marcar de novo corrige o valor; desfazer exclui.
 
-### 9.7 Atividades, diário e calendário
+### 9.7 Atividades, notas e calendário
 
 - Atividade do cronômetro: horários vêm da sessão; excluir a atividade exclui a sessão de origem.
-- Diário: uma entrada por dia, título opcional, privado (RLS), fora de qualquer agregação e de logs.
+- Notas (substituem o Diário, removido em `20261104120000_notes`): categorias e subcategorias do próprio usuário (nomes únicos entre irmãos), excluir categoria com notas é recusado (`ON DELETE RESTRICT`, a interface move as notas antes); imagens no bucket privado `note-images` (pasta `<user_id>/`); vídeos só como link.
 - Calendário: recorrência guardada como **regra** (subconjunto da RFC 5545) e expandida na interface só
   na janela visível, no fuso do evento (ADR-026). Arrastar uma ocorrência de série cria uma exceção
   (`modified`) só para ela; "remover esta ocorrência" cria uma exceção `cancelled`. Prazos de tarefas,

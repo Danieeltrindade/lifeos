@@ -1,7 +1,7 @@
 # LifeOS
 
 Sistema pessoal para **planejar, executar, registrar e avaliar** a própria rotina: estudos,
-tarefas, projetos, tempo, metas, hábitos e diário. O que foi planejado e o que realmente aconteceu
+tarefas, projetos, tempo, metas, hábitos e notas. O que foi planejado e o que realmente aconteceu
 ficam sempre separados, e cada número exibido vem dos registros do usuário, com a fórmula
 documentada.
 
@@ -20,7 +20,7 @@ documentada.
 | Calendário              | Mês/semana/dia, eventos recorrentes (editar só esta ou esta e as seguintes), conflitos, prazos e revisões na agenda, tempo realizado                     |
 | Metas                   | Manual, por tempo, sessões, questões, páginas, tarefas concluídas ou hábitos; ciclos diários/semanais/mensais; editar não reescreve o histórico          |
 | Hábitos                 | Dias fixos, X vezes por semana ou diário; sequências e consistência                                                                                      |
-| Atividades e diário     | Registro de tempo por categoria (estudo, leitura, exercício…); diário com humor e energia                                                                |
+| Atividades e notas      | Registro de tempo por categoria (estudo, leitura, exercício…); notas em categorias e subcategorias, com editor de texto, imagens e links de vídeo        |
 | Análises                | Estudos, tarefas, metas/hábitos e atividades por dia/semana/mês/trimestre/ano/personalizado, com comparação ao período anterior e tabela de cada gráfico |
 | Revisão semanal         | Planejado × realizado, tarefas, estudo, metas, hábitos, conflitos, anotações e prioridades da semana seguinte                                            |
 | Recomendações           | 11 regras explícitas (sem IA), com motivo e evidências; aceitar, adiar, rejeitar, resolver e histórico                                                   |
@@ -45,11 +45,11 @@ recomendações vêm de regras documentadas em [`docs/recommendations.md`](docs/
 src/app          rotas (fonte única em modules.ts), guardas, provedores, página de erro
 src/components   ui/ (componentes base) e layout/ (shell, navegação, conta)
 src/modules      dashboard, tasks, projects, studies, calendar, planning, goals, habits,
-                 activities, diary, analytics, recommendations, settings, auth
+                 activities, notes, analytics, recommendations, settings, auth
                  (cada um com data/, logic/ e components/)
 src/services     supabase/ (cliente, tipos, erros, paginação), auth/, profile/, data/
 src/lib          funções puras (datas e fusos, exportação, cache e escritas, tema)
-supabase/        migrations/ (15), tests/database (pgTAP), tests/local, stack/ (pilha de teste)
+supabase/        migrations/ (18), tests/database (pgTAP), tests/local, stack/ (pilha de teste)
 e2e/             testes ponta a ponta (Playwright)
 docs/            especificação, arquitetura, dados, métricas, recomendações, testes, deploy…
 ```
@@ -113,7 +113,7 @@ Resumo; tudo em [`docs/testing.md`](docs/testing.md).
 | Camada          | Resultado na entrega da Fase 5                                                                             |
 | --------------- | ---------------------------------------------------------------------------------------------------------- |
 | Unidade e telas | 362 testes (Linux e Windows)                                                                               |
-| Banco (pgTAP)   | 535 asserções em banco limpo                                                                               |
+| Banco (pgTAP)   | 564 asserções em banco limpo                                                                               |
 | Integração      | 45 testes contra Auth/PostgREST/PostgreSQL reais, duas contas                                              |
 | Ponta a ponta   | 25 testes no build de produção sob a CSP real: jornada de 12 passos, axe em 25 telas, 6 larguras × 2 temas |
 | Dependências    | `npm audit`: 0 vulnerabilidades                                                                            |

@@ -334,11 +334,11 @@ select throws_ok(
   $$ delete from public.subjects where id = 'c0000000-0000-4000-8000-000000000022' $$,
   '23503', null, 'Não se exclui a fonte de uma meta (arquive a matéria)');
 
-insert into public.diary_entries (local_date, content, mood, energy) values ('2026-10-20', 'Hoje rendeu.', 4, 3);
-select throws_ok($$ insert into public.diary_entries (local_date) values ('2026-10-20') $$, '23505', null,
-  'RN-12: uma entrada de diário por dia local');
-select throws_ok($$ insert into public.diary_entries (local_date, mood) values ('2026-10-21', 6) $$, '23514', null,
-  'Humor entre 1 e 5');
+insert into public.note_categories (id, name) values ('c0000000-0000-4000-8000-000000000061', 'Cantadas');
+select throws_ok($$ insert into public.note_categories (name) values ('cantadas') $$, '23505', null,
+  'Notas: nomes de categoria são únicos (sem diferenciar maiúsculas)');
+select throws_ok($$ insert into public.note_categories (name, color) values ('Cor ruim', 'azul') $$, '23514', null,
+  'Notas: cor da categoria em hexadecimal (#rrggbb)');
 
 -- ---------------------------------------------------------------------------
 -- Calendário

@@ -5,7 +5,7 @@ import {
   CheckSquare,
   FolderKanban,
   LayoutDashboard,
-  NotebookPen,
+  NotebookText,
   Repeat,
   Settings,
   Sparkles,
@@ -29,7 +29,7 @@ export type ModuleId =
   | 'goals'
   | 'habits'
   | 'activities'
-  | 'diary'
+  | 'notes'
   | 'analytics'
   | 'recommendations'
   | 'settings';
@@ -171,14 +171,15 @@ export const MODULES: ModuleDefinition[] = [
     connectsTo: ['studies', 'calendar', 'goals'],
   },
   {
-    id: 'diary',
-    path: '/diario',
-    label: 'Diário',
-    icon: NotebookPen,
+    id: 'notes',
+    path: '/notas',
+    label: 'Notas',
+    icon: NotebookText,
     group: 'record',
     status: 'available',
-    phase: 3,
-    summary: 'Diário pessoal privado, com título opcional, humor, energia e busca.',
+    phase: 6,
+    summary:
+      'Anotações livres em categorias e subcategorias que você cria, com tópicos, imagens e links.',
     plannedCapabilities: [],
     connectsTo: [],
   },

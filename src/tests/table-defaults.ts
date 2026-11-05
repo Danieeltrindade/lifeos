@@ -101,7 +101,8 @@ export const TABLE_DEFAULTS: Record<string, Row> = {
     linked_tasks_only: false,
   },
   goal_progress_entries: { note: '' },
-  diary_entries: { title: null, mood: null, energy: null },
+  note_categories: { parent_id: null, color: '#3b7ce5', position: 0 },
+  notes: { title: null, content: { type: 'doc', content: [] }, content_text: '', pinned: false },
   calendar_events: {
     description: '',
     kind: 'event',

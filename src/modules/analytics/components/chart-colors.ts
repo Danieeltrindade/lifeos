@@ -18,3 +18,6 @@ export function colorAt(index: number): string {
  * Entidades (matérias, categorias, hábitos) continuam com as cores categóricas fixas acima.
  */
 export const SERIES_PRIMARY = 'var(--lo-chart-primary)';
+
+/** Série de comparação (período anterior): neutra, atrás da série principal. */
+export const SERIES_PREVIOUS = 'color-mix(in srgb, var(--lo-chart-axis) 45%, transparent)';

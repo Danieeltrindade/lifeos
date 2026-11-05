@@ -1,4 +1,5 @@
 import { change, describeChange } from '../logic/metrics';
+import type { TrendDirection } from './charts';
 
 export function dayLabel(date: string): string {
   return `${date.slice(8, 10)}/${date.slice(5, 7)}`;
@@ -21,4 +22,11 @@ export function axisMinutes(minutes: number): string {
   const h = Math.floor(m / 60);
   const r = m % 60;
   return r === 0 ? `${String(h)}h` : `${String(h)}h${String(r).padStart(2, '0')}`;
+}
+
+/** Direção da variação (para a seta); null sem período anterior ou sem base. */
+export function compareDirection(current: number, previous: number | undefined): TrendDirection {
+  if (previous === undefined) return null;
+  const c = change(current, previous);
+  return c.kind === 'up' || c.kind === 'down' || c.kind === 'same' ? c.kind : null;
 }

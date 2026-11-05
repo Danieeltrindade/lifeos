@@ -8,8 +8,8 @@ describe('affectedDomains', () => {
     );
   });
 
-  it('o diário não invalida estatísticas', () => {
-    expect(affectedDomains(['diary'])).toEqual(['diary']);
+  it('as notas não invalidam estatísticas', () => {
+    expect(affectedDomains(['notes'])).toEqual(['notes']);
   });
 
   it('toda mudança relevante chega ao dashboard', () => {

@@ -119,8 +119,11 @@ insert into public.goals (id, title, progress_mode, target_value, unit, subject_
           'a0000000-0000-4000-8000-000000000004');
 insert into public.goal_milestones (id, goal_id, title)
   values ('a0000000-0000-4000-8000-000000000016', 'a0000000-0000-4000-8000-000000000015', 'Metade');
-insert into public.diary_entries (id, local_date, content, mood)
-  values ('a0000000-0000-4000-8000-000000000017', '2026-10-20', 'Conteúdo privado de A', 4);
+insert into public.note_categories (id, name, color)
+  values ('a0000000-0000-4000-8000-000000000017', 'Ideias', '#3b7ce5');
+insert into public.notes (id, category_id, title, content_text)
+  values ('a0000000-0000-4000-8000-000000000043', 'a0000000-0000-4000-8000-000000000017',
+          'Ideia privada de A', 'Conteúdo privado de A');
 insert into public.calendar_events (id, title, kind, starts_at, ends_at, subject_id, recurrence_rule)
   values ('a0000000-0000-4000-8000-000000000018', 'Estudo semanal', 'study',
           '2026-10-20 14:00-03', '2026-10-20 15:30-03', 'a0000000-0000-4000-8000-000000000004',
@@ -212,9 +215,20 @@ select throws_ok(
   $$ insert into public.projects (user_id, name) values ('aaaaaaaa-0000-4000-8000-000000000001', 'x') $$,
   '42501', null, 'INSERT: B não cria projeto em nome de A');
 select throws_ok(
-  $$ insert into public.diary_entries (user_id, local_date, content)
-     values ('aaaaaaaa-0000-4000-8000-000000000001', '2026-10-21', 'x') $$,
-  '42501', null, 'INSERT: B não escreve no diário de A');
+  $$ insert into public.notes (user_id, category_id, content_text)
+     values ('aaaaaaaa-0000-4000-8000-000000000001', 'a0000000-0000-4000-8000-000000000017', 'x') $$,
+  '42501', null, 'INSERT: B não escreve nas notas de A');
+-- Nota própria de B apontando para a categoria de A: a FK composta recusa.
+insert into public.note_categories (id, name) values ('b0000000-0000-4000-8000-000000000017', 'Minha');
+select throws_ok(
+  $$ insert into public.notes (category_id, content_text)
+     values ('a0000000-0000-4000-8000-000000000017', 'x') $$,
+  '23503', null, 'Referência cruzada: B não cria nota na categoria de A');
+select throws_ok(
+  $$ insert into public.note_categories (parent_id, name)
+     values ('a0000000-0000-4000-8000-000000000017', 'Sub') $$,
+  '23503', null, 'Referência cruzada: B não cria subcategoria dentro da categoria de A');
+delete from public.note_categories where id = 'b0000000-0000-4000-8000-000000000017';
 select throws_ok(
   $$ insert into public.activities (user_id, title, started_at, ended_at)
      values ('aaaaaaaa-0000-4000-8000-000000000001', 'x', '2026-10-20 08:00-03', '2026-10-20 09:00-03') $$,
@@ -349,8 +363,8 @@ select is(public.dashboard_summary('2026-10-20 15:00-03') -> 'recentActivities',
   'RPC: o dashboard de B não inclui atividades de A');
 select is(public.dashboard_summary('2026-10-20 15:00-03') -> 'goals', '[]'::jsonb,
   'RPC: o dashboard de B não inclui metas de A');
-select is(public.export_my_data() -> 'diaryEntries', '[]'::jsonb,
-  'RPC: a exportação de B não inclui o diário de A');
+select is(public.export_my_data() -> 'notes', '[]'::jsonb,
+  'RPC: a exportação de B não inclui as notas de A');
 select is(public.export_my_data() -> 'profile' ->> 'id', 'bbbbbbbb-0000-4000-8000-000000000001',
   'RPC: a exportação de B traz o perfil de B');
 select is(public.export_my_data() -> 'activities', '[]'::jsonb,
@@ -373,7 +387,7 @@ select throws_ok(
 -- ---------------------------------------------------------------------------
 select tests.authenticate_as_anon();
 select throws_ok('select * from public.tasks', '42501', null, 'anon: sem acesso a tarefas');
-select throws_ok('select * from public.diary_entries', '42501', null, 'anon: sem acesso ao diário');
+select throws_ok('select * from public.notes', '42501', null, 'anon: sem acesso às notas');
 select throws_ok('select * from public.profiles', '42501', null, 'anon: sem acesso a perfis');
 select throws_ok('select public.dashboard_summary()', '42501', null, 'anon: não chama dashboard_summary');
 select throws_ok('select public.export_my_data()', '42501', null, 'anon: não chama export_my_data');

@@ -365,43 +365,98 @@ export type Database = {
           },
         ];
       };
-      diary_entries: {
+      note_categories: {
         Row: {
           id: string;
           user_id: string;
-          local_date: string;
-          content: string;
-          mood: number | null;
-          energy: number | null;
+          parent_id: string | null;
+          name: string;
+          color: string;
+          position: number;
           created_at: string;
           updated_at: string;
-          title: string | null;
         };
         Insert: {
           id?: string;
           user_id?: string;
-          local_date: string;
-          content?: string;
-          mood?: number | null;
-          energy?: number | null;
+          parent_id?: string | null;
+          name: string;
+          color?: string;
+          position?: number;
           created_at?: string;
           updated_at?: string;
-          title?: string | null;
         };
         Update: {
           id?: string;
           user_id?: string;
-          local_date?: string;
-          content?: string;
-          mood?: number | null;
-          energy?: number | null;
+          parent_id?: string | null;
+          name?: string;
+          color?: string;
+          position?: number;
           created_at?: string;
           updated_at?: string;
-          title?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: 'diary_entries_user_id_fkey';
+            foreignKeyName: 'note_categories_parent_fk';
+            columns: ['parent_id', 'user_id'];
+            isOneToOne: false;
+            referencedRelation: 'note_categories';
+            referencedColumns: ['id', 'user_id'];
+          },
+          {
+            foreignKeyName: 'note_categories_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      notes: {
+        Row: {
+          id: string;
+          user_id: string;
+          category_id: string;
+          title: string | null;
+          content: Json;
+          content_text: string;
+          pinned: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string;
+          category_id: string;
+          title?: string | null;
+          content?: Json;
+          content_text?: string;
+          pinned?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          category_id?: string;
+          title?: string | null;
+          content?: Json;
+          content_text?: string;
+          pinned?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'notes_category_fk';
+            columns: ['category_id', 'user_id'];
+            isOneToOne: false;
+            referencedRelation: 'note_categories';
+            referencedColumns: ['id', 'user_id'];
+          },
+          {
+            foreignKeyName: 'notes_user_id_fkey';
             columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'profiles';
