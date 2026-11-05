@@ -68,7 +68,8 @@ const TABLES: [table: string, owner: string][] = [
   ['goal_progress_entries', 'user_id'],
   ['goal_changes', 'user_id'],
   ['goal_milestones', 'user_id'],
-  ['diary_entries', 'user_id'],
+  ['note_categories', 'user_id'],
+  ['notes', 'user_id'],
   ['calendar_events', 'user_id'],
   ['calendar_event_exceptions', 'user_id'],
   ['recommendations', 'user_id'],
@@ -200,7 +201,7 @@ describe.runIf(configured)('Supabase real: varredura de isolamento em todas as t
       'dep',
     );
 
-    // Metas, hábitos, atividades, diário.
+    // Metas, hábitos, atividades, notas.
     const goal = must(
       await c
         .from('goals')
@@ -267,9 +268,21 @@ describe.runIf(configured)('Supabase real: varredura de isolamento em todas as t
         .single(),
       'activity',
     );
+    const noteCategory = must(
+      await c
+        .from('note_categories')
+        .insert({ name: `Categoria ${tag}` })
+        .select()
+        .single(),
+      'note category',
+    );
     must(
-      await c.from('diary_entries').insert({ local_date: today, content: tag }).select().single(),
-      'diary',
+      await c
+        .from('notes')
+        .insert({ category_id: noteCategory.id, title: `Nota ${tag}`, content_text: tag })
+        .select()
+        .single(),
+      'note',
     );
 
     // Calendário, planejamento, revisão semanal, lembretes, recomendações.
@@ -372,7 +385,8 @@ describe.runIf(configured)('Supabase real: varredura de isolamento em todas as t
       'habits',
       'activities',
       'activity_categories',
-      'diary_entries',
+      'notes',
+      'note_categories',
       'calendar_events',
       'availability_windows',
       'weekly_reviews',

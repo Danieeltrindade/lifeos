@@ -17,7 +17,7 @@ O LifeOS unifica **planejar → executar → registrar → avaliar** em um únic
 
 - **Primária:** estudante universitário de Ciência da Computação (o próprio autor), que concilia disciplinas, TCC, projetos pessoais e hábitos. Usa computador e celular ao longo do dia.
 - **Necessidades:** registrar sessões de estudo com tempo confiável, organizar tarefas com prazos, planejar a semana, revisar conteúdos no momento certo e enxergar a própria evolução.
-- **Restrições:** tempo escasso (o sistema deve exigir pouca digitação), uso frequente no celular, sensibilidade a dados pessoais (diário, humor).
+- **Restrições:** tempo escasso (o sistema deve exigir pouca digitação), uso frequente no celular, sensibilidade a dados pessoais (notas, humor).
 - **Futuro:** múltiplas contas independentes, com isolamento total entre usuários desde a primeira versão do banco.
 
 ## 3. Principais casos de uso
@@ -36,7 +36,7 @@ O LifeOS unifica **planejar → executar → registrar → avaliar** em um únic
 | UC-10 | Comparar planejado × realizado                         | Calendário, Análises | 5 / 7              |
 | UC-11 | Definir metas e acompanhar progresso                   | Metas                | 6                  |
 | UC-12 | Marcar hábitos e ver consistência                      | Hábitos              | 6                  |
-| UC-13 | Escrever no diário                                     | Diário               | 6                  |
+| UC-13 | Anotar em categorias (ideias, frases, lugares…)        | Notas                | 6                  |
 | UC-14 | Revisar tópicos em intervalos espaçados                | Estudos              | 6                  |
 | UC-15 | Consultar relatórios por período                       | Análises             | 7                  |
 | UC-16 | Receber sugestões justificadas pelo histórico          | Recomendações        | 8                  |
@@ -55,7 +55,7 @@ O ciclo do produto organiza a navegação:
 | Executar    | Estudos       | Matérias, tópicos, sessões de foco, cronômetro, revisões  | Calendário genérico                       |
 | Executar    | Hábitos       | Definição de recorrência e marcações                      | Metas de longo prazo                      |
 | Registrar   | Atividades    | **Fonte única do tempo realizado** (cronômetro ou manual) | Planejamento                              |
-| Registrar   | Diário        | Reflexão diária, humor e energia                          | Métricas de produtividade                 |
+| Registrar   | Notas         | Anotações livres em categorias e subcategorias            | Métricas de produtividade                 |
 | Avaliar     | Análises      | Relatórios somente leitura sobre registros                | Alterar dados                             |
 | Avaliar     | Recomendações | Sugestões explicáveis, dispensáveis                       | Ações automáticas sem confirmação         |
 | Sistema     | Configurações | Preferências, perfil, conta, exportação                   | —                                         |
@@ -65,7 +65,7 @@ O ciclo do produto organiza a navegação:
 1. **Abertura do app** → Dashboard (agenda do dia, prioridades, estudos, revisões, registros recentes, recomendações, ações rápidas).
 2. **Sessão de foco** (Fase 3; funções do banco prontas na Fase 2): Dashboard → "Sessão de foco" → escolher matéria/tópico → cronômetro → pausar/retomar → encerrar → sessão gravada como Atividade → aparece em "Atividades recentes" e no tempo de estudo.
 3. **Planejamento semanal** (Fase 5): Calendário → criar blocos (vinculados a tarefas/matérias) → durante a semana, registros reais preenchem o "realizado" → Análises compara.
-4. **Encerramento do dia** (Fase 6): Diário → humor/energia → reflexão → revisar pendências.
+4. **Encerramento do dia** (Fase 6): reflexão → revisar pendências.
 5. **Navegação estrutural**: sidebar (≥ 1024 px) com grupos Planejar/Executar/Registrar/Avaliar; em telas menores, barra inferior com 4 atalhos + "Mais", que abre a gaveta com todos os módulos.
 
 ## 6. Entidades conceituais e relacionamentos
@@ -80,7 +80,7 @@ Resumo (detalhes em [data-model.md](./data-model.md)):
 - **Evento do calendário** (bloco planejado ou compromisso; pode ser recorrente) pode referenciar Tarefa, Matéria ou Hábito.
 - **Meta** com progresso manual ou derivado de UMA fonte (Matéria, Projeto, Categoria de atividade ou Hábito); 1—N **Marcos**.
 - **Hábito** 1—N **Marcação de hábito**.
-- **Entrada de diário** 1 por usuário por dia.
+- **Nota** pertence a uma categoria (ou subcategoria) da própria conta; categorias têm no máximo 2 níveis.
 - **Recomendação** guarda a regra que a gerou, as evidências e a decisão do usuário.
 - **Lembrete** aponta para no máximo um alvo (Tarefa, Evento, Hábito ou Revisão).
 
@@ -99,7 +99,7 @@ Resumo (detalhes em [data-model.md](./data-model.md)):
 | RN-09 | Progresso de projeto = tarefas concluídas / tarefas não canceladas.                                                                                                    |
 | RN-10 | Progresso de meta automática é derivado; progresso manual é marcado como tal.                                                                                          |
 | RN-11 | Sequência de hábito é calculada a partir das marcações; não há campo editável de "sequência".                                                                          |
-| RN-12 | Uma entrada de diário por usuário por dia local.                                                                                                                       |
+| RN-12 | Toda nota pertence a uma categoria da conta; até 2 níveis.                                                                                                             |
 | RN-13 | Datas armazenadas em UTC; "dia" é definido pelo fuso do perfil do usuário.                                                                                             |
 | RN-14 | Recomendações exigem justificativa legível e um mínimo de histórico; sem dados suficientes, nenhuma é exibida.                                                         |
 | RN-15 | Dados de demonstração são sempre marcados (`origin: 'demo'`) e nunca persistidos como dados do usuário.                                                                |

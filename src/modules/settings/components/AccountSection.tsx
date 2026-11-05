@@ -208,7 +208,7 @@ function DeleteAccountCard() {
       <CardBody className="flex flex-col gap-4">
         <p className="text-body-sm text-fg-muted">
           Remove sua conta e <strong>todos</strong> os seus registros: estudos, atividades, tarefas,
-          metas, hábitos e diário. Exporte seus dados antes, se quiser guardá-los.
+          metas, hábitos e notas (com as imagens). Exporte seus dados antes, se quiser guardá-los.
         </p>
         {!open ? (
           <div>

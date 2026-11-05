@@ -183,8 +183,19 @@ export async function seedViaApi(page: Page) {
       ended_at: at(-2, 8),
     },
   ]);
-  await post('diary_entries', [
-    { local_date: day(-1), content: 'Dia produtivo.', mood: 4, energy: 3 },
+  const [noteCategory] = await post('note_categories', [{ name: 'Ideias', color: '#3b7ce5' }]);
+  await post('notes', [
+    {
+      category_id: noteCategory?.id,
+      title: 'Ideia de projeto',
+      content: {
+        type: 'doc',
+        content: [
+          { type: 'paragraph', content: [{ type: 'text', text: 'Juntar agenda e foco.' }] },
+        ],
+      },
+      content_text: 'Juntar agenda e foco.',
+    },
   ]);
   return { subjectId: math?.id ?? '', projectId: project?.id ?? '' };
 }

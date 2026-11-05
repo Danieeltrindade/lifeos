@@ -62,11 +62,17 @@ As migrations ficam em `supabase/migrations/` e são aplicadas **em ordem de nom
 | `20261023120000_phase5_integrity.sql`            | Correção de integridade nas exclusões (Fase 5)            |
 | `20261103120000_theme_color.sql`                 | Paleta de cores por conta (`profiles.theme_color`)        |
 | `20261103130000_theme_color_mono.sql`            | 11ª paleta: Mono (preto e branco)                         |
+| `20261104120000_notes.sql`                       | Notas por categoria (substitui o Diário) e imagens        |
 
-São **17 arquivos**. Aplique sempre todos, na ordem.
+São **18 arquivos**. Aplique sempre todos, na ordem.
 
-> Se o seu projeto já tinha as 15 primeiras, aplique só as novas (`npx supabase db push`). Enquanto
-> ela não for aplicada, o LifeOS continua funcionando: a paleta escolhida vale só no navegador.
+> Se o seu projeto já tinha as 15 primeiras, aplique só as novas (`npm run db:push`, que usa o CLI v2 do projeto). Enquanto
+> a de paleta não for aplicada, a paleta escolhida vale só no navegador.
+>
+> ⚠️ **`20261104120000_notes.sql` apaga o Diário** (tabela `diary_entries`, com os textos). Antes de
+> aplicá-la num projeto com dados, baixe **Configurações → Conta e dados → Exportar meus dados (JSON)**:
+> o arquivo traz o Diário (`diaryEntries`). A mesma migration cria o bucket privado `note-images` do
+> Storage, com políticas que deixam cada conta ler e gravar só na própria pasta.
 
 ### Opção A — Supabase CLI (recomendada: registra o histórico de migrations)
 
@@ -89,7 +95,7 @@ vez. Esse caminho não registra o histórico; se depois você passar a usar o CL
 migrations como aplicadas antes do primeiro `db push`:
 
 ```bash
-npx --yes supabase@2 migration repair --status applied 20261020190000 20261020190100 20261020190200 20261020190300 20261020190400 20261020190500 20261020190600 20261021120000 20261021120100 20261021120200 20261021120300 20261021120400 20261022120000 20261022120100 20261023120000 20261103120000 20261103130000
+npx --yes supabase@2 migration repair --status applied 20261020190000 20261020190100 20261020190200 20261020190300 20261020190400 20261020190500 20261020190600 20261021120000 20261021120100 20261021120200 20261021120300 20261021120400 20261022120000 20261022120100 20261023120000 20261103120000 20261103130000 20261104120000
 ```
 
 ### Validar antes de aplicar em produção

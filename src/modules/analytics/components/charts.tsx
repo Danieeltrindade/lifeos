@@ -15,13 +15,16 @@ import {
   ComposedChart,
   Legend,
   Line,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { Card, CardBody, CardHeader } from '@/components/ui/Card';
+import { cn } from '@/lib/cn';
 import { SERIES_PRIMARY } from './chart-colors';
+import { Sparkline } from './visuals';
 
 /** Id seguro para url(#…) a partir do useId do React. */
 function useSvgId(prefix: string): string {
@@ -70,18 +73,22 @@ export function ChartCard({
   children,
   table,
   id,
+  actions,
 }: {
   title: string;
   description?: ReactNode;
   children: ReactNode;
   table: ReactNode;
   id: string;
+  /** Controles do gráfico (ex.: destacar uma série), fora da área decorativa. */
+  actions?: ReactNode;
 }) {
   return (
     <Card aria-labelledby={id}>
       <CardHeader title={title} titleId={id} />
       <CardBody>
         {description && <p className="mb-3 text-body-sm text-fg-muted">{description}</p>}
+        {actions && <div className="mb-3">{actions}</div>}
         <div aria-hidden="true">{children}</div>
         <details className="mt-3">
           <summary className="cursor-pointer text-body-sm font-medium text-primary">
@@ -140,8 +147,14 @@ export function BarSeriesChart({
   rowColors,
   integer = false,
   axisFormat,
+  reference,
+  highlight,
 }: {
   data: ChartRow[];
+  /** Chave da série em destaque; as outras ficam esmaecidas. */
+  highlight?: string | null;
+  /** Linha de referência horizontal (ex.: média do período). */
+  reference?: { value: number; label: string } | null;
   /** Contagens: eixo só com inteiros. */
   integer?: boolean;
   /** Formato curto para os rótulos do eixo (o tooltip usa `format`). */
@@ -218,7 +231,28 @@ export function BarSeriesChart({
           formatter={(value, name) => [tooltipValue(value, format), String(name)]}
         />
         {series.length > 1 && (
-          <Legend wrapperStyle={{ fontSize: 12, color: 'var(--lo-fg-muted)' }} />
+          <Legend
+            wrapperStyle={{ fontSize: 12 }}
+            // Texto da legenda sempre legível (a cor da série fica no marcador).
+            formatter={(value: string) => (
+              <span style={{ color: 'var(--lo-fg-muted)' }}>{value}</span>
+            )}
+          />
+        )}
+        {reference && !vertical && (
+          <ReferenceLine
+            y={reference.value}
+            stroke="var(--lo-orange)"
+            strokeDasharray="5 4"
+            strokeWidth={1.5}
+            ifOverflow="extendDomain"
+            label={{
+              value: reference.label,
+              position: 'insideTopRight',
+              fill: 'var(--lo-fg-muted)',
+              fontSize: 11,
+            }}
+          />
         )}
         {series.map((s) => (
           <Bar
@@ -226,10 +260,11 @@ export function BarSeriesChart({
             dataKey={s.key}
             name={s.label}
             fill={s.color === SERIES_PRIMARY && !rowColors ? `url(#${gradientId})` : s.color}
-            radius={vertical ? [0, 6, 6, 0] : [6, 6, 0, 0]}
+            radius={stacked ? 2 : vertical ? [0, 6, 6, 0] : [6, 6, 0, 0]}
             stroke="var(--lo-surface)"
             strokeWidth={stacked ? 1 : 0}
             maxBarSize={36}
+            fillOpacity={highlight && highlight !== s.key ? 0.2 : 1}
             {...(stacked ? { stackId: 'a' } : {})}
           />
         ))}
@@ -272,7 +307,13 @@ export function LineSeriesChart({
           formatter={(value, name) => [tooltipValue(value, format), String(name)]}
         />
         {series.length > 1 && (
-          <Legend wrapperStyle={{ fontSize: 12, color: 'var(--lo-fg-muted)' }} />
+          <Legend
+            wrapperStyle={{ fontSize: 12 }}
+            // Texto da legenda sempre legível (a cor da série fica no marcador).
+            formatter={(value: string) => (
+              <span style={{ color: 'var(--lo-fg-muted)' }}>{value}</span>
+            )}
+          />
         )}
         {first && (
           // Preenchimento suave sob a primeira série (só visual: fora da legenda e do tooltip).
@@ -306,21 +347,40 @@ export function LineSeriesChart({
   );
 }
 
-/** Cartão-resumo: valor com unidade, rótulo e (opcional) comparação descrita em texto. */
+/** Direção de uma variação, para a seta ao lado da comparação. */
+export type TrendDirection = 'up' | 'down' | 'same' | null;
+
+/**
+ * Cartão-resumo: valor com unidade, rótulo, (opcional) comparação descrita em texto com a
+ * seta da direção e (opcional) minilinha de tendência ao longo do período.
+ */
 export function StatTile({
   label,
   value,
   detail,
   comparison,
+  direction = null,
+  trend,
 }: {
   label: string;
   value: string;
   detail?: string;
   comparison?: string | null;
+  direction?: TrendDirection;
+  /** Valores na ordem do tempo (dias/semanas do período). */
+  trend?: readonly number[];
 }) {
   return (
-    <div className="flex flex-col rounded-lg border border-border surface-card p-4 shadow-elev-1 sm:p-5">
-      <p className="text-overline font-semibold tracking-[0.06em] text-fg-subtle uppercase">
+    <div className="relative flex flex-col rounded-lg border border-border surface-card p-4 shadow-elev-1 sm:p-5">
+      {trend && (
+        <Sparkline values={trend} className="absolute top-3.5 right-4 h-7 w-20 sm:top-4.5" />
+      )}
+      <p
+        className={cn(
+          'text-overline font-semibold tracking-[0.06em] text-fg-subtle uppercase',
+          trend && 'pr-24',
+        )}
+      >
         {label}
       </p>
       <p className="mt-2 text-metric font-semibold tracking-[-0.02em] tabular-nums">{value}</p>
@@ -328,6 +388,17 @@ export function StatTile({
       {comparison && (
         <p className="mt-auto pt-2 text-caption text-fg-muted">
           <span className="sr-only">Comparação com o período anterior: </span>
+          {direction === 'up' || direction === 'down' ? (
+            <span
+              aria-hidden="true"
+              className={cn(
+                'mr-1 font-semibold',
+                direction === 'up' ? 'text-[var(--lo-text-green)]' : 'text-[var(--lo-text-orange)]',
+              )}
+            >
+              {direction === 'up' ? '▲' : '▼'}
+            </span>
+          ) : null}
           {comparison}
         </p>
       )}

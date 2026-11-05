@@ -4,10 +4,16 @@ import { Link } from 'react-router';
 import { EmptyState } from '@/components/ui/States';
 import { addDays } from '@/lib/date';
 import { useTasksQuery } from '@/services/data/queries';
-import { BarSeriesChart, ChartCard, DataTable, StatTile } from './components/charts';
-import { colorAt } from './components/chart-colors';
+import {
+  BarSeriesChart,
+  ChartCard,
+  DataTable,
+  LineSeriesChart,
+  StatTile,
+} from './components/charts';
+import { colorAt, SERIES_PRIMARY } from './components/chart-colors';
 import { ChartsGrid, HowCalculated, StatsGrid, StatsLoading } from './components/common';
-import { compareText, dayLabel } from './components/format';
+import { compareDirection, compareText, dayLabel } from './components/format';
 import { usePeriod } from './components/use-period';
 import { useStats } from './data/stats-api';
 import {
@@ -81,6 +87,8 @@ export function TaskAnalyticsPage() {
                 value={String(d.completed)}
                 detail={`${pluralize(d.created, 'criada', 'criadas')} · ${pluralize(d.cancelled, 'cancelada', 'canceladas')} no período`}
                 comparison={compareText(d.completed, prev?.completed, String)}
+                direction={compareDirection(d.completed, prev?.completed)}
+                trend={rows.map((x) => x.values.completed)}
               />
               <StatTile
                 label="Prazos cumpridos"
@@ -94,7 +102,13 @@ export function TaskAnalyticsPage() {
               <StatTile
                 label="Abertas agora"
                 value={String(d.openNow)}
-                detail={`${String(d.overdueNow)} atrasadas hoje`}
+                detail={`${String(d.overdueNow)} atrasadas hoje · saldo do período: ${
+                  d.created - d.completed > 0
+                    ? `+${String(d.created - d.completed)} (a lista cresceu)`
+                    : d.created - d.completed < 0
+                      ? `${String(d.created - d.completed)} (a lista diminuiu)`
+                      : '0 (empatou)'
+                }`}
               />
               <StatTile
                 label="Realizado ÷ estimado"
@@ -116,8 +130,11 @@ export function TaskAnalyticsPage() {
               <ChartsGrid>
                 <ChartCard
                   id="chart-tasks-days"
-                  title={`Tarefas ${GRANULARITY_LABELS[granularity].title}`}
-                  description={['Criadas × concluídas, pelo dia local do evento.', rowsNote]
+                  title={`Tarefas criadas × concluídas ${GRANULARITY_LABELS[granularity].title}`}
+                  description={[
+                    'Quando a linha tracejada (criadas) fica acima da cheia (concluídas), a lista cresce mais rápido do que você dá conta.',
+                    rowsNote,
+                  ]
                     .filter(Boolean)
                     .join(' ')}
                   table={
@@ -132,18 +149,17 @@ export function TaskAnalyticsPage() {
                     />
                   }
                 >
-                  <BarSeriesChart
+                  <LineSeriesChart
                     data={rows.map((x) => ({
                       label: bucketLabel(x, granularity),
-                      criadas: x.values.created,
                       concluidas: x.values.completed,
+                      criadas: x.values.created,
                     }))}
                     series={[
-                      { key: 'criadas', label: 'Criadas', color: colorAt(0) },
-                      { key: 'concluidas', label: 'Concluídas', color: colorAt(2) },
+                      { key: 'concluidas', label: 'Concluídas', color: SERIES_PRIMARY },
+                      { key: 'criadas', label: 'Criadas', color: 'var(--lo-orange)' },
                     ]}
                     format={(v) => String(Math.round(v))}
-                    integer
                   />
                 </ChartCard>
                 <ChartCard

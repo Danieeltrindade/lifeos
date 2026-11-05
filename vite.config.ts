@@ -53,6 +53,11 @@ export default defineConfig(({ mode }) => ({
               name: 'forms-query',
               test: /node_modules[\\/](zod|react-hook-form|@hookform|@tanstack)[\\/]/,
             },
+            // Editor das Notas (TipTap/ProseMirror): só baixado ao abrir as Notas.
+            {
+              name: 'editor',
+              test: /node_modules[\\/](@tiptap|prosemirror-[a-z-]+|orderedmap|rope-sequence|w3c-keyname|linkifyjs)[\\/]/,
+            },
           ],
         },
       },

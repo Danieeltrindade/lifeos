@@ -25,9 +25,9 @@ describe('tradução de erros do Supabase', () => {
   });
 
   it('nunca repassa a mensagem crua do banco (pode conter nomes internos ou dados)', () => {
-    const raw = 'new row violates row-level security policy for table "diary_entries"';
+    const raw = 'new row violates row-level security policy for table "notes"';
     const appError = toAppError({ code: '42501', message: raw });
-    expect(appError.message).not.toContain('diary_entries');
+    expect(appError.message).not.toContain('notes"');
     expect(appError.message).toBe(APP_ERROR_MESSAGES.permission);
     expect(appError.code).toBe('42501');
   });

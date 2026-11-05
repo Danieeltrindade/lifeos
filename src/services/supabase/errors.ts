@@ -98,6 +98,8 @@ const SAFE_SERVER_MESSAGES = [
   'Subtópicos não podem ter subtópicos',
   'Um tópico com subtópicos não pode virar subtópico',
   'Uma tarefa com subtarefas não pode virar subtarefa',
+  'Subcategorias não podem ter subcategorias',
+  'Uma categoria com subcategorias não pode virar subcategoria',
 ];
 
 /** Restrições do banco com mensagem própria (o nome aparece no texto do erro do Postgres). */
@@ -112,7 +114,14 @@ const CONSTRAINT_MESSAGES: Record<string, string> = {
   activities_end_after_start: 'O fim precisa ser depois do início.',
   session_reflections_correct_le_questions: 'Os acertos não podem passar do número de questões.',
   habit_checkins_one_per_day: 'Já existe uma marcação deste hábito nesse dia.',
-  diary_entries_one_per_day: 'Já existe uma entrada do diário nesse dia.',
+  note_categories_unique_root_name: 'Já existe uma categoria com esse nome.',
+  note_categories_unique_child_name: 'Já existe uma subcategoria com esse nome nesta categoria.',
+  note_categories_name_length: 'Dê um nome de 1 a 60 caracteres.',
+  note_categories_two_levels: 'Subcategorias não podem ter subcategorias.',
+  notes_category_fk:
+    'Esta categoria ainda tem notas. Mova as notas para outra categoria antes de excluir.',
+  notes_content_size: 'A nota ficou grande demais. Divida o conteúdo em mais de uma nota.',
+  notes_title_length: 'O título pode ter até 200 caracteres.',
   subjects_user_name_active_key: 'Já existe uma matéria com esse nome.',
   topics_subject_name_active_key: 'Já existe um tópico com esse nome nesta matéria.',
   activity_categories_user_name_active_key: 'Já existe uma categoria com esse nome.',

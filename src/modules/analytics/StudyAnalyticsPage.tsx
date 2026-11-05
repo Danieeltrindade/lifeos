@@ -6,12 +6,13 @@ import { EmptyState } from '@/components/ui/States';
 import { addDays } from '@/lib/date';
 import { useSubjectsQuery, useTopicsQuery } from '@/services/data/queries';
 import { BarSeriesChart, ChartCard, DataTable, StatTile } from './components/charts';
-import { colorAt, SERIES_PRIMARY } from './components/chart-colors';
+import { colorAt, SERIES_PREVIOUS, SERIES_PRIMARY } from './components/chart-colors';
+import { BestTimeCard } from './components/BestTimeCard';
 import { ChartsGrid, HowCalculated, StatsGrid, StatsLoading } from './components/common';
-import { compareText, axisMinutes } from './components/format';
+import { compareDirection, compareText, axisMinutes } from './components/format';
 import { usePeriod } from './components/use-period';
-import { useStats } from './data/stats-api';
-import { dailyTotals, formatPercent, formatSeconds, safeRate } from './logic/metrics';
+import { useStats, type StudyStats } from './data/stats-api';
+import { dailyTotals, formatPercent, formatSeconds, mean, safeRate } from './logic/metrics';
 import {
   bucketDescription,
   bucketLabel,
@@ -21,6 +22,8 @@ import {
   granularityFor,
 } from './logic/evolution';
 import { periodDays } from './logic/periods';
+
+type StudyDay = StudyStats['days'][number];
 
 const minutes = (s: number) => Math.round(s / 60);
 const fmtMinutes = (m: number) => formatSeconds(m * 60);
@@ -66,6 +69,21 @@ export function StudyAnalyticsPage() {
           },
         );
         const seriesNote = evolutionNote(series, granularity, addDays(period.to, -1), today);
+        // Mesmo agrupamento no período anterior, alinhado pela posição (1º dia com 1º dia…).
+        const prevSeries = prev
+          ? evolutionBuckets(
+              prev.days,
+              { granularity, today, weekStartsOn },
+              {
+                seconds: (x) => x.seconds,
+              },
+            )
+          : [];
+        const avgMinutes = mean(series.map((x) => minutes(x.values.seconds)));
+        const trendOf = (pick: (x: StudyDay) => number) =>
+          evolutionBuckets(d.days, { granularity, today, weekStartsOn }, { v: pick }).map(
+            (x) => x.values.v,
+          );
         const bySubject = [...d.bySubject].sort((a, b) => b.seconds - a.seconds);
         const grades = d.reviews.byGrade;
         return (
@@ -76,6 +94,8 @@ export function StudyAnalyticsPage() {
                 value={formatSeconds(d.totals.seconds)}
                 detail={`Cronômetro ${formatSeconds(d.totals.timerSeconds)} · manual ${formatSeconds(d.totals.manualSeconds)}`}
                 comparison={compareText(d.totals.seconds, prev?.totals.seconds, formatSeconds)}
+                direction={compareDirection(d.totals.seconds, prev?.totals.seconds)}
+                trend={trendOf((x) => x.seconds)}
               />
               <StatTile
                 label="Média por dia"
@@ -95,6 +115,8 @@ export function StudyAnalyticsPage() {
                     : `${formatSeconds(d.sessions.netSeconds)} líquidos · pausas ${formatPercent(pauseShare)} do tempo`
                 }
                 comparison={compareText(d.sessions.count, prev?.sessions.count, String)}
+                direction={compareDirection(d.sessions.count, prev?.sessions.count)}
+                trend={trendOf((x) => x.sessions)}
               />
               <StatTile
                 label="Questões"
@@ -125,7 +147,7 @@ export function StudyAnalyticsPage() {
                   id="chart-study-days"
                   title={`Tempo de estudo ${GRANULARITY_LABELS[granularity].title}`}
                   description={[
-                    'Minutos líquidos (pausas descontadas), no dia local em que aconteceram.',
+                    'Minutos líquidos (pausas descontadas), no dia local em que aconteceram. Barras cinza: mesmo trecho do período anterior; linha tracejada: média.',
                     seriesNote,
                   ]
                     .filter(Boolean)
@@ -133,20 +155,41 @@ export function StudyAnalyticsPage() {
                   table={
                     <DataTable
                       caption={`Tempo de estudo ${GRANULARITY_LABELS[granularity].title}`}
-                      columns={[GRANULARITY_LABELS[granularity].column, 'Tempo']}
-                      rows={series.map((x) => [
+                      columns={[
+                        GRANULARITY_LABELS[granularity].column,
+                        'Tempo',
+                        'Período anterior',
+                      ]}
+                      rows={series.map((x, i) => [
                         bucketDescription(x, granularity),
                         formatSeconds(x.values.seconds),
+                        prevSeries[i] ? formatSeconds(prevSeries[i].values.seconds) : '—',
                       ])}
                     />
                   }
                 >
                   <BarSeriesChart
-                    data={series.map((x) => ({
-                      label: bucketLabel(x, granularity),
-                      minutos: minutes(x.values.seconds),
-                    }))}
-                    series={[{ key: 'minutos', label: 'Tempo', color: SERIES_PRIMARY }]}
+                    data={series.map((x, i) => {
+                      const before = prevSeries[i];
+                      return {
+                        label: bucketLabel(x, granularity),
+                        ...(prev
+                          ? { anterior: before ? minutes(before.values.seconds) : null }
+                          : {}),
+                        minutos: minutes(x.values.seconds),
+                      };
+                    })}
+                    series={[
+                      ...(prev
+                        ? [{ key: 'anterior', label: 'Período anterior', color: SERIES_PREVIOUS }]
+                        : []),
+                      { key: 'minutos', label: 'Este período', color: SERIES_PRIMARY },
+                    ]}
+                    reference={
+                      avgMinutes !== null && series.length > 1
+                        ? { value: avgMinutes, label: `média ${axisMinutes(avgMinutes)}` }
+                        : null
+                    }
                     format={fmtMinutes}
                     axisFormat={axisMinutes}
                   />
@@ -266,6 +309,14 @@ export function StudyAnalyticsPage() {
                 </ChartCard>
               </ChartsGrid>
             )}
+            {!empty && (
+              <BestTimeCard
+                periodEnd={period.to}
+                kind="study"
+                title="Quando você rende mais"
+                description="Tempo de estudo por dia da semana e hora."
+              />
+            )}
             <HowCalculated>
               <p>
                 <strong>Tempo de estudo</strong>: soma das atividades de estudo (sessões de foco e
@@ -283,6 +334,11 @@ export function StudyAnalyticsPage() {
               <p>
                 <strong>Acerto</strong>: certas ÷ questões informadas nas reflexões; sem questões,
                 não há porcentagem.
+              </p>
+              <p>
+                <strong>Quando você rende mais</strong>: tempo de estudo das últimas 8 semanas (até
+                o fim do período) repartido pelas horas locais em que aconteceu, em média por
+                semana. O melhor horário só aparece com pelo menos 2 h registradas.
               </p>
               <p>
                 <strong>Comparação</strong>: mesmo cálculo no período anterior equivalente; quando o

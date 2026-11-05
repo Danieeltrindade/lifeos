@@ -1,5 +1,6 @@
 import type { LifeosClient } from '@/services/supabase/client';
 import type { Json } from '@/services/supabase/database.types';
+import { removeAllNoteImages } from '@/modules/notes/data/notes-api';
 import { toAppError } from '@/services/supabase/errors';
 
 /** Portabilidade (LGPD art. 18, V): todos os dados do usuário em JSON. */
@@ -14,6 +15,8 @@ export async function exportMyData(client: LifeosClient): Promise<Json> {
  * usuário do JWT — não recebe ID. A interface exige reautenticação antes de chamar.
  */
 export async function deleteMyAccount(client: LifeosClient): Promise<void> {
+  // Imagens das notas ficam no Storage (fora da cascata do banco): apagadas antes.
+  await removeAllNoteImages(client);
   const { error } = await client.rpc('delete_my_account');
   if (error) throw toAppError(error);
 }
@@ -36,6 +39,7 @@ export const CSV_TABLES: { key: string; label: string }[] = [
   { key: 'calendarEvents', label: 'Eventos do calendário' },
   { key: 'recommendations', label: 'Recomendações (histórico)' },
   { key: 'weeklyReviews', label: 'Revisões semanais' },
+  { key: 'notes', label: 'Notas' },
 ];
 
 /** Linhas de uma tabela do JSON exportado (lista vazia se a chave não existir). */

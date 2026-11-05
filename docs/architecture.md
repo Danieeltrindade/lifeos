@@ -45,7 +45,7 @@ src/
     tasks/ projects/   Lista, Kanban (dnd-kit), detalhe, dependências, subtarefas; projetos e marcos
     studies/           Matérias, tópicos, domínio, cronômetro, reflexão, revisões
     goals/ habits/     Metas por ciclo e hábitos (sequência/consistência)
-    activities/ diary/ Atividades por tipo e categorias; diário privado
+    activities/ notes/ Atividades por tipo e categorias; notas em categorias (editor TipTap)
     calendar/          FullCalendar, recorrência (logic/recurrence.ts), conflitos, divisão de séries, planejado × realizado
     planning/          Planejamento adaptativo (heurística explicável), disponibilidade e preferências
     analytics/         Estatísticas por período (Recharts + tabela), revisão semanal; logic/ com toda a matemática

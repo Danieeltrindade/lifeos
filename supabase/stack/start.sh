@@ -82,6 +82,7 @@ auth_env=(
 )
 env "${auth_env[@]}" "$bin/auth/auth" migrate >"$state/auth-migrate.log" 2>&1 || { cat "$state/auth-migrate.log"; exit 1; }
 psql_db -f "$here/after-auth.sql" >/dev/null
+psql_db -f "$root/supabase/tests/local/storage-shim.sql" >/dev/null
 
 echo "▶ Migrations do LifeOS"
 for f in "$root"/supabase/migrations/*.sql; do

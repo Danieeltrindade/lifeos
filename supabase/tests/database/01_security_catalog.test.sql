@@ -80,7 +80,8 @@ select tables_are(
     'focus_sessions', 'session_pauses', 'session_reflections',
     'review_cards', 'review_attempts', 'review_schedule_log',
     'activity_categories', 'activities', 'habits', 'habit_checkins',
-    'goals', 'goal_progress_entries', 'goal_changes', 'goal_milestones', 'diary_entries',
+    'goals', 'goal_progress_entries', 'goal_changes', 'goal_milestones',
+    'note_categories', 'notes',
     'calendar_events', 'calendar_event_exceptions',
     'recommendations', 'reminders',
     'availability_windows', 'planning_preferences', 'weekly_reviews', 'weekly_review_priorities'

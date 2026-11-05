@@ -111,8 +111,8 @@ describe('navegação móvel', () => {
     const { router } = renderApp('/');
     await user.click(await screen.findByRole('button', { name: 'Mais' }));
     const dialog = screen.getByRole('dialog');
-    await user.click(within(dialog).getByRole('link', { name: /^Diário/ }));
-    expect(router.state.location.pathname).toBe('/diario');
+    await user.click(within(dialog).getByRole('link', { name: /^Notas/ }));
+    expect(router.state.location.pathname).toBe('/notas');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

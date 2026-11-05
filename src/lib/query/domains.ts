@@ -15,7 +15,8 @@ export type DataDomain =
   | 'activities'
   | 'goals'
   | 'habits'
-  | 'diary'
+  /** Notas e categorias de notas (conteúdo privado, fora de estatísticas). */
+  | 'notes'
   | 'calendar'
   | 'categories'
   | 'dashboard'
@@ -40,7 +41,7 @@ const DEPENDENTS: Record<DataDomain, DataDomain[]> = {
   activities: ['sessions', 'goals', 'projects', 'calendar', 'dashboard', 'stats'],
   goals: ['dashboard', 'stats'],
   habits: ['goals', 'dashboard', 'stats'],
-  diary: [],
+  notes: [],
   calendar: ['dashboard', 'stats'],
   categories: ['activities', 'tasks', 'goals', 'dashboard', 'stats'],
   dashboard: [],

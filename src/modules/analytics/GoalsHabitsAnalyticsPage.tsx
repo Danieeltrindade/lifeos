@@ -11,6 +11,8 @@ import { dayLabel } from './components/format';
 import { usePeriod } from './components/use-period';
 import { useStats } from './data/stats-api';
 import { goalCycleSummary } from './logic/goal-stats';
+import { GoalPaceSection } from './components/GoalPaceSection';
+import { HabitYearSection } from './components/HabitYearSection';
 import { consistencyInRange } from './logic/habit-stats';
 import { describeRateChange, formatPercent, safeRate } from './logic/metrics';
 
@@ -106,6 +108,8 @@ export function GoalsHabitsAnalyticsPage() {
                 comparison={habitsComparison}
               />
             </StatsGrid>
+
+            <GoalPaceSection />
 
             <section aria-labelledby="goals-title" className="mb-6">
               <h2 id="goals-title" className="mb-3 text-title-sm font-semibold">
@@ -211,6 +215,7 @@ export function GoalsHabitsAnalyticsPage() {
                 )}
               </ChartCard>
             </ChartsGrid>
+            <HabitYearSection />
             <HowCalculated>
               <p>
                 <strong>Valor de cada ciclo</strong>: calculado no banco a partir dos registros que
@@ -230,6 +235,16 @@ export function GoalsHabitsAnalyticsPage() {
                 <strong>Consistência</strong>: dias esperados (ou semanas, no modo “N por semana”)
                 cumpridos ÷ esperados no período, até hoje. Hoje e a semana atual só entram se já
                 foram cumpridos; uma marcação abaixo da meta por marcação não conta.
+              </p>
+              <p>
+                <strong>Ritmo das metas</strong>: valor do ciclo atual comparado com o ritmo
+                constante até o fim do ciclo (alvo × dias passados ÷ dias do ciclo, contando hoje).
+                “No ritmo” = até 5% do alvo de diferença. A projeção mantém a média por dia até
+                agora.
+              </p>
+              <p>
+                <strong>Seu ano em hábitos</strong>: últimas 53 semanas, sempre até hoje,
+                independente do período escolhido.
               </p>
               <p>
                 Limitação: pausas de um hábito não ficam registradas no histórico; um hábito pausado

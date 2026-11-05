@@ -32,7 +32,6 @@ export const qk = {
   habits: ['habits', 'all'] as const,
   checkins: (from: string) => ['habits', 'checkins', from] as const,
   activities: (from: string, to: string) => ['activities', 'range', from, to] as const,
-  diary: ['diary', 'all'] as const,
   calendar: (from: string, to: string) => ['calendar', 'range', from, to] as const,
   dashboard: ['dashboard'] as const,
 };

@@ -27,7 +27,8 @@ const ReviewsPage = page(PAGE_LOADERS.ReviewsPage, 'ReviewsPage');
 const ActivitiesPage = page(PAGE_LOADERS.ActivitiesPage, 'ActivitiesPage');
 const HabitsPage = page(PAGE_LOADERS.HabitsPage, 'HabitsPage');
 const GoalsPage = page(PAGE_LOADERS.GoalsPage, 'GoalsPage');
-const DiaryPage = page(PAGE_LOADERS.DiaryPage, 'DiaryPage');
+const NotesPage = page(PAGE_LOADERS.NotesPage, 'NotesPage');
+const NoteEditorPage = page(PAGE_LOADERS.NoteEditorPage, 'NoteEditorPage');
 const CalendarPage = page(PAGE_LOADERS.CalendarPage, 'CalendarPage');
 const ProjectsPage = page(PAGE_LOADERS.ProjectsPage, 'ProjectsPage');
 const PlannerPage = page(PAGE_LOADERS.PlannerPage, 'PlannerPage');
@@ -70,7 +71,11 @@ export const MODULE_ROUTES: Partial<Record<ModuleId, RouteObject[]>> = {
   activities: [{ index: true, element: withSuspense(ActivitiesPage) }],
   habits: [{ index: true, element: withSuspense(HabitsPage) }],
   goals: [{ index: true, element: withSuspense(GoalsPage) }],
-  diary: [{ index: true, element: withSuspense(DiaryPage) }],
+  notes: [
+    { index: true, element: withSuspense(NotesPage) },
+    // ":noteId" também atende "/notas/nova" (ver NoteEditorPage).
+    { path: ':noteId', element: withSuspense(NoteEditorPage) },
+  ],
   calendar: [
     { index: true, element: withSuspense(CalendarPage) },
     { path: 'planejar', element: withSuspense(PlannerPage) },

@@ -204,3 +204,25 @@ mínima a regra **não dispara** (silêncio em vez de conclusão sem base).
   corrigir a duração de uma sessão muda o tempo de estudo no mesmo valor; excluí-la devolve o total
   anterior; mover o prazo de uma tarefa para fora do período a retira da base de prazos; excluir a
   tarefa também; editar o alvo de uma meta não altera os lançamentos que formam o progresso.
+
+## 13. Gráficos de tendência, ritmo e horário
+
+- **Minilinha e seta nos cartões**: a minilinha é a mesma série do gráfico de evolução do
+  período (dia/semana/mês); a seta ▲/▼ acompanha o texto da comparação com o período anterior
+  equivalente (§2) — a cor nunca é a única pista.
+- **Período anterior no gráfico de estudo**: o mesmo agrupamento aplicado ao período anterior,
+  alinhado pela posição (1º dia com 1º dia). A linha tracejada é a média dos baldes já
+  transcorridos.
+- **Quando você rende mais**: atividades das 8 semanas que terminam no fim do período (ou hoje),
+  com o tempo líquido repartido pelas horas locais na proporção do intervalo bruto; mostra a média
+  por semana. O "melhor horário" é a janela de 1–2 h com mais tempo, somando dias com ≥ 80 % desse
+  valor; só aparece com ao menos 2 h registradas.
+- **Seu tempo por dia (Atividades)**: mesmo recorte por dia local, por tipo de atividade, calculado
+  no navegador a partir das atividades do período (que o RLS já limita à conta).
+- **Ritmo das metas**: ciclo que contém hoje. Esperado = alvo × dias transcorridos (contando hoje)
+  ÷ dias do ciclo; "no ritmo" = diferença de até 5 % do alvo; projeção = média por dia até agora ×
+  dias do ciclo. Metas sem data final não têm ritmo.
+- **Seu ano em hábitos**: últimas 53 semanas até hoje; dia esperado e marcação cumprida pelas
+  mesmas regras do módulo de hábitos (§6). No modo "N por semana" nenhum dia vira "falta".
+- **Últimas 8 semanas (revisão semanal)**: tempo registrado por semana (stats_activities) e
+  tarefas concluídas (stats_tasks); a média exclui a semana selecionada.

@@ -24,8 +24,10 @@ import {
   useRecommendationsQuery,
   type RecStatus,
 } from '@/modules/recommendations/data/recommendations-api';
-import { BarSeriesChart, ChartCard, DataTable, StatTile } from './components/charts';
-import { colorAt } from './components/chart-colors';
+import { BarSeriesChart, ChartCard, DataTable } from './components/charts';
+import { SERIES_PREVIOUS, SERIES_PRIMARY } from './components/chart-colors';
+import { ProgressRing } from './components/visuals';
+import { WeeklyHistoryCard } from './components/WeeklyHistoryCard';
 import { ChartsGrid, StatsGrid, StatsLoading } from './components/common';
 import { dayLabel, axisMinutes } from './components/format';
 import { useStats } from './data/stats-api';
@@ -148,6 +150,7 @@ export function WeeklyReviewPage() {
           return (
             <>
               <WeeklyFacts summary={summary} today={today} />
+              <WeeklyHistoryCard weekStart={weekStart} />
               <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <Card aria-labelledby="wk-recs">
                   <CardHeader title="Recomendações em aberto" titleId="wk-recs" />
@@ -212,37 +215,52 @@ export function WeeklyReviewPage() {
 }
 
 function WeeklyFacts({ summary: s, today }: { summary: WeeklySummary; today: string }) {
+  const habitsMet = s.habits.reduce((a, h) => a + h.met, 0);
+  const habitsEligible = s.habits.reduce((a, h) => a + h.eligible, 0);
+  const habitsRate = habitsEligible > 0 ? habitsMet / habitsEligible : null;
+  const tasksRate = s.tasks.dueTotal > 0 ? s.tasks.doneOnTime / s.tasks.dueTotal : null;
   return (
     <>
       <StatsGrid>
-        <StatTile
-          label="Planejado em blocos"
-          value={fmtMin(s.planned.blocksMinutes)}
-          detail={`+ ${fmtMin(s.planned.commitmentsMinutes)} de compromissos`}
-        />
-        <StatTile
-          label="Realizado nos blocos vinculados"
-          // Sem blocos vinculados não há o que medir: "—", não "0 min".
+        <RingTile
+          label="Plano cumprido"
+          ring={s.planned.blockAdherence}
+          // Sem blocos vinculados não há o que medir: "—", não "0%".
           value={
-            s.planned.linkedBlocksMinutes === 0
-              ? '—'
-              : fmtMin(s.planned.realizedInLinkedBlocksMinutes)
+            s.planned.linkedBlocksMinutes === 0 ? '—' : formatPercent(s.planned.blockAdherence)
           }
           detail={
             s.planned.linkedBlocksMinutes === 0
-              ? 'Nenhum bloco ligado a matéria ou tarefa'
-              : `de ${fmtMin(s.planned.linkedBlocksMinutes)} planejados (${formatPercent(s.planned.blockAdherence)})`
+              ? `${fmtMin(s.planned.blocksMinutes)} em blocos · nenhum ligado a matéria ou tarefa`
+              : `${fmtMin(s.planned.realizedInLinkedBlocksMinutes)} de ${fmtMin(s.planned.linkedBlocksMinutes)} nos blocos vinculados`
           }
         />
-        <StatTile
+        <RingTile
           label="Tempo registrado"
+          ring={
+            s.planned.blocksMinutes > 0
+              ? s.executed.activityMinutes / s.planned.blocksMinutes
+              : null
+          }
           value={fmtMin(s.executed.activityMinutes)}
-          detail={`${fmtMin(s.study.minutes)} de estudo · ${String(s.study.sessions)} sessões`}
+          detail={`${fmtMin(s.study.minutes)} de estudo · ${String(s.study.sessions)} sessões${
+            s.planned.blocksMinutes > 0 ? ` · ${fmtMin(s.planned.blocksMinutes)} planejados` : ''
+          }`}
+          color="var(--lo-chart-2)"
         />
-        <StatTile
-          label="Tarefas concluídas"
-          value={String(s.tasks.completed)}
-          detail={`${String(s.tasks.doneOnTime)} no prazo · ${String(s.tasks.doneLate)} com atraso · ${String(s.tasks.openOverdue)} vencidas abertas`}
+        <RingTile
+          label="Tarefas no prazo"
+          ring={tasksRate}
+          value={`${String(s.tasks.doneOnTime)} de ${String(s.tasks.dueTotal)}`}
+          detail={`${String(s.tasks.completed)} concluídas na semana · ${String(s.tasks.doneLate)} com atraso · ${String(s.tasks.openOverdue)} vencidas abertas`}
+          color="var(--lo-chart-3)"
+        />
+        <RingTile
+          label="Hábitos"
+          ring={habitsRate}
+          value={formatPercent(habitsRate)}
+          detail={`${String(habitsMet)} de ${String(habitsEligible)} check-ins esperados`}
+          color="var(--lo-chart-4)"
         />
       </StatsGrid>
       <ChartsGrid>
@@ -274,8 +292,8 @@ function WeeklyFacts({ summary: s, today }: { summary: WeeklySummary; today: str
               realizado: d.date > today ? null : d.executedMinutes,
             }))}
             series={[
-              { key: 'planejado', label: 'Planejado', color: colorAt(0) },
-              { key: 'realizado', label: 'Registrado', color: colorAt(2) },
+              { key: 'planejado', label: 'Planejado', color: SERIES_PREVIOUS },
+              { key: 'realizado', label: 'Registrado', color: SERIES_PRIMARY },
             ]}
             format={fmtMin}
             axisFormat={axisMinutes}
@@ -528,5 +546,33 @@ function ReviewFormBody({
         </form>
       </CardBody>
     </Card>
+  );
+}
+
+/** Cartão com anel de progresso (0–1; null = sem base). */
+function RingTile({
+  label,
+  value,
+  detail,
+  ring,
+  color,
+}: {
+  label: string;
+  value: string;
+  detail: string;
+  ring: number | null;
+  color?: string;
+}) {
+  return (
+    <div className="flex items-center gap-4 rounded-lg border border-border surface-card p-4 shadow-elev-1 sm:p-5">
+      <ProgressRing value={ring} {...(color ? { color } : {})} />
+      <div className="min-w-0">
+        <p className="text-overline font-semibold tracking-[0.06em] text-fg-subtle uppercase">
+          {label}
+        </p>
+        <p className="mt-1 text-title font-semibold tracking-[-0.02em] tabular-nums">{value}</p>
+        <p className="mt-1 text-caption text-fg-muted">{detail}</p>
+      </div>
+    </div>
   );
 }

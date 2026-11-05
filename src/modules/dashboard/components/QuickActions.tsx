@@ -1,4 +1,4 @@
-import { BookOpen, CheckSquare, NotebookPen, Timer, type LucideIcon } from 'lucide-react';
+import { BookOpen, CheckSquare, NotebookText, Timer, type LucideIcon } from 'lucide-react';
 import { Link } from 'react-router';
 import { getModule, type ModuleId } from '@/app/modules';
 
@@ -14,7 +14,7 @@ const ACTIONS: QuickAction[] = [
   { label: 'Sessão de foco', module: 'studies', to: '/estudos/cronometro', icon: BookOpen },
   { label: 'Registrar atividade', module: 'activities', icon: Timer },
   { label: 'Nova tarefa', module: 'tasks', icon: CheckSquare },
-  { label: 'Escrever no diário', module: 'diary', icon: NotebookPen },
+  { label: 'Nova nota', module: 'notes', to: '/notas/nova', icon: NotebookText },
 ];
 
 /**

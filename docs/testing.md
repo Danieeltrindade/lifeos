@@ -29,14 +29,15 @@ migrations em ordem e roda `supabase/tests/database/*.test.sql`:
 | Arquivo               | Asserções | Verifica                                                                                               |
 | --------------------- | --------- | ------------------------------------------------------------------------------------------------------ |
 | `01_security_catalog` | 23        | RLS ligado em todas as tabelas; 4 políticas do dono; nada para `anon`; só 2 funções `SECURITY DEFINER` |
-| `02_rls_isolation`    | 187       | para cada tabela, B não lê/altera/exclui/grava/vincula dados de A; funções e exportação não vazam      |
+| `02_rls_isolation`    | 193       | para cada tabela, B não lê/altera/exclui/grava/vincula dados de A; funções e exportação não vazam      |
 | `03_business_rules`   | 66        | regras de negócio da Fase 2 (fusos, subtarefas, ciclos de dependência, formatos)                       |
-| `04_api_functions`    | 62        | `dashboard_summary` (meia-noite, horário de verão), exportação, exclusão de conta sem órfãos           |
-| `05_phase3_rules`     | 86        | tarefas, projetos, cronômetro, revisões, metas, hábitos, diário, calendário                            |
+| `04_api_functions`    | 63        | `dashboard_summary` (meia-noite, horário de verão), exportação, exclusão de conta sem órfãos           |
+| `05_phase3_rules`     | 86        | tarefas, projetos, cronômetro, revisões, metas, hábitos, calendário                                    |
 | `06_phase4_rules`     | 62        | estatísticas, recomendações (ciclo de vida, deduplicação, espera), planejamento, revisão semanal       |
 | `07_phase5_integrity` | 38        | monta um grafo completo de dados e exclui cada tipo de registro, conferindo o que fica e o que some    |
 | `08_theme_color`      | 11        | paleta de cores por conta: padrão `ocean`, lista fechada, independente do modo, isolada pelo RLS       |
-| **Total**             | **535**   |                                                                                                        |
+| `09_notes`            | 22        | Diário removido; categorias em 2 níveis, nomes únicos, exclusão protegida; Storage isolado por pasta   |
+| **Total**             | **564**   |                                                                                                        |
 
 Requisitos: `psql`, PostgreSQL 15+ e a extensão pgTAP (`apt install postgresql-16-pgtap`).
 Variáveis: `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`. No fluxo com Docker:
